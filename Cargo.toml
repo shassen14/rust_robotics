@@ -1,0 +1,9 @@
+[package]
+name = "rust_robotics"
+version = "0.1.0"
+authors = ["Samir Hassen"]
+edition = "2021"
+
+[dependencies]
+plotters = "0.3.3"
+nalgebra = "0.33.0"
