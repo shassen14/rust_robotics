@@ -10,16 +10,16 @@ type VectorFn<T, const R: usize> = fn(na::SVector<T, R>, T) -> na::SVector<T, R>
 // Type T: Multiplying with na::SVector will return a SVector
 // Type T: Allowing copying in order to input into func
 // where SVector: added with another SVector will output SVector
-fn rk1<
-    T: std::ops::Sub<Output = T> + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>> + Copy,
-    const R: usize,
->(
+fn rk1<T, const R: usize>(
     func: VectorFn<T, R>,
     x0: na::SVector<T, R>,
     t0: T,
     tf: T,
 ) -> na::SVector<T, R>
 where
+    T: std::ops::Sub<Output = T>
+        + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>
+        + Copy,
     na::SVector<T, R>: std::ops::Add<na::SVector<T, R>, Output = na::SVector<T, R>>,
 {
     let dt: T = tf - t0;
@@ -27,22 +27,19 @@ where
 }
 
 #[allow(dead_code)]
-fn rk4<
-    T: std::ops::Sub<Output = T>
-        + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>
-        + std::ops::Div<f64, Output = T>
-        + std::ops::Mul<f64, Output = T>
-        + std::ops::Add<Output = T>
-        + Copy
-        + std::fmt::Debug,
-    const R: usize,
->(
+fn rk4<T, const R: usize>(
     func: VectorFn<T, R>,
     x0: na::SVector<T, R>,
     t0: T,
     tf: T,
 ) -> na::SVector<T, R>
 where
+    T: std::ops::Sub<Output = T>
+        + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>
+        + std::ops::Div<f64, Output = T>
+        + std::ops::Mul<f64, Output = T>
+        + std::ops::Add<Output = T>
+        + Copy,
     na::SVector<T, R>: std::ops::Add<na::SVector<T, R>, Output = na::SVector<T, R>>,
     f64:
         std::ops::Mul<T, Output = T> + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>,
@@ -52,10 +49,6 @@ where
     let k2: na::SVector<T, R> = func(x0 + (dt / 2.) * k1, t0 + dt / 2.);
     let k3: na::SVector<T, R> = func(x0 + (dt / 2.) * k2, t0 + dt / 2.);
     let k4: na::SVector<T, R> = func(x0 + dt * k3, tf);
-    println!(
-        "dt: {:?}, k1: {:?}, k2: {:?}, k3: {:?}, k4: {:?}",
-        dt, k1, k2, k3, k4
-    );
 
     x0 + (1. / 6.) * dt * (k1 + 2. * k2 + 2. * k3 + k4)
 }
@@ -93,7 +86,8 @@ mod tests {
 
         for i in 0..R {
             println!(
-                "total error: {},  max error: {}\n",
+                "i: {},  total error: {},  max error: {}\n",
+                i,
                 total_error[i].abs(),
                 max_error[i].abs()
             );
@@ -165,6 +159,7 @@ mod tests {
         max_error: na::SVector<f64, 2>,
     ) -> () {
         let func = |x: na::SVector<f64, 2>, _: f64| {
+            #[allow(non_snake_case)]
             let A: na::SMatrix<f64, 2, 2> = na::SMatrix::<f64, 2, 2>::new(0., 1., 0., 0.);
             A * x
         };
@@ -178,6 +173,43 @@ mod tests {
             end,
             step,
             na::SVector::<f64, 2>::new(x0 + vel0 * total_time, vel0),
+            max_error,
+        );
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    fn test_ca(
+        integrator: IntegrationFn<3>,
+        x0: f64,
+        vel0: f64,
+        accel0: f64,
+        start: f64,
+        end: f64,
+        step: f64,
+        max_error: na::SVector<f64, 3>,
+    ) -> () {
+        const N: usize = 3;
+        let func = |x: na::SVector<f64, N>, _: f64| {
+            #[allow(non_snake_case)]
+            let A: na::SMatrix<f64, N, N> =
+                na::SMatrix::<f64, N, N>::new(0., 1., 0., 0., 0., 1., 0., 0., 0.);
+            A * x
+        };
+
+        let total_time: f64 = end - start;
+        test_integration(
+            integrator,
+            func,
+            na::SVector::<f64, N>::new(x0, vel0, accel0),
+            start,
+            end,
+            step,
+            na::SVector::<f64, N>::new(
+                x0 + vel0 * total_time + 0.5 * accel0 * total_time * total_time,
+                vel0 + accel0 * total_time,
+                accel0,
+            ),
             max_error,
         );
     }
@@ -220,6 +252,21 @@ mod tests {
     ///////////////////////////////////////////////////////////////////////////
 
     #[test]
+    fn rk1_ca() {
+        const X0: f64 = 0.;
+        const VEL0: f64 = 1.;
+        const ACCEL0: f64 = 1.;
+        const START: f64 = 0.;
+        const END: f64 = 10.;
+        const STEP: f64 = 0.01;
+
+        const MAX_ERROR: na::SVector<f64, 3> = na::SVector::<f64, 3>::new(1e-1, 1e-12, 1e-12);
+        test_ca(rk1, X0, VEL0, ACCEL0, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
     fn rk4_cos() {
         const START: f64 = 0.;
         const END: f64 = std::f64::consts::PI;
@@ -250,5 +297,20 @@ mod tests {
         const STEP: f64 = 0.01;
         const MAX_ERROR: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(1e-12, 1e-12);
         test_cv(rk4, X0, VEL0, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk4_ca() {
+        const X0: f64 = 0.;
+        const VEL0: f64 = 1.;
+        const ACCEL0: f64 = 1.;
+        const START: f64 = 0.;
+        const END: f64 = 10.;
+        const STEP: f64 = 0.01;
+
+        const MAX_ERROR: na::SVector<f64, 3> = na::SVector::<f64, 3>::new(1e-11, 1e-12, 1e-12);
+        test_ca(rk4, X0, VEL0, ACCEL0, START, END, STEP, MAX_ERROR);
     }
 }
