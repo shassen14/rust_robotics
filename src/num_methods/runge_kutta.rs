@@ -27,6 +27,52 @@ where
 }
 
 #[allow(dead_code)]
+fn rk2<T, const R: usize>(
+    func: VectorFn<T, R>,
+    x0: na::SVector<T, R>,
+    t0: T,
+    tf: T,
+) -> na::SVector<T, R>
+where
+    T: std::ops::Sub<Output = T>
+        + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>
+        + std::ops::Add<Output = T>
+        + Copy,
+    na::SVector<T, R>: std::ops::Add<na::SVector<T, R>, Output = na::SVector<T, R>>,
+    f64: std::ops::Mul<T, Output = T>,
+{
+    let dt: T = tf - t0;
+    let k1: na::SVector<T, R> = func(x0, t0);
+    let k2: na::SVector<T, R> = func(x0 + dt * k1, t0 + dt);
+    x0 + 0.5 * dt * (k1 + k2)
+}
+
+#[allow(dead_code)]
+fn rk3<T, const R: usize>(
+    func: VectorFn<T, R>,
+    x0: na::SVector<T, R>,
+    t0: T,
+    tf: T,
+) -> na::SVector<T, R>
+where
+    T: std::ops::Sub<Output = T>
+        + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>
+        + std::ops::Add<Output = T>
+        + std::ops::Div<f64, Output = T>
+        + Copy,
+    na::SVector<T, R>: std::ops::Add<na::SVector<T, R>, Output = na::SVector<T, R>>,
+    f64:
+        std::ops::Mul<T, Output = T> + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>,
+{
+    let dt: T = tf - t0;
+    let k1: na::SVector<T, R> = func(x0, t0);
+    let k2: na::SVector<T, R> = func(x0 + dt * k1, t0 + dt);
+    let k3: na::SVector<T, R> = func(x0 + (dt / 4.) * (k1 + k2), t0 + dt / 2.);
+
+    x0 + (dt / 6.) * (k1 + k2 + 4. * k3)
+}
+
+#[allow(dead_code)]
 fn rk4<T, const R: usize>(
     func: VectorFn<T, R>,
     x0: na::SVector<T, R>,
@@ -50,7 +96,7 @@ where
     let k3: na::SVector<T, R> = func(x0 + (dt / 2.) * k2, t0 + dt / 2.);
     let k4: na::SVector<T, R> = func(x0 + dt * k3, tf);
 
-    x0 + (1. / 6.) * dt * (k1 + 2. * k2 + 2. * k3 + k4)
+    x0 + (dt / 6.) * (k1 + 2. * k2 + 2. * k3 + k4)
 }
 #[cfg(test)]
 mod tests {
@@ -262,6 +308,106 @@ mod tests {
 
         const MAX_ERROR: na::SVector<f64, 3> = na::SVector::<f64, 3>::new(1e-1, 1e-12, 1e-12);
         test_ca(rk1, X0, VEL0, ACCEL0, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk2_cos() {
+        const START: f64 = 0.;
+        const END: f64 = std::f64::consts::PI;
+        const STEP: f64 = 0.01;
+        const MAX_ERROR: f64 = 1e-2;
+        test_cos(rk2, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk2_sin() {
+        const START: f64 = 0.;
+        const END: f64 = std::f64::consts::PI;
+        const STEP: f64 = 0.01;
+        const MAX_ERROR: f64 = 1e-4;
+        test_sin(rk2, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk2_cv() {
+        const X0: f64 = 0.;
+        const VEL0: f64 = 2.;
+        const START: f64 = 0.;
+        const END: f64 = 10.;
+        const STEP: f64 = 0.01;
+        const MAX_ERROR: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(1e-12, 1e-12);
+        test_cv(rk2, X0, VEL0, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk2_ca() {
+        const X0: f64 = 0.;
+        const VEL0: f64 = 1.;
+        const ACCEL0: f64 = 1.;
+        const START: f64 = 0.;
+        const END: f64 = 10.;
+        const STEP: f64 = 0.01;
+
+        const MAX_ERROR: na::SVector<f64, 3> = na::SVector::<f64, 3>::new(1e-11, 1e-12, 1e-12);
+        test_ca(rk2, X0, VEL0, ACCEL0, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk3_cos() {
+        const START: f64 = 0.;
+        const END: f64 = std::f64::consts::PI;
+        const STEP: f64 = 0.01;
+        const MAX_ERROR: f64 = 1e-2;
+        test_cos(rk3, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk3_sin() {
+        const START: f64 = 0.;
+        const END: f64 = std::f64::consts::PI;
+        const STEP: f64 = 0.01;
+        const MAX_ERROR: f64 = 1e-5;
+        test_sin(rk3, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk3_cv() {
+        const X0: f64 = 0.;
+        const VEL0: f64 = 2.;
+        const START: f64 = 0.;
+        const END: f64 = 10.;
+        const STEP: f64 = 0.01;
+        const MAX_ERROR: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(1e-12, 1e-12);
+        test_cv(rk3, X0, VEL0, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk3_ca() {
+        const X0: f64 = 0.;
+        const VEL0: f64 = 1.;
+        const ACCEL0: f64 = 1.;
+        const START: f64 = 0.;
+        const END: f64 = 10.;
+        const STEP: f64 = 0.01;
+
+        const MAX_ERROR: na::SVector<f64, 3> = na::SVector::<f64, 3>::new(1e-11, 1e-12, 1e-12);
+        test_ca(rk3, X0, VEL0, ACCEL0, START, END, STEP, MAX_ERROR);
     }
 
     ///////////////////////////////////////////////////////////////////////////
