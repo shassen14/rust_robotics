@@ -23,15 +23,51 @@ where
     na::SVector<T, R>: std::ops::Add<na::SVector<T, R>, Output = na::SVector<T, R>>,
 {
     let dt: T = tf - t0;
-    return x0 + dt * func(x0, t0);
+    x0 + dt * func(x0, t0)
+}
+
+#[allow(dead_code)]
+fn rk4<
+    T: std::ops::Sub<Output = T>
+        + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>
+        + std::ops::Div<f64, Output = T>
+        + std::ops::Mul<f64, Output = T>
+        + std::ops::Add<Output = T>
+        + Copy
+        + std::fmt::Debug,
+    const R: usize,
+>(
+    func: VectorFn<T, R>,
+    x0: na::SVector<T, R>,
+    t0: T,
+    tf: T,
+) -> na::SVector<T, R>
+where
+    na::SVector<T, R>: std::ops::Add<na::SVector<T, R>, Output = na::SVector<T, R>>,
+    f64:
+        std::ops::Mul<T, Output = T> + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>,
+{
+    let dt: T = tf - t0;
+    let k1: na::SVector<T, R> = func(x0, t0);
+    let k2: na::SVector<T, R> = func(x0 + (dt / 2.) * k1, t0 + dt / 2.);
+    let k3: na::SVector<T, R> = func(x0 + (dt / 2.) * k2, t0 + dt / 2.);
+    let k4: na::SVector<T, R> = func(x0 + dt * k3, tf);
+    println!(
+        "dt: {:?}, k1: {:?}, k2: {:?}, k3: {:?}, k4: {:?}",
+        dt, k1, k2, k3, k4
+    );
+
+    x0 + (1. / 6.) * dt * (k1 + 2. * k2 + 2. * k3 + k4)
 }
 #[cfg(test)]
 mod tests {
     use super::*;
 
+    // Alias for integrator to use
     type IntegrationFn<const R: usize> =
         fn(VectorFn<f64, R>, na::SVector<f64, R>, f64, f64) -> na::SVector<f64, R>;
 
+    // Helper function to check the results from integrations
     fn test_integration<const R: usize>(
         integrator: IntegrationFn<R>,
         func: VectorFn<f64, R>,
@@ -67,6 +103,9 @@ mod tests {
         result
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+
+    // cos test
     fn test_cos(
         integrator: IntegrationFn<1>,
         start: f64,
@@ -89,6 +128,62 @@ mod tests {
         );
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+
+    // sin test
+    fn test_sin(
+        integrator: IntegrationFn<1>,
+        start: f64,
+        end: f64,
+        step: f64,
+        max_error: f64,
+    ) -> () {
+        let func = |_: na::SVector<f64, 1>, t: f64| na::SVector::<f64, 1>::new(f64::sin(t));
+
+        let expected = -f64::cos(end) - -f64::cos(start);
+        test_integration(
+            integrator,
+            func,
+            na::SVector::<f64, 1>::new(0.),
+            start,
+            end,
+            step,
+            na::SVector::<f64, 1>::new(expected),
+            na::SVector::<f64, 1>::new(max_error),
+        );
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    fn test_cv(
+        integrator: IntegrationFn<2>,
+        x0: f64,
+        vel0: f64,
+        start: f64,
+        end: f64,
+        step: f64,
+        max_error: na::SVector<f64, 2>,
+    ) -> () {
+        let func = |x: na::SVector<f64, 2>, _: f64| {
+            let A: na::SMatrix<f64, 2, 2> = na::SMatrix::<f64, 2, 2>::new(0., 1., 0., 0.);
+            A * x
+        };
+
+        let total_time: f64 = end - start;
+        test_integration(
+            integrator,
+            func,
+            na::SVector::<f64, 2>::new(x0, vel0),
+            start,
+            end,
+            step,
+            na::SVector::<f64, 2>::new(x0 + vel0 * total_time, vel0),
+            max_error,
+        );
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
     #[test]
     fn rk1_cos() {
         const START: f64 = 0.;
@@ -96,5 +191,64 @@ mod tests {
         const STEP: f64 = 0.01;
         const MAX_ERROR: f64 = 2e-2;
         test_cos(rk1, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk1_sin() {
+        const START: f64 = 0.;
+        const END: f64 = std::f64::consts::PI;
+        const STEP: f64 = 0.01;
+        const MAX_ERROR: f64 = 1e-4;
+        test_sin(rk1, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk1_cv() {
+        const X0: f64 = 0.;
+        const VEL0: f64 = 2.;
+        const START: f64 = 0.;
+        const END: f64 = 10.;
+        const STEP: f64 = 0.01;
+        const MAX_ERROR: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(1e-12, 1e-12);
+        test_cv(rk1, X0, VEL0, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk4_cos() {
+        const START: f64 = 0.;
+        const END: f64 = std::f64::consts::PI;
+        const STEP: f64 = 0.01;
+        const MAX_ERROR: f64 = 1e-2;
+        test_cos(rk4, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk4_sin() {
+        const START: f64 = 0.;
+        const END: f64 = std::f64::consts::PI;
+        const STEP: f64 = 0.01;
+        const MAX_ERROR: f64 = 1e-5;
+        test_sin(rk4, START, END, STEP, MAX_ERROR);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn rk4_cv() {
+        const X0: f64 = 0.;
+        const VEL0: f64 = 2.;
+        const START: f64 = 0.;
+        const END: f64 = 10.;
+        const STEP: f64 = 0.01;
+        const MAX_ERROR: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(1e-12, 1e-12);
+        test_cv(rk4, X0, VEL0, START, END, STEP, MAX_ERROR);
     }
 }
