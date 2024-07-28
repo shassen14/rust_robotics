@@ -1,8 +1,11 @@
 extern crate nalgebra as na;
 
-#[allow(dead_code)]
 /// Generic function pointer alias which represents dx/dt = f(x,t)
-type VectorFn<T, const R: usize> = fn(&na::SVector<T, R>, T) -> na::SVector<T, R>;
+pub type VectorFn<T, const R: usize> = fn(&na::SVector<T, R>, T) -> na::SVector<T, R>;
+
+/// Alias for integrator to use
+pub type IntegrationFn<T, const R: usize> =
+    fn(VectorFn<T, R>, &na::SVector<T, R>, T, T) -> na::SVector<T, R>;
 
 #[allow(dead_code)]
 /// Integrate a function, dx/dt = func(x, t), using Runge-Kutta 1st order (Euler) for a single timestep
@@ -141,10 +144,6 @@ where
 mod tests {
     use super::*;
 
-    // Alias for integrator to use
-    type IntegrationFn<const R: usize> =
-        fn(VectorFn<f64, R>, &na::SVector<f64, R>, f64, f64) -> na::SVector<f64, R>;
-
     /// Helper function to est integrating a function over a time interval [start, end]
     ///
     /// # Arguments
@@ -159,7 +158,7 @@ mod tests {
     /// * Returns Final State x(tf)
     ///
     fn test_integration<const R: usize>(
-        integrator: IntegrationFn<R>,
+        integrator: IntegrationFn<f64, R>,
         func: VectorFn<f64, R>,
         x0: &na::SVector<f64, R>,
         start: f64,
@@ -207,7 +206,7 @@ mod tests {
     /// * `max_error` - Maximum allowed error between final result and the expected result
     ///
     fn test_cos(
-        integrator: IntegrationFn<1>,
+        integrator: IntegrationFn<f64, 1>,
         start: f64,
         end: f64,
         step: f64,
@@ -239,7 +238,7 @@ mod tests {
     /// * `max_error` - Maximum allowed error between final result and the expected result
     ///
     fn test_sin(
-        integrator: IntegrationFn<1>,
+        integrator: IntegrationFn<f64, 1>,
         start: f64,
         end: f64,
         step: f64,
@@ -271,7 +270,7 @@ mod tests {
     /// * `max_error` - Maximum allowed error between final result and the expected result
     ///
     fn test_cv(
-        integrator: IntegrationFn<2>,
+        integrator: IntegrationFn<f64, 2>,
         x0: f64,
         vel0: f64,
         start: f64,
@@ -309,7 +308,7 @@ mod tests {
     /// * `max_error` - Maximum allowed error between final result and the expected result
     ///
     fn test_ca(
-        integrator: IntegrationFn<3>,
+        integrator: IntegrationFn<f64, 3>,
         x0: f64,
         vel0: f64,
         accel0: f64,
