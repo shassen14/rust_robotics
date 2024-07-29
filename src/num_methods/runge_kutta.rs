@@ -1,11 +1,32 @@
 extern crate nalgebra as na;
 
 /// Generic function pointer alias which represents dx/dt = f(x,t)
-pub type VectorFn<T, const R: usize> = fn(&na::SVector<T, R>, T) -> na::SVector<T, R>;
+// Old way but this did not take in any outside variables
+// Praying for trait alias or type alias for impl
+// pub type VectorFn<T, const R: usize> = fn(&na::SVector<T, R>, T) -> na::SVector<T, R>;
+pub trait VectorFn<T, const R: usize>: Fn(&na::SVector<T, R>, T) -> na::SVector<T, R> {}
 
-/// Alias for integrator to use
-pub type IntegrationFn<T, const R: usize> =
-    fn(VectorFn<T, R>, &na::SVector<T, R>, T, T) -> na::SVector<T, R>;
+impl<Func: Fn(&na::SVector<T, R>, T) -> na::SVector<T, R>, T, const R: usize> VectorFn<T, R>
+    for Func
+{
+}
+
+/// Type alias hack for integrator to use
+// Old way but this did not take in any outside variables
+// Praying for trait alias or type alias for impl
+// pub type IntegrationFn<T, const R: usize> =
+//     fn(impl VectorFn<T, R>, &na::SVector<T, R>, T, T) -> na::SVector<T, R>;
+pub trait IntegrationFn<T, const R: usize>:
+    Fn(&dyn VectorFn<T, R>, &na::SVector<T, R>, T, T) -> na::SVector<T, R>
+{
+}
+impl<
+        Func: Fn(&dyn VectorFn<T, R>, &na::SVector<T, R>, T, T) -> na::SVector<T, R>,
+        T,
+        const R: usize,
+    > IntegrationFn<T, R> for Func
+{
+}
 
 #[allow(dead_code)]
 /// Integrate a function, dx/dt = func(x, t), using Runge-Kutta 1st order (Euler) for a single timestep
@@ -18,8 +39,8 @@ pub type IntegrationFn<T, const R: usize> =
 /// * `tf` - Final time
 /// * Returns Final State x(tf)
 ///
-fn rk1<T, const R: usize>(
-    func: VectorFn<T, R>,
+pub fn rk1<T, const R: usize>(
+    func: &dyn VectorFn<T, R>,
     x0: &na::SVector<T, R>,
     t0: T,
     tf: T,
@@ -45,8 +66,8 @@ where
 /// * `tf` - Final time
 /// * Returns Final State x(tf)
 ///
-fn rk2<T, const R: usize>(
-    func: VectorFn<T, R>,
+pub fn rk2<T, const R: usize>(
+    func: &dyn VectorFn<T, R>,
     x0: &na::SVector<T, R>,
     t0: T,
     tf: T,
@@ -76,8 +97,8 @@ where
 /// * `tf` - Final time
 /// * Returns Final State x(tf)
 ///
-fn rk3<T, const R: usize>(
-    func: VectorFn<T, R>,
+pub fn rk3<T, const R: usize>(
+    func: &dyn VectorFn<T, R>,
     x0: &na::SVector<T, R>,
     t0: T,
     tf: T,
@@ -111,8 +132,8 @@ where
 /// * `tf` - Final time
 /// * Returns Final State x(tf)
 ///
-fn rk4<T, const R: usize>(
-    func: VectorFn<T, R>,
+pub fn rk4<T, const R: usize>(
+    func: &dyn VectorFn<T, R>,
     x0: &na::SVector<T, R>,
     t0: T,
     tf: T,
@@ -138,7 +159,7 @@ where
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Tests
+// Tests
 ///////////////////////////////////////////////////////////////////////////////
 #[cfg(test)]
 mod tests {
@@ -158,8 +179,8 @@ mod tests {
     /// * Returns Final State x(tf)
     ///
     fn test_integration<const R: usize>(
-        integrator: IntegrationFn<f64, R>,
-        func: VectorFn<f64, R>,
+        integrator: impl IntegrationFn<f64, R>,
+        func: &dyn VectorFn<f64, R>,
         x0: &na::SVector<f64, R>,
         start: f64,
         end: f64,
@@ -193,7 +214,7 @@ mod tests {
         result
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
 
     /// Test integrating a cos(t) over a time interval [start, end]
     ///
@@ -206,7 +227,7 @@ mod tests {
     /// * `max_error` - Maximum allowed error between final result and the expected result
     ///
     fn test_cos(
-        integrator: IntegrationFn<f64, 1>,
+        integrator: impl IntegrationFn<f64, 1>,
         start: f64,
         end: f64,
         step: f64,
@@ -217,7 +238,7 @@ mod tests {
         let expected = f64::sin(end) - f64::sin(start);
         test_integration(
             integrator,
-            func,
+            &func,
             &na::SVector::<f64, 1>::new(0.),
             start,
             end,
@@ -238,7 +259,7 @@ mod tests {
     /// * `max_error` - Maximum allowed error between final result and the expected result
     ///
     fn test_sin(
-        integrator: IntegrationFn<f64, 1>,
+        integrator: impl IntegrationFn<f64, 1>,
         start: f64,
         end: f64,
         step: f64,
@@ -249,7 +270,7 @@ mod tests {
         let expected = -f64::cos(end) - -f64::cos(start);
         test_integration(
             integrator,
-            func,
+            &func,
             &na::SVector::<f64, 1>::new(0.),
             start,
             end,
@@ -270,7 +291,7 @@ mod tests {
     /// * `max_error` - Maximum allowed error between final result and the expected result
     ///
     fn test_cv(
-        integrator: IntegrationFn<f64, 2>,
+        integrator: impl IntegrationFn<f64, 2>,
         x0: f64,
         vel0: f64,
         start: f64,
@@ -287,7 +308,7 @@ mod tests {
         let total_time: f64 = end - start;
         test_integration(
             integrator,
-            func,
+            &func,
             &na::SVector::<f64, 2>::new(x0, vel0),
             start,
             end,
@@ -308,7 +329,7 @@ mod tests {
     /// * `max_error` - Maximum allowed error between final result and the expected result
     ///
     fn test_ca(
-        integrator: IntegrationFn<f64, 3>,
+        integrator: impl IntegrationFn<f64, 3>,
         x0: f64,
         vel0: f64,
         accel0: f64,
@@ -328,7 +349,7 @@ mod tests {
         let total_time: f64 = end - start;
         test_integration(
             integrator,
-            func,
+            &func,
             &na::SVector::<f64, N>::new(x0, vel0, accel0),
             start,
             end,
