@@ -2,6 +2,7 @@ extern crate nalgebra as na;
 use crate::num_methods::runge_kutta;
 
 #[allow(dead_code)]
+
 pub trait System<T, const N: usize, const M: usize> {
     fn propagate(
         &self,
@@ -26,4 +27,11 @@ pub trait System<T, const N: usize, const M: usize> {
         u: &na::SVector<T, M>,
         t: T,
     ) -> na::SVector<T, N>;
+
+    fn get_jacobian(
+        &self,
+        x: &na::SVector<T, N>,
+        u: &na::SVector<T, M>,
+        t: T,
+    ) -> (na::SMatrix<T, N, N>, na::SMatrix<T, M, M>);
 }
