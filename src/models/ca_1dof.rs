@@ -11,7 +11,7 @@ impl System<f64, 3, 0> for Ca1dof {
         _u: &nalgebra::SVector<f64, 0>,
         _t: f64,
     ) -> na::SVector<f64, 3> {
-        na::SVector::<f64, 3>::new(x[1], x[2], 0.) //new(1., 1., 0., 1., 1., 0., 1., 1., 0.)
+        na::SVector::<f64, 3>::new(x[1], x[2], 0.)
     }
 
     fn get_jacobian(

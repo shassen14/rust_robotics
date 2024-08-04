@@ -2,9 +2,8 @@ use minifb::{Key, KeyRepeat, Window, WindowOptions};
 use plotters::prelude::*;
 use plotters_bitmap::bitmap_pixel::BGRXPixel;
 use plotters_bitmap::BitMapBackend;
-use rust_robotics::models::base::System;
 use std::collections::VecDeque;
-use std::time::SystemTime;
+// use std::time::SystemTime;
 
 // TODO: what is this
 use std::borrow::{Borrow, BorrowMut};
@@ -12,10 +11,11 @@ use std::error::Error;
 
 // rust_robotics
 use nalgebra as na;
+use rust_robotics::models::base::System;
 use rust_robotics::models::ca_1dof;
 use rust_robotics::num_methods::runge_kutta;
 
-const W: usize = 400;
+const W: usize = 800;
 const H: usize = 400;
 const FPS: u32 = 30;
 
@@ -73,8 +73,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         // create 2d plane here
         let mut chart = ChartBuilder::on(&root)
             .margin(10)
-            .set_all_label_area_size(30)
-            .build_cartesian_2d(-100..100, 0..10)?;
+            .set_all_label_area_size(30.)
+            .build_cartesian_2d(-0.0..70.0, 0.0..7500.0)?;
 
         // axes label and line color
         chart
@@ -89,12 +89,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
 
     let mut data: VecDeque<(f64, na::SVector<f64, 3>)> = VecDeque::new();
-    let start_ts = SystemTime::now();
+    // let start_ts = SystemTime::now();
     // let mut last_flushed = 0.0;
 
     // time and initialize vehicle
     let start: f64 = 0.;
-    let end: f64 = 20.;
+    let end: f64 = 70.;
     let step: f64 = 1. / FPS as f64;
     let state0: na::SVector<f64, 3> = na::SVector::<f64, 3>::new(0., 1., 3.);
 
@@ -104,7 +104,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let veh: ca_1dof::Ca1dof = ca_1dof::Ca1dof {};
     data.reserve(((end - start) / step) as usize);
 
-    while window.is_open() && !window.is_key_down(Key::Escape) && tf <= end {
+    while window.is_open() && !window.is_key_down(Key::Escape) {
         result = ca_1dof::Ca1dof::propagate(
             &veh,
             &result,
@@ -132,7 +132,11 @@ fn main() -> Result<(), Box<dyn Error>> {
                     .light_line_style(&TRANSPARENT)
                     .draw()?;
 
-                chart.draw_series(PathElement::new(, &GREEN))?;
+                chart.draw_series(data.iter().zip(data.iter().skip(1)).map(
+                    |(&(t0, x0), &(t1, x1))| {
+                        PathElement::new(vec![(t0, x0[0]), (t1, x1[0])], &GREEN)
+                    },
+                ))?;
             }
             root.present()?;
         }
@@ -142,6 +146,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         t0 = tf;
         tf += step;
     }
+
+    println!("{:?}", data);
 
     Ok(())
 }
