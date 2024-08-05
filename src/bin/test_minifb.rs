@@ -5,7 +5,7 @@ const H: usize = 400;
 
 fn main() -> Result<(), std::io::Error> {
     let _window = Window::new(
-        &"Here is a title <Esc>=Exit".to_string(),
+        &"Here is a title".to_string(),
         W,
         H,
         WindowOptions::default(),

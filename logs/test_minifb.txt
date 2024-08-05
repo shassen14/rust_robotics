@@ -1,1114 +1,1114 @@
-==55978== Memcheck, a memory error detector
-==55978== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==55978== Using Valgrind-3.18.1-42b08ed5bd-20211015 and LibVEX; rerun with -h for copyright info
-==55978== Command: /home/samir/Documents/projects/rust_robotics/scripts/../target/debug/test_minifb
-==55978== Parent PID: 55950
-==55978== 
---55978-- 
---55978-- Valgrind options:
---55978--    --leak-check=full
---55978--    --show-leak-kinds=all
---55978--    --track-origins=yes
---55978--    --verbose
---55978--    --log-file=/home/samir/Documents/projects/rust_robotics/scripts/../logs/test_minifb.txt
---55978-- Contents of /proc/version:
---55978--   Linux version 6.5.0-45-generic (buildd@lcy02-amd64-109) (x86_64-linux-gnu-gcc-12 (Ubuntu 12.3.0-1ubuntu1~22.04) 12.3.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #45~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Mon Jul 15 16:40:02 UTC 2
---55978-- 
---55978-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
---55978-- Page sizes: currently 4096, max supported 4096
---55978-- Valgrind library directory: /usr/libexec/valgrind
---55978-- Reading syms from /home/samir/Documents/projects/rust_robotics/target/debug/test_minifb
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
---55978--   Considering /usr/lib/debug/.build-id/41/86944c50f8a32b47d74931e3f512b811813b64.debug ..
---55978--   .. build-id is valid
---55978-- Reading syms from /usr/libexec/valgrind/memcheck-amd64-linux
---55978--    object doesn't have a symbol table
---55978--    object doesn't have a dynamic symbol table
---55978-- Scheduler: using generic scheduler lock implementation.
---55978-- Reading suppressions file: /usr/libexec/valgrind/default.supp
-==55978== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-55978-by-samir-on-???
-==55978== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-55978-by-samir-on-???
-==55978== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-55978-by-samir-on-???
-==55978== 
-==55978== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==55978== don't want to do, unless you know exactly what you're doing,
-==55978== or are doing some strange experiment):
-==55978==   /usr/bin/vgdb --pid=55978 ...command...
-==55978== 
-==55978== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==55978==   /path/to/gdb /home/samir/Documents/projects/rust_robotics/scripts/../target/debug/test_minifb
-==55978== and then give GDB the following command
-==55978==   target remote | /usr/bin/vgdb --pid=55978
-==55978== --pid is optional if only one valgrind process is running
-==55978== 
---55978-- REDIR: 0x402aa40 (ld-linux-x86-64.so.2:strlen) redirected to 0x580bcec2 (???)
---55978-- REDIR: 0x402a810 (ld-linux-x86-64.so.2:index) redirected to 0x580bcedc (???)
---55978-- Reading syms from /usr/libexec/valgrind/vgpreload_core-amd64-linux.so
---55978--    object doesn't have a symbol table
---55978-- Reading syms from /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
---55978--    object doesn't have a symbol table
-==55978== WARNING: new redirection conflicts with existing -- ignoring it
---55978--     old: 0x0402aa40 (strlen              ) R-> (0000.0) 0x580bcec2 ???
---55978--     new: 0x0402aa40 (strlen              ) R-> (2007.0) 0x0484ee30 strlen
---55978-- REDIR: 0x4027220 (ld-linux-x86-64.so.2:strcmp) redirected to 0x484fcd0 (strcmp)
---55978-- REDIR: 0x402afa0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4853840 (mempcpy)
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
---55978--    object doesn't have a symbol table
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/libm.so.6
---55978--   Considering /usr/lib/debug/.build-id/a5/08ec5d8bf12fb7fd08204e0f87518e5cd0b102.debug ..
---55978--   .. build-id is valid
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/libc.so.6
---55978--   Considering /usr/lib/debug/.build-id/49/0fef8403240c91833978d494d39e537409b92e.debug ..
---55978--   .. build-id is valid
-==55978== WARNING: new redirection conflicts with existing -- ignoring it
---55978--     old: 0x04a2ec60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
---55978--     new: 0x04a2ec60 (memalign            ) R-> (1017.0) 0x0484e050 aligned_alloc
-==55978== WARNING: new redirection conflicts with existing -- ignoring it
---55978--     old: 0x04a2ec60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
---55978--     new: 0x04a2ec60 (memalign            ) R-> (1017.0) 0x0484e020 aligned_alloc
-==55978== WARNING: new redirection conflicts with existing -- ignoring it
---55978--     old: 0x04a2ec60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
---55978--     new: 0x04a2ec60 (memalign            ) R-> (1017.0) 0x0484e050 aligned_alloc
-==55978== WARNING: new redirection conflicts with existing -- ignoring it
---55978--     old: 0x04a2ec60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
---55978--     new: 0x04a2ec60 (memalign            ) R-> (1017.0) 0x0484e020 aligned_alloc
---55978-- REDIR: 0x4a31720 (libc.so.6:strnlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a319e0 (libc.so.6:strpbrk) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a312e0 (libc.so.6:strcmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a4fcd0 (libc.so.6:wcsnlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a326d0 (libc.so.6:memset) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a4e540 (libc.so.6:wcslen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a32c10 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a4e370 (libc.so.6:wcschr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a31260 (libc.so.6:index) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a31960 (libc.so.6:rindex) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a325a0 (libc.so.6:memmove) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
-==55978== Preferring higher priority redirection:
---55978--     old: 0x04b297c0 (__memcpy_avx_unalign) R-> (2018.0) 0x04850f90 __memcpy_avx_unaligned_erms
---55978--     new: 0x04b297c0 (__memcpy_avx_unalign) R-> (2018.1) 0x04852880 memmove
---55978-- REDIR: 0x4a4e3f0 (libc.so.6:wcscmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a329e0 (libc.so.6:stpncpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a4e9b0 (libc.so.6:wmemchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a31830 (libc.so.6:strncmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a32a70 (libc.so.6:strcasecmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a31420 (libc.so.6:strcspn) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a4e470 (libc.so.6:wcscpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a311d0 (libc.so.6:strcat) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a32b60 (libc.so.6:strncasecmp_l) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a32480 (libc.so.6:bcmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a3a570 (libc.so.6:memrchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a34010 (libc.so.6:strchrnul) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a31390 (libc.so.6:strcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a32b10 (libc.so.6:strcasecmp_l) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a316a0 (libc.so.6:strlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a318d0 (libc.so.6:strncpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a32950 (libc.so.6:stpcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a323f0 (libc.so.6:memchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a31b00 (libc.so.6:strspn) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a327d0 (libc.so.6:mempcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a32ac0 (libc.so.6:strncasecmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a33f80 (libc.so.6:rawmemchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4b26610 (libc.so.6:__strrchr_avx2) redirected to 0x484e810 (rindex)
---55978-- REDIR: 0x4a2e0a0 (libc.so.6:malloc) redirected to 0x4848820 (malloc)
---55978-- REDIR: 0x4a31fc0 (libc.so.6:__GI_strstr) redirected to 0x4853ae0 (__strstr_sse2)
---55978-- REDIR: 0x4b222c0 (libc.so.6:__memchr_avx2) redirected to 0x484fd50 (memchr)
---55978-- REDIR: 0x4a2e740 (libc.so.6:realloc) redirected to 0x484dc50 (realloc)
---55978-- REDIR: 0x4b297c0 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4852880 (memmove)
---55978-- REDIR: 0x4b22590 (libc.so.6:__rawmemchr_avx2) redirected to 0x4853360 (rawmemchr)
---55978-- REDIR: 0x4a2e3e0 (libc.so.6:free) redirected to 0x484b210 (free)
---55978-- REDIR: 0x4b29f80 (libc.so.6:__memset_avx2_unaligned_erms) redirected to 0x4852770 (memset)
---55978-- REDIR: 0x4a2f520 (libc.so.6:calloc) redirected to 0x484d9d0 (calloc)
---55978-- REDIR: 0x4b267e0 (libc.so.6:__strlen_avx2) redirected to 0x484ed10 (strlen)
---55978-- REDIR: 0x4b21d80 (libc.so.6:__strncmp_avx2) redirected to 0x484f3e0 (strncmp)
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
---55978--    object doesn't have a symbol table
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
---55978--    object doesn't have a symbol table
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
---55978--    object doesn't have a symbol table
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
---55978--    object doesn't have a symbol table
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/libbsd.so.0.11.5
---55978--    object doesn't have a symbol table
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/libmd.so.0.0.5
---55978--    object doesn't have a symbol table
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2
---55978--    object doesn't have a symbol table
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0
---55978--    object doesn't have a symbol table
---55978-- Reading syms from /usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0
---55978--    object doesn't have a symbol table
---55978-- REDIR: 0x4b26400 (libc.so.6:__strchrnul_avx2) redirected to 0x4853330 (strchrnul)
---55978-- REDIR: 0x4abd7e0 (libc.so.6:__strcpy_chk) redirected to 0x48533a0 (__strcpy_chk)
---55978-- REDIR: 0x4b22a80 (libc.so.6:__memcmp_avx2_movbe) redirected to 0x4852010 (bcmp)
---55978-- REDIR: 0x4b28040 (libc.so.6:__strncpy_avx2) redirected to 0x484efe0 (strncpy)
---55978-- REDIR: 0x4b21940 (libc.so.6:__strcmp_avx2) redirected to 0x484fbd0 (strcmp)
---55978-- REDIR: 0x4a32310 (libc.so.6:strstr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4a4d180 (libc.so.6:__strstr_sse2_unaligned) redirected to 0x4853a50 (strstr)
---55978-- REDIR: 0x4b26180 (libc.so.6:__strchr_avx2) redirected to 0x484e9f0 (index)
---55978-- REDIR: 0x4b29780 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4853440 (mempcpy)
---55978-- REDIR: 0x4b27cb0 (libc.so.6:__strcpy_avx2) redirected to 0x484ee60 (strcpy)
---55978-- REDIR: 0x4abd280 (libc.so.6:__memcpy_chk) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
---55978-- REDIR: 0x4b29790 (libc.so.6:__memcpy_chk_avx_unaligned_erms) redirected to 0x4853940 (__memcpy_chk)
-==55978== 
-==55978== HEAP SUMMARY:
-==55978==     in use at exit: 41,143 bytes in 431 blocks
-==55978==   total heap usage: 1,876 allocs, 1,445 frees, 1,534,932 bytes allocated
-==55978== 
-==55978== Searching for pointers to 431 not-freed blocks
-==55978== Checked 212,984 bytes
-==55978== 
-==55978== 2 bytes in 1 blocks are still reachable in loss record 1 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x4A3158E: strdup (strdup.c:42)
-==55978==    by 0x502B327: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 2 bytes in 1 blocks are still reachable in loss record 2 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x4A3158E: strdup (strdup.c:42)
-==55978==    by 0x502A791: _XlcResolveLocaleName (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5031497: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 7 bytes in 1 blocks are still reachable in loss record 3 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x4A3158E: strdup (strdup.c:42)
-==55978==    by 0x503158E: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 8 bytes in 1 blocks are still reachable in loss record 4 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x503CC49: _XimOpenIM (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x12A77D: minifb::os::posix::x11::Window::new (x11.rs:366)
-==55978==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
-==55978==    by 0x13D569: minifb::Window::new (lib.rs:290)
-==55978==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
-==55978==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
-==55978==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
-==55978==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
-==55978==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
-==55978==    by 0x126D99: std::rt::lang_start (rt.rs:165)
-==55978==    by 0x126F6D: main (in /home/samir/Documents/projects/rust_robotics/target/debug/test_minifb)
-==55978== 
-==55978== 9 bytes in 1 blocks are still reachable in loss record 5 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x5036535: _XlcDefaultMapModifiers (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x503877A: XSetLocaleModifiers (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x12A6AF: minifb::os::posix::x11::Window::new (x11.rs:364)
-==55978==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
-==55978==    by 0x13D569: minifb::Window::new (lib.rs:290)
-==55978==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
-==55978==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
-==55978==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
-==55978==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
-==55978==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
-==55978==    by 0x126D99: std::rt::lang_start (rt.rs:165)
-==55978== 
-==55978== 16 bytes in 1 blocks are still reachable in loss record 6 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x50365FD: _XlcAddLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312F5: _XlcInitLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038660: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 16 bytes in 1 blocks are still reachable in loss record 7 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x50365FD: _XlcAddLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5031303: _XlcInitLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038660: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 16 bytes in 1 blocks are still reachable in loss record 8 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x50365FD: _XlcAddLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038660: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x129E57: minifb::os::posix::x11::DisplayInfo::load_cursor (x11.rs:213)
-==55978== 
-==55978== 16 bytes in 1 blocks are still reachable in loss record 9 of 67
-==55978==    at 0x484DCD3: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x5024364: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502F909: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312D2: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 16 bytes in 1 blocks are still reachable in loss record 10 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x5038697: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x129E57: minifb::os::posix::x11::DisplayInfo::load_cursor (x11.rs:213)
-==55978==    by 0x129CFE: minifb::os::posix::x11::DisplayInfo::init_cursors (x11.rs:200)
-==55978== 
-==55978== 16 bytes in 2 blocks are still reachable in loss record 11 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502FE16: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312D2: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 24 bytes in 1 blocks are still reachable in loss record 12 of 67
-==55978==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x5024159: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2B9: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 32 bytes in 1 blocks are still reachable in loss record 13 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x50278C3: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022428: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DF0: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x129E57: minifb::os::posix::x11::DisplayInfo::load_cursor (x11.rs:213)
-==55978==    by 0x129CFE: minifb::os::posix::x11::DisplayInfo::init_cursors (x11.rs:200)
-==55978==    by 0x128E30: minifb::os::posix::x11::DisplayInfo::new (x11.rs:65)
-==55978== 
-==55978== 40 bytes in 1 blocks are still reachable in loss record 14 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x50049E9: XInitThreads (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x128FD4: minifb::os::posix::x11::DisplayInfo::setup (x11.rs:78)
-==55978==    by 0x128C50: minifb::os::posix::x11::DisplayInfo::new (x11.rs:61)
-==55978==    by 0x12A11D: minifb::os::posix::x11::Window::new (x11.rs:315)
-==55978==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
-==55978==    by 0x13D569: minifb::Window::new (lib.rs:290)
-==55978==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
-==55978==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
-==55978==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
-==55978==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
-==55978==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
-==55978== 
-==55978== 40 bytes in 1 blocks are still reachable in loss record 15 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x5004A06: XInitThreads (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x128FD4: minifb::os::posix::x11::DisplayInfo::setup (x11.rs:78)
-==55978==    by 0x128C50: minifb::os::posix::x11::DisplayInfo::new (x11.rs:61)
-==55978==    by 0x12A11D: minifb::os::posix::x11::Window::new (x11.rs:315)
-==55978==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
-==55978==    by 0x13D569: minifb::Window::new (lib.rs:290)
-==55978==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
-==55978==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
-==55978==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
-==55978==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
-==55978==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
-==55978== 
-==55978== 40 bytes in 1 blocks are still reachable in loss record 16 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x5004A23: XInitThreads (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x128FD4: minifb::os::posix::x11::DisplayInfo::setup (x11.rs:78)
-==55978==    by 0x128C50: minifb::os::posix::x11::DisplayInfo::new (x11.rs:61)
-==55978==    by 0x12A11D: minifb::os::posix::x11::Window::new (x11.rs:315)
-==55978==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
-==55978==    by 0x13D569: minifb::Window::new (lib.rs:290)
-==55978==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
-==55978==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
-==55978==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
-==55978==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
-==55978==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
-==55978== 
-==55978== 40 bytes in 1 blocks are still reachable in loss record 17 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502E9A2: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 47 bytes in 5 blocks are still reachable in loss record 18 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502C8F2: _XlcAddCT (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CC6F: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 19 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x500E126: _XrmInternalStringToQuark (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5021CB3: XrmInitialize (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB5B: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x129E57: minifb::os::posix::x11::DisplayInfo::load_cursor (x11.rs:213)
-==55978==    by 0x129CFE: minifb::os::posix::x11::DisplayInfo::init_cursors (x11.rs:200)
-==55978==    by 0x128E30: minifb::os::posix::x11::DisplayInfo::new (x11.rs:65)
-==55978==    by 0x12A11D: minifb::os::posix::x11::Window::new (x11.rs:315)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 20 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CCB8: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 21 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CCCE: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 22 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CCE4: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 23 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CCFA: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 24 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FB09: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 25 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FB21: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 26 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FB39: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 27 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FB55: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 28 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FB6D: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 29 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FB85: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 30 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FB9D: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 31 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FBB5: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 32 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FBCD: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 33 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FBE5: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 34 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FBFD: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 35 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5037D5B: _XlcAddUtf8Converters (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 36 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5037D7A: _XlcAddUtf8Converters (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 37 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5037D92: _XlcAddUtf8Converters (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 38 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5037DAA: _XlcAddUtf8Converters (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 39 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5037DC2: _XlcAddUtf8Converters (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 40 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5037DE1: _XlcAddUtf8Converters (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 64 bytes in 1 blocks are still reachable in loss record 41 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 72 bytes in 2 blocks are still reachable in loss record 42 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x40271DF: malloc (rtld-malloc.h:56)
-==55978==    by 0x40271DF: strdup (strdup.c:42)
-==55978==    by 0x4016A66: _dl_load_cache_lookup (dl-cache.c:527)
-==55978==    by 0x400A981: _dl_map_object (dl-load.c:2193)
-==55978==    by 0x400E9A8: dl_open_worker_begin (dl-open.c:534)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400DF99: dl_open_worker (dl-open.c:782)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400E34D: _dl_open (dl-open.c:883)
-==55978==    by 0x4A1963B: dlopen_doit (dlopen.c:56)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x4AFDB62: _dl_catch_error (dl-error-skeleton.c:227)
-==55978== 
-==55978== 72 bytes in 2 blocks are still reachable in loss record 43 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x400DD20: malloc (rtld-malloc.h:56)
-==55978==    by 0x400DD20: _dl_new_object (dl-object.c:199)
-==55978==    by 0x4008C82: _dl_map_object_from_fd (dl-load.c:1063)
-==55978==    by 0x400A600: _dl_map_object (dl-load.c:2327)
-==55978==    by 0x400E9A8: dl_open_worker_begin (dl-open.c:534)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400DF99: dl_open_worker (dl-open.c:782)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400E34D: _dl_open (dl-open.c:883)
-==55978==    by 0x4A1963B: dlopen_doit (dlopen.c:56)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x4AFDB62: _dl_catch_error (dl-error-skeleton.c:227)
-==55978== 
-==55978== 84 bytes in 1 blocks are definitely lost in loss record 44 of 67
-==55978==    at 0x48487A9: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x500DC6A: XListPixmapFormats (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x129AD2: minifb::os::posix::x11::DisplayInfo::check_formats (x11.rs:154)
-==55978==    by 0x128CD9: minifb::os::posix::x11::DisplayInfo::new (x11.rs:63)
-==55978==    by 0x12A11D: minifb::os::posix::x11::Window::new (x11.rs:315)
-==55978==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
-==55978==    by 0x13D569: minifb::Window::new (lib.rs:290)
-==55978==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
-==55978==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
-==55978==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
-==55978==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
-==55978==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
-==55978== 
-==55978== 142 bytes in 18 blocks are still reachable in loss record 45 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x5024CF6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5026634: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5026690: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502E8A7: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 160 bytes in 2 blocks are still reachable in loss record 46 of 67
-==55978==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x5024335: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502F909: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312D2: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 160 bytes in 1 blocks are definitely lost in loss record 47 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x4FF99EF: XCreateGC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x12ABDB: minifb::os::posix::x11::Window::new (x11.rs:400)
-==55978==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
-==55978==    by 0x13D569: minifb::Window::new (lib.rs:290)
-==55978==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
-==55978==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
-==55978==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
-==55978==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
-==55978==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
-==55978==    by 0x126D99: std::rt::lang_start (rt.rs:165)
-==55978==    by 0x126F6D: main (in /home/samir/Documents/projects/rust_robotics/target/debug/test_minifb)
-==55978== 
-==55978== 168 bytes in 1 blocks are still reachable in loss record 48 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502418F: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2B9: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 176 bytes in 1 blocks are still reachable in loss record 49 of 67
-==55978==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x5024174: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2B9: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978== 
-==55978== 216 bytes in 18 blocks are still reachable in loss record 50 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x4A3158E: strdup (strdup.c:42)
-==55978==    by 0x5026449: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5026690: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502E8A7: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 246 bytes in 7 blocks are still reachable in loss record 51 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x40271DF: malloc (rtld-malloc.h:56)
-==55978==    by 0x40271DF: strdup (strdup.c:42)
-==55978==    by 0x4016A66: _dl_load_cache_lookup (dl-cache.c:527)
-==55978==    by 0x400A981: _dl_map_object (dl-load.c:2193)
-==55978==    by 0x4003494: openaux (dl-deps.c:64)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x4003C7B: _dl_map_object_deps (dl-deps.c:248)
-==55978==    by 0x400EA0E: dl_open_worker_begin (dl-open.c:592)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400DF99: dl_open_worker (dl-open.c:782)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400E34D: _dl_open (dl-open.c:883)
-==55978== 
-==55978== 246 bytes in 7 blocks are still reachable in loss record 52 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x400DD20: malloc (rtld-malloc.h:56)
-==55978==    by 0x400DD20: _dl_new_object (dl-object.c:199)
-==55978==    by 0x4008C82: _dl_map_object_from_fd (dl-load.c:1063)
-==55978==    by 0x400A600: _dl_map_object (dl-load.c:2327)
-==55978==    by 0x4003494: openaux (dl-deps.c:64)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x4003C7B: _dl_map_object_deps (dl-deps.c:248)
-==55978==    by 0x400EA0E: dl_open_worker_begin (dl-open.c:592)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400DF99: dl_open_worker (dl-open.c:782)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400E34D: _dl_open (dl-open.c:883)
-==55978== 
-==55978== 274 bytes in 18 blocks are still reachable in loss record 53 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x4A3158E: strdup (strdup.c:42)
-==55978==    by 0x50265B5: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5026690: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502E8A7: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 288 bytes in 18 blocks are still reachable in loss record 54 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x5024CD5: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5026634: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5026690: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502E8A7: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 456 bytes in 1 blocks are still reachable in loss record 55 of 67
-==55978==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502E947: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 633 bytes in 49 blocks are still reachable in loss record 56 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502C751: _XlcCreateDefaultCharSet (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CABA: _XlcAddCT (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CC6F: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 720 bytes in 18 blocks are still reachable in loss record 57 of 67
-==55978==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x5026431: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5026690: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502E8A7: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 800 bytes in 50 blocks are still reachable in loss record 58 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502C619: _XlcAddCharSet (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CACE: _XlcAddCT (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CC6F: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 1,028 bytes in 50 blocks are still reachable in loss record 59 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502C6E4: _XlcCreateDefaultCharSet (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CABA: _XlcAddCT (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CC6F: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 1,944 bytes in 9 blocks are still reachable in loss record 60 of 67
-==55978==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x40162DC: calloc (rtld-malloc.h:44)
-==55978==    by 0x40162DC: _dl_check_map_versions (dl-version.c:273)
-==55978==    by 0x400ED13: dl_open_worker_begin (dl-open.c:600)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400DF99: dl_open_worker (dl-open.c:782)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400E34D: _dl_open (dl-open.c:883)
-==55978==    by 0x4A1963B: dlopen_doit (dlopen.c:56)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x4AFDB62: _dl_catch_error (dl-error-skeleton.c:227)
-==55978==    by 0x4A1912D: _dlerror_run (dlerror.c:138)
-==55978==    by 0x4A196C7: dlopen_implementation (dlopen.c:71)
-==55978==    by 0x4A196C7: dlopen@@GLIBC_2.34 (dlopen.c:81)
-==55978== 
-==55978== 2,048 bytes in 1 blocks are still reachable in loss record 61 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502EAA2: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 2,412 bytes in 2 blocks are still reachable in loss record 62 of 67
-==55978==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x400DA02: calloc (rtld-malloc.h:44)
-==55978==    by 0x400DA02: _dl_new_object (dl-object.c:92)
-==55978==    by 0x4008C82: _dl_map_object_from_fd (dl-load.c:1063)
-==55978==    by 0x400A600: _dl_map_object (dl-load.c:2327)
-==55978==    by 0x400E9A8: dl_open_worker_begin (dl-open.c:534)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400DF99: dl_open_worker (dl-open.c:782)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400E34D: _dl_open (dl-open.c:883)
-==55978==    by 0x4A1963B: dlopen_doit (dlopen.c:56)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x4AFDB62: _dl_catch_error (dl-error-skeleton.c:227)
-==55978== 
-==55978== 2,631 bytes in 50 blocks are still reachable in loss record 63 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502C84F: _XlcAddCT (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CC6F: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 3,600 bytes in 50 blocks are still reachable in loss record 64 of 67
-==55978==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x502C6B6: _XlcCreateDefaultCharSet (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CABA: _XlcAddCT (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502CC6F: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978== 
-==55978== 4,096 bytes in 1 blocks are still reachable in loss record 65 of 67
-==55978==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x500DF8A: _XrmInternalStringToQuark (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5021CB3: XrmInitialize (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB5B: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x129E57: minifb::os::posix::x11::DisplayInfo::load_cursor (x11.rs:213)
-==55978==    by 0x129CFE: minifb::os::posix::x11::DisplayInfo::init_cursors (x11.rs:200)
-==55978==    by 0x128E30: minifb::os::posix::x11::DisplayInfo::new (x11.rs:65)
-==55978==    by 0x12A11D: minifb::os::posix::x11::Window::new (x11.rs:315)
-==55978== 
-==55978== 8,176 bytes in 1 blocks are still reachable in loss record 66 of 67
-==55978==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x500CD95: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x500E105: _XrmInternalStringToQuark (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5021CB3: XrmInitialize (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFB5B: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
-==55978==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
-==55978==    by 0x129E57: minifb::os::posix::x11::DisplayInfo::load_cursor (x11.rs:213)
-==55978==    by 0x129CFE: minifb::os::posix::x11::DisplayInfo::init_cursors (x11.rs:200)
-==55978==    by 0x128E30: minifb::os::posix::x11::DisplayInfo::new (x11.rs:65)
-==55978== 
-==55978== 8,436 bytes in 7 blocks are still reachable in loss record 67 of 67
-==55978==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==55978==    by 0x400DA02: calloc (rtld-malloc.h:44)
-==55978==    by 0x400DA02: _dl_new_object (dl-object.c:92)
-==55978==    by 0x4008C82: _dl_map_object_from_fd (dl-load.c:1063)
-==55978==    by 0x400A600: _dl_map_object (dl-load.c:2327)
-==55978==    by 0x4003494: openaux (dl-deps.c:64)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x4003C7B: _dl_map_object_deps (dl-deps.c:248)
-==55978==    by 0x400EA0E: dl_open_worker_begin (dl-open.c:592)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400DF99: dl_open_worker (dl-open.c:782)
-==55978==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
-==55978==    by 0x400E34D: _dl_open (dl-open.c:883)
-==55978== 
-==55978== LEAK SUMMARY:
-==55978==    definitely lost: 244 bytes in 2 blocks
-==55978==    indirectly lost: 0 bytes in 0 blocks
-==55978==      possibly lost: 0 bytes in 0 blocks
-==55978==    still reachable: 40,899 bytes in 429 blocks
-==55978==         suppressed: 0 bytes in 0 blocks
-==55978== 
-==55978== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==56510== Memcheck, a memory error detector
+==56510== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==56510== Using Valgrind-3.18.1-42b08ed5bd-20211015 and LibVEX; rerun with -h for copyright info
+==56510== Command: /home/samir/Documents/projects/rust_robotics/scripts/../target/debug/test_minifb
+==56510== Parent PID: 56483
+==56510== 
+--56510-- 
+--56510-- Valgrind options:
+--56510--    --leak-check=full
+--56510--    --show-leak-kinds=all
+--56510--    --track-origins=yes
+--56510--    --verbose
+--56510--    --log-file=/home/samir/Documents/projects/rust_robotics/scripts/../logs/test_minifb.txt
+--56510-- Contents of /proc/version:
+--56510--   Linux version 6.5.0-45-generic (buildd@lcy02-amd64-109) (x86_64-linux-gnu-gcc-12 (Ubuntu 12.3.0-1ubuntu1~22.04) 12.3.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #45~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Mon Jul 15 16:40:02 UTC 2
+--56510-- 
+--56510-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
+--56510-- Page sizes: currently 4096, max supported 4096
+--56510-- Valgrind library directory: /usr/libexec/valgrind
+--56510-- Reading syms from /home/samir/Documents/projects/rust_robotics/target/debug/test_minifb
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+--56510--   Considering /usr/lib/debug/.build-id/41/86944c50f8a32b47d74931e3f512b811813b64.debug ..
+--56510--   .. build-id is valid
+--56510-- Reading syms from /usr/libexec/valgrind/memcheck-amd64-linux
+--56510--    object doesn't have a symbol table
+--56510--    object doesn't have a dynamic symbol table
+--56510-- Scheduler: using generic scheduler lock implementation.
+--56510-- Reading suppressions file: /usr/libexec/valgrind/default.supp
+==56510== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-56510-by-samir-on-???
+==56510== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-56510-by-samir-on-???
+==56510== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-56510-by-samir-on-???
+==56510== 
+==56510== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==56510== don't want to do, unless you know exactly what you're doing,
+==56510== or are doing some strange experiment):
+==56510==   /usr/bin/vgdb --pid=56510 ...command...
+==56510== 
+==56510== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==56510==   /path/to/gdb /home/samir/Documents/projects/rust_robotics/scripts/../target/debug/test_minifb
+==56510== and then give GDB the following command
+==56510==   target remote | /usr/bin/vgdb --pid=56510
+==56510== --pid is optional if only one valgrind process is running
+==56510== 
+--56510-- REDIR: 0x402aa40 (ld-linux-x86-64.so.2:strlen) redirected to 0x580bcec2 (???)
+--56510-- REDIR: 0x402a810 (ld-linux-x86-64.so.2:index) redirected to 0x580bcedc (???)
+--56510-- Reading syms from /usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+--56510--    object doesn't have a symbol table
+--56510-- Reading syms from /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+--56510--    object doesn't have a symbol table
+==56510== WARNING: new redirection conflicts with existing -- ignoring it
+--56510--     old: 0x0402aa40 (strlen              ) R-> (0000.0) 0x580bcec2 ???
+--56510--     new: 0x0402aa40 (strlen              ) R-> (2007.0) 0x0484ee30 strlen
+--56510-- REDIR: 0x4027220 (ld-linux-x86-64.so.2:strcmp) redirected to 0x484fcd0 (strcmp)
+--56510-- REDIR: 0x402afa0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4853840 (mempcpy)
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+--56510--    object doesn't have a symbol table
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/libm.so.6
+--56510--   Considering /usr/lib/debug/.build-id/a5/08ec5d8bf12fb7fd08204e0f87518e5cd0b102.debug ..
+--56510--   .. build-id is valid
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/libc.so.6
+--56510--   Considering /usr/lib/debug/.build-id/49/0fef8403240c91833978d494d39e537409b92e.debug ..
+--56510--   .. build-id is valid
+==56510== WARNING: new redirection conflicts with existing -- ignoring it
+--56510--     old: 0x04a2ec60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--56510--     new: 0x04a2ec60 (memalign            ) R-> (1017.0) 0x0484e050 aligned_alloc
+==56510== WARNING: new redirection conflicts with existing -- ignoring it
+--56510--     old: 0x04a2ec60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--56510--     new: 0x04a2ec60 (memalign            ) R-> (1017.0) 0x0484e020 aligned_alloc
+==56510== WARNING: new redirection conflicts with existing -- ignoring it
+--56510--     old: 0x04a2ec60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--56510--     new: 0x04a2ec60 (memalign            ) R-> (1017.0) 0x0484e050 aligned_alloc
+==56510== WARNING: new redirection conflicts with existing -- ignoring it
+--56510--     old: 0x04a2ec60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--56510--     new: 0x04a2ec60 (memalign            ) R-> (1017.0) 0x0484e020 aligned_alloc
+--56510-- REDIR: 0x4a31720 (libc.so.6:strnlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a319e0 (libc.so.6:strpbrk) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a312e0 (libc.so.6:strcmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a4fcd0 (libc.so.6:wcsnlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a326d0 (libc.so.6:memset) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a4e540 (libc.so.6:wcslen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a32c10 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a4e370 (libc.so.6:wcschr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a31260 (libc.so.6:index) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a31960 (libc.so.6:rindex) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a325a0 (libc.so.6:memmove) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+==56510== Preferring higher priority redirection:
+--56510--     old: 0x04b297c0 (__memcpy_avx_unalign) R-> (2018.0) 0x04850f90 __memcpy_avx_unaligned_erms
+--56510--     new: 0x04b297c0 (__memcpy_avx_unalign) R-> (2018.1) 0x04852880 memmove
+--56510-- REDIR: 0x4a4e3f0 (libc.so.6:wcscmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a329e0 (libc.so.6:stpncpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a4e9b0 (libc.so.6:wmemchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a31830 (libc.so.6:strncmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a32a70 (libc.so.6:strcasecmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a31420 (libc.so.6:strcspn) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a4e470 (libc.so.6:wcscpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a311d0 (libc.so.6:strcat) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a32b60 (libc.so.6:strncasecmp_l) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a32480 (libc.so.6:bcmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a3a570 (libc.so.6:memrchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a34010 (libc.so.6:strchrnul) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a31390 (libc.so.6:strcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a32b10 (libc.so.6:strcasecmp_l) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a316a0 (libc.so.6:strlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a318d0 (libc.so.6:strncpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a32950 (libc.so.6:stpcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a323f0 (libc.so.6:memchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a31b00 (libc.so.6:strspn) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a327d0 (libc.so.6:mempcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a32ac0 (libc.so.6:strncasecmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a33f80 (libc.so.6:rawmemchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4b26610 (libc.so.6:__strrchr_avx2) redirected to 0x484e810 (rindex)
+--56510-- REDIR: 0x4a2e0a0 (libc.so.6:malloc) redirected to 0x4848820 (malloc)
+--56510-- REDIR: 0x4a31fc0 (libc.so.6:__GI_strstr) redirected to 0x4853ae0 (__strstr_sse2)
+--56510-- REDIR: 0x4b222c0 (libc.so.6:__memchr_avx2) redirected to 0x484fd50 (memchr)
+--56510-- REDIR: 0x4a2e740 (libc.so.6:realloc) redirected to 0x484dc50 (realloc)
+--56510-- REDIR: 0x4b297c0 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4852880 (memmove)
+--56510-- REDIR: 0x4b22590 (libc.so.6:__rawmemchr_avx2) redirected to 0x4853360 (rawmemchr)
+--56510-- REDIR: 0x4a2e3e0 (libc.so.6:free) redirected to 0x484b210 (free)
+--56510-- REDIR: 0x4b29f80 (libc.so.6:__memset_avx2_unaligned_erms) redirected to 0x4852770 (memset)
+--56510-- REDIR: 0x4a2f520 (libc.so.6:calloc) redirected to 0x484d9d0 (calloc)
+--56510-- REDIR: 0x4b267e0 (libc.so.6:__strlen_avx2) redirected to 0x484ed10 (strlen)
+--56510-- REDIR: 0x4b21d80 (libc.so.6:__strncmp_avx2) redirected to 0x484f3e0 (strncmp)
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+--56510--    object doesn't have a symbol table
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+--56510--    object doesn't have a symbol table
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+--56510--    object doesn't have a symbol table
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+--56510--    object doesn't have a symbol table
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/libbsd.so.0.11.5
+--56510--    object doesn't have a symbol table
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/libmd.so.0.0.5
+--56510--    object doesn't have a symbol table
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2
+--56510--    object doesn't have a symbol table
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0
+--56510--    object doesn't have a symbol table
+--56510-- Reading syms from /usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0
+--56510--    object doesn't have a symbol table
+--56510-- REDIR: 0x4b26400 (libc.so.6:__strchrnul_avx2) redirected to 0x4853330 (strchrnul)
+--56510-- REDIR: 0x4abd7e0 (libc.so.6:__strcpy_chk) redirected to 0x48533a0 (__strcpy_chk)
+--56510-- REDIR: 0x4b22a80 (libc.so.6:__memcmp_avx2_movbe) redirected to 0x4852010 (bcmp)
+--56510-- REDIR: 0x4b28040 (libc.so.6:__strncpy_avx2) redirected to 0x484efe0 (strncpy)
+--56510-- REDIR: 0x4b21940 (libc.so.6:__strcmp_avx2) redirected to 0x484fbd0 (strcmp)
+--56510-- REDIR: 0x4a32310 (libc.so.6:strstr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4a4d180 (libc.so.6:__strstr_sse2_unaligned) redirected to 0x4853a50 (strstr)
+--56510-- REDIR: 0x4b26180 (libc.so.6:__strchr_avx2) redirected to 0x484e9f0 (index)
+--56510-- REDIR: 0x4b29780 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4853440 (mempcpy)
+--56510-- REDIR: 0x4b27cb0 (libc.so.6:__strcpy_avx2) redirected to 0x484ee60 (strcpy)
+--56510-- REDIR: 0x4abd280 (libc.so.6:__memcpy_chk) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56510-- REDIR: 0x4b29790 (libc.so.6:__memcpy_chk_avx_unaligned_erms) redirected to 0x4853940 (__memcpy_chk)
+==56510== 
+==56510== HEAP SUMMARY:
+==56510==     in use at exit: 41,143 bytes in 431 blocks
+==56510==   total heap usage: 1,876 allocs, 1,445 frees, 1,534,910 bytes allocated
+==56510== 
+==56510== Searching for pointers to 431 not-freed blocks
+==56510== Checked 212,984 bytes
+==56510== 
+==56510== 2 bytes in 1 blocks are still reachable in loss record 1 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x4A3158E: strdup (strdup.c:42)
+==56510==    by 0x502B327: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 2 bytes in 1 blocks are still reachable in loss record 2 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x4A3158E: strdup (strdup.c:42)
+==56510==    by 0x502A791: _XlcResolveLocaleName (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5031497: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 7 bytes in 1 blocks are still reachable in loss record 3 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x4A3158E: strdup (strdup.c:42)
+==56510==    by 0x503158E: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 8 bytes in 1 blocks are still reachable in loss record 4 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x503CC49: _XimOpenIM (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x12A77D: minifb::os::posix::x11::Window::new (x11.rs:366)
+==56510==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
+==56510==    by 0x13D569: minifb::Window::new (lib.rs:290)
+==56510==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
+==56510==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
+==56510==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
+==56510==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
+==56510==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
+==56510==    by 0x126D99: std::rt::lang_start (rt.rs:165)
+==56510==    by 0x126F6D: main (in /home/samir/Documents/projects/rust_robotics/target/debug/test_minifb)
+==56510== 
+==56510== 9 bytes in 1 blocks are still reachable in loss record 5 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x5036535: _XlcDefaultMapModifiers (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x503877A: XSetLocaleModifiers (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x12A6AF: minifb::os::posix::x11::Window::new (x11.rs:364)
+==56510==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
+==56510==    by 0x13D569: minifb::Window::new (lib.rs:290)
+==56510==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
+==56510==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
+==56510==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
+==56510==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
+==56510==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
+==56510==    by 0x126D99: std::rt::lang_start (rt.rs:165)
+==56510== 
+==56510== 16 bytes in 1 blocks are still reachable in loss record 6 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x50365FD: _XlcAddLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312F5: _XlcInitLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038660: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 16 bytes in 1 blocks are still reachable in loss record 7 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x50365FD: _XlcAddLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5031303: _XlcInitLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038660: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 16 bytes in 1 blocks are still reachable in loss record 8 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x50365FD: _XlcAddLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038660: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x129E57: minifb::os::posix::x11::DisplayInfo::load_cursor (x11.rs:213)
+==56510== 
+==56510== 16 bytes in 1 blocks are still reachable in loss record 9 of 67
+==56510==    at 0x484DCD3: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x5024364: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502F909: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312D2: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 16 bytes in 1 blocks are still reachable in loss record 10 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x5038697: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x129E57: minifb::os::posix::x11::DisplayInfo::load_cursor (x11.rs:213)
+==56510==    by 0x129CFE: minifb::os::posix::x11::DisplayInfo::init_cursors (x11.rs:200)
+==56510== 
+==56510== 16 bytes in 2 blocks are still reachable in loss record 11 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502FE16: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312D2: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 24 bytes in 1 blocks are still reachable in loss record 12 of 67
+==56510==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x5024159: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2B9: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 32 bytes in 1 blocks are still reachable in loss record 13 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x50278C3: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022428: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DF0: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x129E57: minifb::os::posix::x11::DisplayInfo::load_cursor (x11.rs:213)
+==56510==    by 0x129CFE: minifb::os::posix::x11::DisplayInfo::init_cursors (x11.rs:200)
+==56510==    by 0x128E30: minifb::os::posix::x11::DisplayInfo::new (x11.rs:65)
+==56510== 
+==56510== 40 bytes in 1 blocks are still reachable in loss record 14 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x50049E9: XInitThreads (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x128FD4: minifb::os::posix::x11::DisplayInfo::setup (x11.rs:78)
+==56510==    by 0x128C50: minifb::os::posix::x11::DisplayInfo::new (x11.rs:61)
+==56510==    by 0x12A11D: minifb::os::posix::x11::Window::new (x11.rs:315)
+==56510==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
+==56510==    by 0x13D569: minifb::Window::new (lib.rs:290)
+==56510==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
+==56510==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
+==56510==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
+==56510==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
+==56510==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
+==56510== 
+==56510== 40 bytes in 1 blocks are still reachable in loss record 15 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x5004A06: XInitThreads (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x128FD4: minifb::os::posix::x11::DisplayInfo::setup (x11.rs:78)
+==56510==    by 0x128C50: minifb::os::posix::x11::DisplayInfo::new (x11.rs:61)
+==56510==    by 0x12A11D: minifb::os::posix::x11::Window::new (x11.rs:315)
+==56510==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
+==56510==    by 0x13D569: minifb::Window::new (lib.rs:290)
+==56510==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
+==56510==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
+==56510==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
+==56510==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
+==56510==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
+==56510== 
+==56510== 40 bytes in 1 blocks are still reachable in loss record 16 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x5004A23: XInitThreads (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x128FD4: minifb::os::posix::x11::DisplayInfo::setup (x11.rs:78)
+==56510==    by 0x128C50: minifb::os::posix::x11::DisplayInfo::new (x11.rs:61)
+==56510==    by 0x12A11D: minifb::os::posix::x11::Window::new (x11.rs:315)
+==56510==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
+==56510==    by 0x13D569: minifb::Window::new (lib.rs:290)
+==56510==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
+==56510==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
+==56510==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
+==56510==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
+==56510==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
+==56510== 
+==56510== 40 bytes in 1 blocks are still reachable in loss record 17 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502E9A2: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 47 bytes in 5 blocks are still reachable in loss record 18 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502C8F2: _XlcAddCT (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CC6F: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 19 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x500E126: _XrmInternalStringToQuark (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5021CB3: XrmInitialize (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB5B: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x129E57: minifb::os::posix::x11::DisplayInfo::load_cursor (x11.rs:213)
+==56510==    by 0x129CFE: minifb::os::posix::x11::DisplayInfo::init_cursors (x11.rs:200)
+==56510==    by 0x128E30: minifb::os::posix::x11::DisplayInfo::new (x11.rs:65)
+==56510==    by 0x12A11D: minifb::os::posix::x11::Window::new (x11.rs:315)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 20 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CCB8: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 21 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CCCE: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 22 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CCE4: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 23 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CCFA: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 24 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FB09: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 25 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FB21: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 26 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FB39: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 27 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FB55: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 28 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FB6D: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 29 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FB85: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 30 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FB9D: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 31 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FBB5: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 32 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FBCD: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 33 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FBE5: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 34 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FBFD: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 35 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5037D5B: _XlcAddUtf8Converters (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 36 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5037D7A: _XlcAddUtf8Converters (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 37 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5037D92: _XlcAddUtf8Converters (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 38 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5037DAA: _XlcAddUtf8Converters (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 39 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5037DC2: _XlcAddUtf8Converters (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 40 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5037DE1: _XlcAddUtf8Converters (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 64 bytes in 1 blocks are still reachable in loss record 41 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502CB96: _XlcSetConverter (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FC05: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 72 bytes in 2 blocks are still reachable in loss record 42 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x40271DF: malloc (rtld-malloc.h:56)
+==56510==    by 0x40271DF: strdup (strdup.c:42)
+==56510==    by 0x4016A66: _dl_load_cache_lookup (dl-cache.c:527)
+==56510==    by 0x400A981: _dl_map_object (dl-load.c:2193)
+==56510==    by 0x400E9A8: dl_open_worker_begin (dl-open.c:534)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400DF99: dl_open_worker (dl-open.c:782)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400E34D: _dl_open (dl-open.c:883)
+==56510==    by 0x4A1963B: dlopen_doit (dlopen.c:56)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x4AFDB62: _dl_catch_error (dl-error-skeleton.c:227)
+==56510== 
+==56510== 72 bytes in 2 blocks are still reachable in loss record 43 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x400DD20: malloc (rtld-malloc.h:56)
+==56510==    by 0x400DD20: _dl_new_object (dl-object.c:199)
+==56510==    by 0x4008C82: _dl_map_object_from_fd (dl-load.c:1063)
+==56510==    by 0x400A600: _dl_map_object (dl-load.c:2327)
+==56510==    by 0x400E9A8: dl_open_worker_begin (dl-open.c:534)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400DF99: dl_open_worker (dl-open.c:782)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400E34D: _dl_open (dl-open.c:883)
+==56510==    by 0x4A1963B: dlopen_doit (dlopen.c:56)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x4AFDB62: _dl_catch_error (dl-error-skeleton.c:227)
+==56510== 
+==56510== 84 bytes in 1 blocks are definitely lost in loss record 44 of 67
+==56510==    at 0x48487A9: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x500DC6A: XListPixmapFormats (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x129AD2: minifb::os::posix::x11::DisplayInfo::check_formats (x11.rs:154)
+==56510==    by 0x128CD9: minifb::os::posix::x11::DisplayInfo::new (x11.rs:63)
+==56510==    by 0x12A11D: minifb::os::posix::x11::Window::new (x11.rs:315)
+==56510==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
+==56510==    by 0x13D569: minifb::Window::new (lib.rs:290)
+==56510==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
+==56510==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
+==56510==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
+==56510==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
+==56510==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
+==56510== 
+==56510== 142 bytes in 18 blocks are still reachable in loss record 45 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x5024CF6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5026634: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5026690: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502E8A7: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 160 bytes in 2 blocks are still reachable in loss record 46 of 67
+==56510==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x5024335: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502F909: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312D2: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 160 bytes in 1 blocks are definitely lost in loss record 47 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x4FF99EF: XCreateGC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x12ABDB: minifb::os::posix::x11::Window::new (x11.rs:400)
+==56510==    by 0x14330B: minifb::os::posix::Window::new (mod.rs:50)
+==56510==    by 0x13D569: minifb::Window::new (lib.rs:290)
+==56510==    by 0x126EDE: test_minifb::main (test_minifb.rs:7)
+==56510==    by 0x12703A: core::ops::function::FnOnce::call_once (function.rs:250)
+==56510==    by 0x126F7D: std::sys_common::backtrace::__rust_begin_short_backtrace (backtrace.rs:155)
+==56510==    by 0x126DC0: std::rt::lang_start::{{closure}} (rt.rs:166)
+==56510==    by 0x267012: std::rt::lang_start_internal (function.rs:284)
+==56510==    by 0x126D99: std::rt::lang_start (rt.rs:165)
+==56510==    by 0x126F6D: main (in /home/samir/Documents/projects/rust_robotics/target/debug/test_minifb)
+==56510== 
+==56510== 168 bytes in 1 blocks are still reachable in loss record 48 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502418F: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2B9: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 176 bytes in 1 blocks are still reachable in loss record 49 of 67
+==56510==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x5024174: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2B9: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510== 
+==56510== 216 bytes in 18 blocks are still reachable in loss record 50 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x4A3158E: strdup (strdup.c:42)
+==56510==    by 0x5026449: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5026690: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502E8A7: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 246 bytes in 7 blocks are still reachable in loss record 51 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x40271DF: malloc (rtld-malloc.h:56)
+==56510==    by 0x40271DF: strdup (strdup.c:42)
+==56510==    by 0x4016A66: _dl_load_cache_lookup (dl-cache.c:527)
+==56510==    by 0x400A981: _dl_map_object (dl-load.c:2193)
+==56510==    by 0x4003494: openaux (dl-deps.c:64)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x4003C7B: _dl_map_object_deps (dl-deps.c:248)
+==56510==    by 0x400EA0E: dl_open_worker_begin (dl-open.c:592)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400DF99: dl_open_worker (dl-open.c:782)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400E34D: _dl_open (dl-open.c:883)
+==56510== 
+==56510== 246 bytes in 7 blocks are still reachable in loss record 52 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x400DD20: malloc (rtld-malloc.h:56)
+==56510==    by 0x400DD20: _dl_new_object (dl-object.c:199)
+==56510==    by 0x4008C82: _dl_map_object_from_fd (dl-load.c:1063)
+==56510==    by 0x400A600: _dl_map_object (dl-load.c:2327)
+==56510==    by 0x4003494: openaux (dl-deps.c:64)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x4003C7B: _dl_map_object_deps (dl-deps.c:248)
+==56510==    by 0x400EA0E: dl_open_worker_begin (dl-open.c:592)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400DF99: dl_open_worker (dl-open.c:782)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400E34D: _dl_open (dl-open.c:883)
+==56510== 
+==56510== 274 bytes in 18 blocks are still reachable in loss record 53 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x4A3158E: strdup (strdup.c:42)
+==56510==    by 0x50265B5: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5026690: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502E8A7: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 288 bytes in 18 blocks are still reachable in loss record 54 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x5024CD5: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5026634: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5026690: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502E8A7: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 456 bytes in 1 blocks are still reachable in loss record 55 of 67
+==56510==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502E947: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 633 bytes in 49 blocks are still reachable in loss record 56 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502C751: _XlcCreateDefaultCharSet (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CABA: _XlcAddCT (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CC6F: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 720 bytes in 18 blocks are still reachable in loss record 57 of 67
+==56510==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x5026431: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5026690: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502E8A7: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x504FABB: _XlcDefaultLoader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 800 bytes in 50 blocks are still reachable in loss record 58 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502C619: _XlcAddCharSet (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CACE: _XlcAddCT (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CC6F: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 1,028 bytes in 50 blocks are still reachable in loss record 59 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502C6E4: _XlcCreateDefaultCharSet (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CABA: _XlcAddCT (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CC6F: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 1,944 bytes in 9 blocks are still reachable in loss record 60 of 67
+==56510==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x40162DC: calloc (rtld-malloc.h:44)
+==56510==    by 0x40162DC: _dl_check_map_versions (dl-version.c:273)
+==56510==    by 0x400ED13: dl_open_worker_begin (dl-open.c:600)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400DF99: dl_open_worker (dl-open.c:782)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400E34D: _dl_open (dl-open.c:883)
+==56510==    by 0x4A1963B: dlopen_doit (dlopen.c:56)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x4AFDB62: _dl_catch_error (dl-error-skeleton.c:227)
+==56510==    by 0x4A1912D: _dlerror_run (dlerror.c:138)
+==56510==    by 0x4A196C7: dlopen_implementation (dlopen.c:71)
+==56510==    by 0x4A196C7: dlopen@@GLIBC_2.34 (dlopen.c:81)
+==56510== 
+==56510== 2,048 bytes in 1 blocks are still reachable in loss record 61 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502EAA2: _XlcCreateLocaleDataBase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50314CF: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 2,412 bytes in 2 blocks are still reachable in loss record 62 of 67
+==56510==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x400DA02: calloc (rtld-malloc.h:44)
+==56510==    by 0x400DA02: _dl_new_object (dl-object.c:92)
+==56510==    by 0x4008C82: _dl_map_object_from_fd (dl-load.c:1063)
+==56510==    by 0x400A600: _dl_map_object (dl-load.c:2327)
+==56510==    by 0x400E9A8: dl_open_worker_begin (dl-open.c:534)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400DF99: dl_open_worker (dl-open.c:782)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400E34D: _dl_open (dl-open.c:883)
+==56510==    by 0x4A1963B: dlopen_doit (dlopen.c:56)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x4AFDB62: _dl_catch_error (dl-error-skeleton.c:227)
+==56510== 
+==56510== 2,631 bytes in 50 blocks are still reachable in loss record 63 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502C84F: _XlcAddCT (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CC6F: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB6C: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 3,600 bytes in 50 blocks are still reachable in loss record 64 of 67
+==56510==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x502C6B6: _XlcCreateDefaultCharSet (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CABA: _XlcAddCT (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502CC6F: _XlcInitCTInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5031386: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50312C6: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x502B2DC: _XlcCreateLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x50508C9: _XlcUtf8Loader (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038685: _XOpenLC (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5038A9E: _XrmInitParseInfo (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022A84: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5022DC2: XrmGetStringDatabase (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510== 
+==56510== 4,096 bytes in 1 blocks are still reachable in loss record 65 of 67
+==56510==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x500DF8A: _XrmInternalStringToQuark (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5021CB3: XrmInitialize (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB5B: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x129E57: minifb::os::posix::x11::DisplayInfo::load_cursor (x11.rs:213)
+==56510==    by 0x129CFE: minifb::os::posix::x11::DisplayInfo::init_cursors (x11.rs:200)
+==56510==    by 0x128E30: minifb::os::posix::x11::DisplayInfo::new (x11.rs:65)
+==56510==    by 0x12A11D: minifb::os::posix::x11::Window::new (x11.rs:315)
+==56510== 
+==56510== 8,176 bytes in 1 blocks are still reachable in loss record 66 of 67
+==56510==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x500CD95: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x500E105: _XrmInternalStringToQuark (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5021CB3: XrmInitialize (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFB5B: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x4FFFDC5: XGetDefault (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==56510==    by 0x5160A12: _XcursorGetDisplayInfo (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x5161A5C: XcursorGetDefaultSize (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x51637D9: XcursorLibraryLoadCursor (in /usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2)
+==56510==    by 0x129E57: minifb::os::posix::x11::DisplayInfo::load_cursor (x11.rs:213)
+==56510==    by 0x129CFE: minifb::os::posix::x11::DisplayInfo::init_cursors (x11.rs:200)
+==56510==    by 0x128E30: minifb::os::posix::x11::DisplayInfo::new (x11.rs:65)
+==56510== 
+==56510== 8,436 bytes in 7 blocks are still reachable in loss record 67 of 67
+==56510==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56510==    by 0x400DA02: calloc (rtld-malloc.h:44)
+==56510==    by 0x400DA02: _dl_new_object (dl-object.c:92)
+==56510==    by 0x4008C82: _dl_map_object_from_fd (dl-load.c:1063)
+==56510==    by 0x400A600: _dl_map_object (dl-load.c:2327)
+==56510==    by 0x4003494: openaux (dl-deps.c:64)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x4003C7B: _dl_map_object_deps (dl-deps.c:248)
+==56510==    by 0x400EA0E: dl_open_worker_begin (dl-open.c:592)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400DF99: dl_open_worker (dl-open.c:782)
+==56510==    by 0x4AFDA97: _dl_catch_exception (dl-error-skeleton.c:208)
+==56510==    by 0x400E34D: _dl_open (dl-open.c:883)
+==56510== 
+==56510== LEAK SUMMARY:
+==56510==    definitely lost: 244 bytes in 2 blocks
+==56510==    indirectly lost: 0 bytes in 0 blocks
+==56510==      possibly lost: 0 bytes in 0 blocks
+==56510==    still reachable: 40,899 bytes in 429 blocks
+==56510==         suppressed: 0 bytes in 0 blocks
+==56510== 
+==56510== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)

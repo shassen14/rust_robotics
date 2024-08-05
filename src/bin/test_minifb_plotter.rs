@@ -105,16 +105,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     data.reserve(((end - start) / step) as usize);
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
-        result = ca_1dof::Ca1dof::propagate(
-            &veh,
-            &result,
-            &na::SVector::<f64, 0>::zeros(),
-            t0,
-            step,
-            runge_kutta::rk4,
-        );
+        if tf <= end {
+            result = ca_1dof::Ca1dof::propagate(
+                &veh,
+                &result,
+                &na::SVector::<f64, 0>::zeros(),
+                t0,
+                step,
+                runge_kutta::rk4,
+            );
 
-        data.push_back((t0, result));
+            data.push_back((t0, result));
+            t0 = tf;
+            tf += step;
+        }
 
         if true {
             let root = BitMapBackend::<BGRXPixel>::with_buffer_and_format(
@@ -142,9 +146,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
 
         window.update_with_buffer(buf.borrow(), W, H)?;
-
-        t0 = tf;
-        tf += step;
+        // if tf <= end && data.len() > 2 {
+        //     data.pop_front();
+        // }
     }
 
     println!("{:?}", data);
