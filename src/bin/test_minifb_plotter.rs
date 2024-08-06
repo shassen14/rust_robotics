@@ -1,4 +1,4 @@
-use minifb::{Key, KeyRepeat, Window, WindowOptions};
+use minifb::{Key, Window, WindowOptions};
 use plotters::prelude::*;
 use plotters_bitmap::bitmap_pixel::BGRXPixel;
 use plotters_bitmap::BitMapBackend;
@@ -52,7 +52,6 @@ fn get_window_title(title: String) -> String {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut buf = BufferWrapper(vec![0u32; W * H]);
-    // println!("{:?}", buf);
 
     let mut window = Window::new(
         &get_window_title("Here is a title <Esc>=Exit".to_string()),
