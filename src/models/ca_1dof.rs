@@ -76,7 +76,6 @@ mod tests {
             );
             t0 = tf;
             tf += step;
-            println!("t0: {}, tf: {}, result: {}", t0, tf, result);
         }
 
         let max_error: f64 = 1e-11;
