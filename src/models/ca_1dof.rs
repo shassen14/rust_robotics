@@ -2,7 +2,17 @@ extern crate nalgebra as na;
 
 use crate::models::base;
 
-pub struct Model {}
+pub struct Model;
+
+impl Model {
+    fn calculate_f() -> na::SMatrix<f64, 3, 3> {
+        na::SMatrix::<f64, 3, 3>::from_array_storage(na::ArrayStorage([
+            [0., 0., 0.],
+            [1., 0., 0.],
+            [0., 1., 0.],
+        ]))
+    }
+}
 
 impl base::System<f64, 3, 0> for Model {
     fn get_derivatives(
@@ -20,9 +30,7 @@ impl base::System<f64, 3, 0> for Model {
         _u: &nalgebra::SVector<f64, 0>,
         _t: f64,
     ) -> (na::SMatrix<f64, 3, 3>, na::SMatrix<f64, 0, 0>) {
-        // na::SMatrix::<f64, 3, 3>::zeros(),
-        // na::SMatrix::<f64, 0, 0>::zeros(),
-        todo!()
+        (Model::calculate_f(), na::SMatrix::<f64, 0, 0>::zeros())
     }
 }
 
@@ -84,5 +92,18 @@ mod tests {
             );
             assert!(total_error[i].abs() < max_error.abs())
         }
+    }
+
+    #[test]
+    fn ca1dof_f_matrix() {
+        // TODO: test random time propagates and F should be the same
+        let answer = na::SMatrix::<f64, 3, 3>::from_array_storage(na::ArrayStorage([
+            [0., 0., 0.],
+            [1., 0., 0.],
+            [0., 1., 0.],
+        ]));
+
+        println!("{}", Model::calculate_f());
+        assert_eq!(Model::calculate_f(), answer)
     }
 }
