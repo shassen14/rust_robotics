@@ -1,6 +1,6 @@
 use nalgebra as na;
-use rust_robotics::models::base::System;
-use rust_robotics::models::ca_1dof::Ca1dof;
+use rust_robotics::models::base;
+use rust_robotics::models::ca_1dof;
 use rust_robotics::num_methods::runge_kutta;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -23,10 +23,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //     accel0,
     // );
 
-    let veh: Ca1dof = Ca1dof {};
+    let veh: ca_1dof::Model = ca_1dof::Model {};
 
     while tf <= end {
-        result = Ca1dof::propagate(
+        result = base::System::propagate(
             &veh,
             &result,
             &na::SVector::<f64, 0>::zeros(),

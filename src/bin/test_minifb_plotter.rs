@@ -11,7 +11,7 @@ use std::error::Error;
 
 // rust_robotics
 use nalgebra as na;
-use rust_robotics::models::base::System;
+use rust_robotics::models::base;
 use rust_robotics::models::ca_1dof;
 use rust_robotics::num_methods::runge_kutta;
 
@@ -100,12 +100,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut t0: f64 = start;
     let mut tf: f64 = t0 + step;
     let mut result = state0;
-    let veh: ca_1dof::Ca1dof = ca_1dof::Ca1dof {};
+    let veh: ca_1dof::Model = ca_1dof::Model {};
     data.reserve(((end - start) / step) as usize);
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
         if tf <= end {
-            result = ca_1dof::Ca1dof::propagate(
+            result = base::System::propagate(
                 &veh,
                 &result,
                 &na::SVector::<f64, 0>::zeros(),

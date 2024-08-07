@@ -1,6 +1,6 @@
 extern crate nalgebra as na;
 
-use crate::models::base::System;
+use crate::models::base;
 
 // TODO: can I make this trait SystemF and implement it for any system?
 // Seems to be difficult since trait will only allow consts and there will be some
@@ -21,11 +21,11 @@ trait Ca3dofF {
         ]));
 }
 
-pub struct Ca3dof;
+pub struct Model;
 
-impl Ca3dofF for Ca3dof {}
+impl Ca3dofF for Model {}
 
-impl System<f64, 9, 0> for Ca3dof {
+impl base::System<f64, 9, 0> for Model {
     fn get_derivatives(
         &self,
         x: &nalgebra::SVector<f64, 9>,
@@ -41,7 +41,7 @@ impl System<f64, 9, 0> for Ca3dof {
         _u: &nalgebra::SVector<f64, 0>,
         _t: f64,
     ) -> (na::SMatrix<f64, 9, 9>, na::SMatrix<f64, 0, 0>) {
-        (Ca3dof::F, na::SMatrix::<f64, 0, 0>::zeros())
+        (Model::F, na::SMatrix::<f64, 0, 0>::zeros())
     }
 }
 
@@ -89,10 +89,10 @@ mod tests {
             accel_z0,
         ]]));
 
-        let veh: Ca3dof = Ca3dof {};
+        let veh: Model = Model {};
 
         while tf <= end {
-            result = Ca3dof::propagate(
+            result = base::System::propagate(
                 &veh,
                 &result,
                 &na::SVector::<f64, 0>::zeros(),
@@ -135,7 +135,7 @@ mod tests {
             [0., 0., 0., 0., 0., 0., 0., 1., 0.],
         ]));
 
-        println!("{}", Ca3dof::F);
-        assert_eq!(Ca3dof::F, answer)
+        println!("{}", Model::F);
+        assert_eq!(Model::F, answer)
     }
 }

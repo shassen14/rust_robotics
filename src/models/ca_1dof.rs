@@ -1,10 +1,10 @@
 extern crate nalgebra as na;
 
-use crate::models::base::System;
+use crate::models::base;
 
-pub struct Ca1dof {}
+pub struct Model {}
 
-impl System<f64, 3, 0> for Ca1dof {
+impl base::System<f64, 3, 0> for Model {
     fn get_derivatives(
         &self,
         x: &nalgebra::SVector<f64, 3>,
@@ -55,10 +55,10 @@ mod tests {
             accel0,
         );
 
-        let veh: Ca1dof = Ca1dof {};
+        let veh: Model = Model {};
 
         while tf <= end {
-            result = Ca1dof::propagate(
+            result = base::System::propagate(
                 &veh,
                 &result,
                 &na::SVector::<f64, 0>::zeros(),
