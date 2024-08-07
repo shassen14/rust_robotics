@@ -5,9 +5,11 @@ use crate::models::base;
 // TODO: can I make this trait SystemF and implement it for any system?
 // Seems to be difficult since trait will only allow consts and there will be some
 // variables in dynamic systems with mass, inertia, length, etc.
-trait Ca3dofF {
-    // input is column based and not row based
-    const F: na::SMatrix<f64, 9, 9> =
+
+pub struct Model;
+
+impl Model {
+    fn calculate_f() -> na::SMatrix<f64, 9, 9> {
         na::SMatrix::<f64, 9, 9>::from_array_storage(na::ArrayStorage([
             [0., 0., 0., 0., 0., 0., 0., 0., 0.],
             [1., 0., 0., 0., 0., 0., 0., 0., 0.],
@@ -18,12 +20,9 @@ trait Ca3dofF {
             [0., 0., 0., 0., 0., 0., 0., 0., 0.],
             [0., 0., 0., 0., 0., 0., 1., 0., 0.],
             [0., 0., 0., 0., 0., 0., 0., 1., 0.],
-        ]));
+        ]))
+    }
 }
-
-pub struct Model;
-
-impl Ca3dofF for Model {}
 
 impl base::System<f64, 9, 0> for Model {
     fn get_derivatives(
@@ -41,7 +40,7 @@ impl base::System<f64, 9, 0> for Model {
         _u: &nalgebra::SVector<f64, 0>,
         _t: f64,
     ) -> (na::SMatrix<f64, 9, 9>, na::SMatrix<f64, 0, 0>) {
-        (Model::F, na::SMatrix::<f64, 0, 0>::zeros())
+        (Model::calculate_f(), na::SMatrix::<f64, 0, 0>::zeros())
     }
 }
 
@@ -135,7 +134,7 @@ mod tests {
             [0., 0., 0., 0., 0., 0., 0., 1., 0.],
         ]));
 
-        println!("{}", Model::F);
-        assert_eq!(Model::F, answer)
+        println!("{}", Model::calculate_f());
+        assert_eq!(Model::calculate_f(), answer)
     }
 }
