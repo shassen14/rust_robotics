@@ -32,6 +32,9 @@ impl base::System<f64, 3, 0> for Model {
     ) -> (na::SMatrix<f64, 3, 3>, na::SMatrix<f64, 0, 0>) {
         (Model::calculate_f(), na::SMatrix::<f64, 0, 0>::zeros())
     }
+
+    /// No parameters to read for this model
+    fn read(&mut self, _: &str) -> () {}
 }
 
 ///////////////////////////////////////////////////////////////////////////////

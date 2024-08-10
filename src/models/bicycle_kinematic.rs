@@ -1,15 +1,21 @@
-extern crate nalgebra as na;
-
+// rust robotics
 use crate::models::base;
 
-#[derive(Clone, Copy)]
+// 3rd party or std
+extern crate nalgebra as na;
+use serde::{Deserialize, Serialize};
+use std::fs;
+use toml;
+
+// TODO: make the member variables private? might keep private? and get some getters?
+#[derive(Clone, Copy, Deserialize, Serialize)]
 pub struct Model {
-    length_front: f64,
-    length_rear: f64,
+    pub length_front: f64,
+    pub length_rear: f64,
 }
 
 impl Model {
-    fn new(lf: f64, lr: f64) -> Self {
+    pub fn new(lf: f64, lr: f64) -> Self {
         Model {
             length_front: lf,
             length_rear: lr,
@@ -67,6 +73,39 @@ impl base::System<f64, 3, 2> for Model {
             na::SMatrix::<f64, 2, 2>::zeros(),
         );
         todo!();
+    }
+
+    // TODO: initial reading toml file
+    // copied from https://codingpackets.com/blog/rust-load-a-toml-file/
+    fn read(&mut self, filename: &str) -> () {
+        let contents = match fs::read_to_string(filename) {
+            // If successful return the files text as `contents`.
+            // `c` is a local variable.
+            Ok(c) => c,
+            // Handle the `error` case.
+            Err(_) => {
+                // Write `msg` to `stderr`.
+                eprintln!("Could not read file `{}`", filename);
+                // Exit the program with exit code `1`.
+                std::process::exit(1);
+            }
+        };
+
+        let data: Model = match toml::from_str(&contents) {
+            // If successful, return data as `Data` struct.
+            // `d` is a local variable.
+            Ok(d) => d,
+            // Handle the `error` case.
+            Err(_) => {
+                // Write `msg` to `stderr`.
+                eprintln!("Unable to load data from `{}`", filename);
+                // Exit the program with exit code `1`.
+                std::process::exit(1);
+            }
+        };
+
+        self.length_front = data.length_front;
+        self.length_rear = data.length_rear;
     }
 }
 

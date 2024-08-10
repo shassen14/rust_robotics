@@ -34,4 +34,7 @@ pub trait System<T, const N: usize, const M: usize> {
         u: &na::SVector<T, M>,
         t: T,
     ) -> (na::SMatrix<T, N, N>, na::SMatrix<T, M, M>);
+
+    /// Read a toml file to change the model's parameters if any
+    fn read(&mut self, filename: &str) -> ();
 }
