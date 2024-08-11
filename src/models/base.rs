@@ -70,7 +70,7 @@ pub trait System<T, const N: usize, const M: usize> {
         x: &na::SVector<T, N>,
         u: &na::SVector<T, M>,
         t: T,
-    ) -> (na::SMatrix<T, N, N>, na::SMatrix<T, M, M>);
+    ) -> (na::SMatrix<T, N, N>, na::SMatrix<T, N, M>);
 
     /// Read a toml file to change the model's parameters if any
     ///

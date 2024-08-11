@@ -67,7 +67,7 @@ impl base::System<f64, 3, 2> for Model {
         _x: &nalgebra::SVector<f64, 3>,
         _u: &nalgebra::SVector<f64, 2>,
         _t: f64,
-    ) -> (na::SMatrix<f64, 3, 3>, na::SMatrix<f64, 2, 2>) {
+    ) -> (na::SMatrix<f64, 3, 3>, na::SMatrix<f64, 3, 2>) {
         (
             Model::calculate_f(Model::new(self.length_front, self.length_rear), 5.),
             na::SMatrix::<f64, 2, 2>::zeros(),
