@@ -30,6 +30,7 @@ impl Model {
         f64::atan(self.length_rear * f64::tan(steer_angle) / self.calculate_length_total())
     }
 
+    #[allow(unused)]
     fn calculate_f(&self, steer_angle: f64) -> na::SMatrix<f64, 3, 3> {
         na::SMatrix::<f64, 3, 3>::from_array_storage(na::ArrayStorage([
             [0., 0., 0.],
