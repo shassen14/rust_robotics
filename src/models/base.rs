@@ -1,5 +1,5 @@
 extern crate nalgebra as na;
-use crate::num_methods::runge_kutta;
+use crate::num_methods::defs;
 
 /// System is a public interface that all models should implement to
 /// learn or to adjust details about the system
@@ -23,7 +23,7 @@ pub trait System<T, const N: usize, const M: usize> {
         u: &na::SVector<T, M>,
         t: T,
         dt: T,
-        integrator: impl runge_kutta::IntegrationFn<T, N>,
+        integrator: impl defs::IntegrationFn<T, N>,
     ) -> na::SVector<T, N>
     where
         T: std::ops::Add<Output = T> + Copy,

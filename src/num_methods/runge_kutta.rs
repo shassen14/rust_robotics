@@ -1,32 +1,5 @@
-extern crate nalgebra as na;
-
-/// Generic function pointer alias which represents dx/dt = f(x,t)
-// Old way but this did not take in any outside variables
-// Praying for trait alias or type alias for impl
-// pub type VectorFn<T, const R: usize> = fn(&na::SVector<T, R>, T) -> na::SVector<T, R>;
-pub trait VectorFn<T, const R: usize>: Fn(&na::SVector<T, R>, T) -> na::SVector<T, R> {}
-
-impl<Func: Fn(&na::SVector<T, R>, T) -> na::SVector<T, R>, T, const R: usize> VectorFn<T, R>
-    for Func
-{
-}
-
-/// Type alias hack for integrator to use
-// Old way but this did not take in any outside variables
-// Praying for trait alias or type alias for impl
-// pub type IntegrationFn<T, const R: usize> =
-//     fn(impl VectorFn<T, R>, &na::SVector<T, R>, T, T) -> na::SVector<T, R>;
-pub trait IntegrationFn<T, const R: usize>:
-    Fn(&dyn VectorFn<T, R>, &na::SVector<T, R>, T, T) -> na::SVector<T, R>
-{
-}
-impl<
-        Func: Fn(&dyn VectorFn<T, R>, &na::SVector<T, R>, T, T) -> na::SVector<T, R>,
-        T,
-        const R: usize,
-    > IntegrationFn<T, R> for Func
-{
-}
+use crate::num_methods::defs::VectorFn;
+use nalgebra as na;
 
 #[allow(dead_code)]
 /// Integrate a function, dx/dt = func(x, t), using Runge-Kutta 1st order (Euler) for a single timestep
@@ -164,6 +137,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::num_methods::defs::IntegrationFn;
 
     /// Helper function to est integrating a function over a time interval [start, end]
     ///
