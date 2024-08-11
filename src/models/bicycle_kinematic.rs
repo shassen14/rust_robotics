@@ -8,10 +8,10 @@ use std::fs;
 use toml;
 
 // TODO: make the member variables private? might keep private? and get some getters?
-#[derive(Clone, Copy, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
 pub struct Model {
-    pub length_front: f64,
-    pub length_rear: f64,
+    length_front: f64,
+    length_rear: f64,
 }
 
 impl Model {
@@ -22,15 +22,15 @@ impl Model {
         }
     }
 
-    fn calculate_length_total(self) -> f64 {
+    fn calculate_length_total(&self) -> f64 {
         self.length_front + self.length_rear
     }
 
-    fn calculate_sideslip(self, steer_angle: f64) -> f64 {
+    fn calculate_sideslip(&self, steer_angle: f64) -> f64 {
         f64::atan(self.length_rear * f64::tan(steer_angle) / self.calculate_length_total())
     }
 
-    fn calculate_f(self, steer_angle: f64) -> na::SMatrix<f64, 3, 3> {
+    fn calculate_f(&self, steer_angle: f64) -> na::SMatrix<f64, 3, 3> {
         na::SMatrix::<f64, 3, 3>::from_array_storage(na::ArrayStorage([
             [0., 0., 0.],
             [1., 0., 0.],
@@ -65,11 +65,11 @@ impl base::System<f64, 3, 2> for Model {
     fn get_jacobian(
         &self,
         _x: &nalgebra::SVector<f64, 3>,
-        _u: &nalgebra::SVector<f64, 2>,
+        u: &nalgebra::SVector<f64, 2>,
         _t: f64,
     ) -> (na::SMatrix<f64, 3, 3>, na::SMatrix<f64, 3, 2>) {
         (
-            Model::calculate_f(Model::new(self.length_front, self.length_rear), 5.),
+            Model::calculate_f(&Model::new(self.length_front, self.length_rear), u[1]),
             na::SMatrix::<f64, 2, 2>::zeros(),
         );
         todo!();
