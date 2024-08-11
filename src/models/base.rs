@@ -2,7 +2,8 @@ extern crate nalgebra as na;
 use crate::num_methods::defs;
 
 /// System is a public interface that all models should implement to
-/// learn or to adjust details about the system
+/// learn or to adjust details about the system where
+/// T Type, N number of states, M number of inputs
 ///
 pub trait System<T, const N: usize, const M: usize> {
     /// Propagates one time step given a function x_dot = f(x, u, t)
