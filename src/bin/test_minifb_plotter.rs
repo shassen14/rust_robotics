@@ -71,8 +71,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         // create 2d plane here
         let mut chart = ChartBuilder::on(&root)
-            .margin(10)
-            .set_all_label_area_size(30.)
+            .margin(30)
+            .set_left_and_bottom_label_area_size(30.)
             .build_cartesian_2d(-0.0..70.0, 0.0..7500.0)?;
 
         // axes label and line color
@@ -83,7 +83,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             .draw()?;
 
         let cs = chart.into_chart_state();
-        root.present()?;
+        // root.present()?;
         cs
     };
 
@@ -141,7 +141,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     },
                 ))?;
             }
-            root.present()?;
+            // root.present()?;
         }
 
         window.update_with_buffer(buf.borrow(), W, H)?;
@@ -150,7 +150,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         // }
     }
 
-    println!("{:?}", data);
+    // println!("{:?}", data);
 
     Ok(())
 }
