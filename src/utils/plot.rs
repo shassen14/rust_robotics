@@ -16,6 +16,12 @@ use std::collections::VecDeque;
 use std::time::SystemTime;
 
 #[allow(unused)]
+pub fn create_title(title: &str, keys: &[&str], values: &[f64]) -> String {
+    // "{title}".to_string()
+    todo!();
+}
+
+#[allow(unused)]
 pub fn create_window(title: &str, width: usize, height: usize) -> minifb::Window {
     // TODO: remove unwrap and make the output result because this assumes happy path
     minifb::Window::new(title, width, height, minifb::WindowOptions::default()).unwrap()
@@ -36,17 +42,23 @@ pub fn create_2d_chartstate(
     y_range: [f64; 2],
 ) -> ChartState<Cartesian2d<RangedCoordf64, RangedCoordf64>> {
     // TODO: remove unwrap and make the output result because this assumes happy path
+
+    // Expects the buffer to mutable. I think this is to change the pixel values in each buffer
     let root = BitMapBackend::<BGRXPixel>::with_buffer_and_format(buf, (width, height))
         .unwrap()
         .into_drawing_area();
+
+    // Establish the background color
     root.fill(background_color).unwrap();
 
+    // Chart builds on top of the root drawing backend
     let mut chart = ChartBuilder::on(&root)
         .margin(margin)
         .set_left_and_bottom_label_area_size(label_size)
         .build_cartesian_2d(x_range[0]..x_range[1], y_range[0]..y_range[1])
         .unwrap();
 
+    // Establish the chart styles
     chart
         .configure_mesh()
         .label_style(
@@ -58,6 +70,7 @@ pub fn create_2d_chartstate(
         .draw()
         .unwrap();
 
+    // Converts ChartContext to ChartState to use for later
     chart.into_chart_state()
 }
 
