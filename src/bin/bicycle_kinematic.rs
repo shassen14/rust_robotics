@@ -19,10 +19,22 @@ use std::error::Error;
 use std::time::SystemTime;
 
 // TODO: read from config yml or some type of file for runtime instead of compile time
+// Plot Params
 const WIDTH: usize = 1280;
 const HEIGHT: usize = 720;
+const MARGIN: i32 = 10;
+const BACKGROUND_COLOR: RGBColor = BLACK;
+const LABEL_COLOR: RGBColor = plotters::style::RGBColor(0u8, 255u8, 0u8);
+const LABEL_SIZE: i32 = 30;
+const LABEL_FONT: &str = "sans-serif";
+const LABEL_FONT_SIZE: i32 = 15;
+const X_RANGE: [f64; 2] = [-100.0, 100.0];
+const Y_RANGE: [f64; 2] = [-100.0, 100.0];
+
+// Animation Params
 const SAMPLE_RATE: f64 = 100f64;
 const FPS: f64 = 30f64;
+
 // const STATES: usize = 3;
 // const INPUTS: usize = 2;
 
@@ -36,13 +48,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         buf.borrow_mut(),
         WIDTH as u32,
         HEIGHT as u32,
-        10,
-        30,
-        "sans-serif",
-        15,
-        &plotters::style::RGBColor(0u8, 255u8, 0u8),
-        [-100.0, 100.0],
-        [-100.0, 100.0],
+        MARGIN,
+        &BACKGROUND_COLOR,
+        &LABEL_COLOR,
+        LABEL_SIZE,
+        LABEL_FONT,
+        LABEL_FONT_SIZE,
+        X_RANGE,
+        Y_RANGE,
     );
 
     // let cs = {

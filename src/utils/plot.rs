@@ -27,19 +27,19 @@ pub fn create_2d_chartstate(
     width: u32,
     height: u32,
     margin: i32,
+    background_color: &RGBColor,
+    label_color: &RGBColor,
     label_size: i32,
     label_font: &str,
     label_font_size: i32,
-    label_color: &RGBColor,
     x_range: [f64; 2],
     y_range: [f64; 2],
 ) -> ChartState<Cartesian2d<RangedCoordf64, RangedCoordf64>> {
     // TODO: remove unwrap and make the output result because this assumes happy path
-    // Magic number with BLACK
     let root = BitMapBackend::<BGRXPixel>::with_buffer_and_format(buf, (width, height))
         .unwrap()
         .into_drawing_area();
-    root.fill(&BLACK).unwrap();
+    root.fill(background_color).unwrap();
 
     let mut chart = ChartBuilder::on(&root)
         .margin(margin)
