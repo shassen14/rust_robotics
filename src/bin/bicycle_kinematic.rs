@@ -3,7 +3,9 @@
 use rust_robotics::models::base::System;
 use rust_robotics::models::bicycle_kinematic;
 use rust_robotics::num_methods::runge_kutta;
+use rust_robotics::utils::convert;
 use rust_robotics::utils::defs;
+use rust_robotics::utils::math;
 use rust_robotics::utils::plot;
 
 // 3rd party or std
@@ -17,6 +19,10 @@ use std::borrow::{Borrow, BorrowMut};
 use std::collections::VecDeque;
 use std::error::Error;
 use std::time::SystemTime;
+
+// Conversions
+const RAD_TO_DEG: f64 = 180.0 / std::f64::consts::PI;
+const DEG_TO_RAD: f64 = std::f64::consts::PI / 180.0;
 
 // TODO: read from config yml or some type of file for runtime instead of compile time
 // Plot Params
@@ -35,13 +41,31 @@ const Y_RANGE: [f64; 2] = [-100.0, 100.0];
 const SAMPLE_RATE: f64 = 100f64;
 const FPS: f64 = 30f64;
 
+// initial states
+const VEL_INIT: f64 = 1.0;
+const RWA_INIT: f64 = std::f64::consts::FRAC_PI_8;
+const VEL_STEP: f64 = 0.1;
+const RWA_STEP: f64 = 1.0 * DEG_TO_RAD;
+const VEL_UPPER_BOUND: f64 = 20.0; // m/s
+const VEL_LOWER_BOUND: f64 = 0.0; // m/s
+const RWA_UPPER_BOUND: f64 = 40.0; // deg
+const RWA_LOWER_BOUND: f64 = -40.0; // deg
+
 // const STATES: usize = 3;
 // const INPUTS: usize = 2;
+
+fn get_window_title(velocity: f64, rwa: f64) -> String {
+    format!(
+        "velocity={:.1}m/s, rwa={:.1}deg up/down=Adjust vel left/right=Adjust rwa <Esc>=Exit",
+        velocity,
+        rwa * RAD_TO_DEG
+    )
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut buf = defs::BufferWrapper(vec![0u32; WIDTH * HEIGHT]);
 
-    let mut window = plot::create_window("Kinematic Bicycle Model Positioning", WIDTH, HEIGHT);
+    let mut window = plot::create_window(&get_window_title(VEL_INIT, RWA_INIT), WIDTH, HEIGHT);
 
     // TODO: magic numbers
     let cs = plot::create_2d_chartstate(
@@ -58,39 +82,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         Y_RANGE,
     );
 
-    // let cs = {
-    //     // create an image using a buffer of integers that represent the colo
-    //     let root = BitMapBackend::<BGRXPixel>::with_buffer_and_format(
-    //         buf.borrow_mut(),
-    //         (WIDTH as u32, HEIGHT as u32),
-    //     )?
-    //     .into_drawing_area();
-    //     root.fill(&BLACK)?;
-
-    //     // create 2d plane here
-    //     let mut chart = ChartBuilder::on(&root)
-    //         .margin(30)
-    //         .set_left_and_bottom_label_area_size(30.)
-    //         .build_cartesian_2d(-100.0..100.0, -100.0..100.0)?;
-
-    //     // axes label and line color
-    //     chart
-    //         .configure_mesh()
-    //         .label_style(("sans-serif", 15).into_font().color(&GREEN))
-    //         .axis_style(&GREEN)
-    //         .draw()?;
-
-    //     let cs = chart.into_chart_state();
-    //     // root.present()?;
-    //     cs
-    // };
-
     let mut data: VecDeque<(f64, na::SVector<f64, 3>)> = VecDeque::new();
 
     let model = bicycle_kinematic::Model::new(1.0, 1.0);
     let mut current_state: na::SVector<f64, 3> = na::SVector::<f64, 3>::zeros();
-    let mut current_input: na::SVector<f64, 2> =
-        na::SVector::<f64, 2>::new(4., f64::consts::FRAC_PI_8);
+    let mut current_input: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(VEL_INIT, RWA_INIT);
 
     let start_time = SystemTime::now();
     let mut last_flushed = 0.;
@@ -115,22 +111,29 @@ fn main() -> Result<(), Box<dyn Error>> {
                 for key in keys {
                     match key {
                         Key::Up => {
-                            current_input[0] += 0.1;
+                            current_input[0] += VEL_STEP;
                         }
                         Key::Down => {
-                            current_input[0] -= 0.1;
+                            current_input[0] -= VEL_STEP;
                         }
                         Key::Left => {
-                            current_input[1] += 0.1;
+                            current_input[1] += RWA_STEP;
                         }
                         Key::Right => {
-                            current_input[1] -= 0.1;
+                            current_input[1] -= RWA_STEP;
                         }
                         _ => {
                             continue;
                         }
                     }
                 }
+                current_input[0] =
+                    math::bound_value(current_input[0], VEL_LOWER_BOUND, VEL_UPPER_BOUND);
+                current_input[1] = math::bound_value(
+                    current_input[1],
+                    convert::deg_to_rad(RWA_LOWER_BOUND),
+                    convert::deg_to_rad(RWA_UPPER_BOUND),
+                );
                 current_state = model.propagate(
                     &current_state,
                     &current_input,
@@ -157,7 +160,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         data.push_back((epoch, current_state));
 
         if epoch - last_flushed > frame_step {
-            while data.len() > 20 {
+            while data.len() > 200 {
                 data.pop_front();
             }
 
@@ -188,6 +191,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                     .unwrap();
             }
 
+            window.set_title(&get_window_title(current_input[0], current_input[1]));
+
             window.update_with_buffer(buf.borrow(), WIDTH, HEIGHT)?;
             last_flushed = epoch;
         }
@@ -195,25 +200,3 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
-
-// plot::update_2d_chartstate(
-//     window,
-//     buf,
-//     cs,
-//     runge_kutta::rk4,
-//     model,
-//     data,
-//     current_state,
-//     current_input,
-//     SAMPLE_RATE,
-//     FPS,
-//     WIDTH as u32,
-//     HEIGHT as u32,
-//     10,
-//     30,
-//     "sans-serif",
-//     15,
-//     &plotters::style::RGBColor(0u8, 255u8, 0u8),
-//     [-100.0, 100.0],
-//     [-100.0, 100.0],
-// );
