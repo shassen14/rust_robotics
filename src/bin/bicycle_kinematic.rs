@@ -4,6 +4,7 @@ use rust_robotics::models::bicycle_kinematic;
 use rust_robotics::num_methods::runge_kutta;
 use rust_robotics::utils::convert;
 use rust_robotics::utils::defs;
+use rust_robotics::utils::files;
 use rust_robotics::utils::math;
 use rust_robotics::utils::plot;
 
@@ -17,9 +18,6 @@ use std::collections::VecDeque;
 use std::env;
 use std::error::Error;
 use std::time::SystemTime;
-
-use std::fs;
-use std::process::exit;
 
 // Conversions
 const DEG_TO_RAD: f64 = std::f64::consts::PI / 180.0;
@@ -37,7 +35,7 @@ const FPS: f64 = 30f64;
 const VEL_INIT: f64 = 1.0;
 const RWA_INIT: f64 = 0.0;
 const VEL_STEP: f64 = 0.1;
-const RWA_STEP: f64 = 1.0 * DEG_TO_RAD;
+const RWA_STEP: f64 = 0.5 * DEG_TO_RAD;
 const VEL_UPPER_BOUND: f64 = 20.0; // m/s
 const VEL_LOWER_BOUND: f64 = 0.0; // m/s
 const RWA_UPPER_BOUND: f64 = 40.0; // deg
@@ -55,38 +53,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Read command line arguments
     let args: Vec<String> = env::args().collect();
 
-    // obtain config_path
+    // Obtain config_path from command line
     let config_path = &args[1] as &str;
-    println!("Attempting to read from {}", config_path);
 
-    let contents = match fs::read_to_string(config_path) {
-        // If successful return the files text as `contents`.
-        // `c` is a local variable.
-        Ok(c) => c,
-        // Handle the `error` case.
-        Err(_) => {
-            // Write `msg` to `stderr`.
-            eprintln!("Could not read file `{}`", config_path);
-            // Exit the program with exit code `1`.
-            exit(1);
-        }
-    };
-
-    // Use a `match` block to return the
-    // file `contents` as a `Data struct: Ok(d)`
-    // or handle any `errors: Err(_)`.
-    let plot_config: plot::Config = match toml::from_str(&contents) {
-        // If successful, return data as `Data` struct.
-        // `d` is a local variable.
-        Ok(d) => d,
-        // Handle the `error` case.
-        Err(_) => {
-            // Write `msg` to `stderr`.
-            eprintln!("Unable to load data from `{}`", config_path);
-            // Exit the program with exit code `1`.
-            exit(1);
-        }
-    };
+    // Obtain plot config params given the file
+    let plot_config: plot::Config = files::read_config(config_path);
 
     let window_params: plot::WindowParams = plot::WindowParams {
         title: get_window_title(VEL_INIT, RWA_INIT),
