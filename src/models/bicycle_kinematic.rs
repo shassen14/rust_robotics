@@ -8,7 +8,7 @@ use std::fs;
 use toml;
 
 // TODO: make the member variables private? might keep private? and get some getters?
-#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Model {
     length_front: f64,
     length_rear: f64,
