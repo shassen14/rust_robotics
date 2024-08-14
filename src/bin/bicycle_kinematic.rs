@@ -14,8 +14,12 @@ use plotters::prelude::*;
 use plotters_bitmap::{bitmap_pixel::BGRXPixel, BitMapBackend};
 use std::borrow::{Borrow, BorrowMut};
 use std::collections::VecDeque;
+use std::env;
 use std::error::Error;
 use std::time::SystemTime;
+
+use std::fs;
+use std::process::exit;
 
 // Conversions
 const DEG_TO_RAD: f64 = std::f64::consts::PI / 180.0;
@@ -48,22 +52,50 @@ fn get_window_title(velocity: f64, rwa: f64) -> String {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
+    // Read command line arguments
+    let args: Vec<String> = env::args().collect();
+
+    // obtain config_path
+    let config_path = &args[1] as &str;
+    println!("Attempting to read from {}", config_path);
+
+    let contents = match fs::read_to_string(config_path) {
+        // If successful return the files text as `contents`.
+        // `c` is a local variable.
+        Ok(c) => c,
+        // Handle the `error` case.
+        Err(_) => {
+            // Write `msg` to `stderr`.
+            eprintln!("Could not read file `{}`", config_path);
+            // Exit the program with exit code `1`.
+            exit(1);
+        }
+    };
+
+    // Use a `match` block to return the
+    // file `contents` as a `Data struct: Ok(d)`
+    // or handle any `errors: Err(_)`.
+    let plot_config: plot::Config = match toml::from_str(&contents) {
+        // If successful, return data as `Data` struct.
+        // `d` is a local variable.
+        Ok(d) => d,
+        // Handle the `error` case.
+        Err(_) => {
+            // Write `msg` to `stderr`.
+            eprintln!("Unable to load data from `{}`", config_path);
+            // Exit the program with exit code `1`.
+            exit(1);
+        }
+    };
+
     let window_params: plot::WindowParams = plot::WindowParams {
         title: get_window_title(VEL_INIT, RWA_INIT),
         width: WIDTH,
         height: HEIGHT,
     };
 
-    let chart_params: plot::ChartParams = plot::ChartParams {
-        background_color: [0u8, 0u8, 0u8],
-        label_color: [0u8, 255u8, 0u8],
-        margin: 10,
-        label_size: 30,
-        label_font: "sans-serif".to_string(),
-        label_font_size: 15,
-        x_range: [-100.0, 100.0],
-        y_range: [-100.0, 100.0],
-    };
+    let chart_params: plot::ChartParams = plot_config.chart_params;
+
     let mut buf = defs::BufferWrapper(vec![0u32; window_params.width * window_params.height]);
 
     let mut window = plot::create_window(&window_params)?;
@@ -71,7 +103,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // TODO: magic numbers
     let cs = plot::create_2d_chartstate(buf.borrow_mut(), &window_params, &chart_params);
 
-    let mut data: VecDeque<(f64, na::SVector<f64, 3>)> = VecDeque::new();
+    let mut data: VecDeque<(f64, na::SVector<f64, 3>, na::SVector<f64, 2>)> = VecDeque::new();
 
     let model = bicycle_kinematic::Model::new(1.0, 1.0);
     let mut current_state: na::SVector<f64, 3> = na::SVector::<f64, 3>::zeros();
@@ -83,12 +115,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let frame_step: f64 = 1.0 / FPS;
 
     while window.is_open() && !window.is_key_down(minifb::Key::Escape) {
-        let epoch = SystemTime::now()
-            .duration_since(start_time)
-            .unwrap()
-            .as_secs_f64();
+        let epoch = SystemTime::now().duration_since(start_time)?.as_secs_f64();
 
-        if let Some((ts, _)) = data.back() {
+        if let Some((ts, _, _)) = data.back() {
             if epoch - ts < 1.0 / SAMPLE_RATE {
                 std::thread::sleep(std::time::Duration::from_secs_f64(epoch - ts));
                 continue;
@@ -132,7 +161,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 );
                 ts += sample_step;
 
-                data.push_back((ts, current_state));
+                data.push_back((ts, current_state, current_input));
             }
         }
 
@@ -146,7 +175,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             sample_step,
             &runge_kutta::rk4,
         );
-        data.push_back((epoch, current_state));
+        data.push_back((epoch, current_state, current_input));
 
         if epoch - last_flushed > frame_step {
             while data.len() > 200 {
@@ -157,27 +186,26 @@ fn main() -> Result<(), Box<dyn Error>> {
                 let root = BitMapBackend::<BGRXPixel>::with_buffer_and_format(
                     buf.borrow_mut(),
                     (window_params.width as u32, window_params.height as u32),
-                )
-                .unwrap()
+                )?
                 .into_drawing_area();
-                // root.fill(&BLACK).unwrap();
 
                 let mut chart = cs.clone().restore(&root);
-                chart.plotting_area().fill(&BLACK).unwrap();
+                chart.plotting_area().fill(&BLACK)?;
 
                 chart
                     .configure_mesh()
-                    .bold_line_style(&GREEN.mix(0.2))
+                    .bold_line_style(&chart_params.create_label_color().mix(0.2))
                     .light_line_style(&TRANSPARENT)
-                    .draw()
-                    .unwrap();
-                chart
-                    .draw_series(data.iter().zip(data.iter().skip(1)).map(
-                        |(&(_t0, x0), &(_t1, x1))| {
-                            PathElement::new(vec![(x0[0], x0[1]), (x1[0], x1[1])], &GREEN)
-                        },
-                    ))
-                    .unwrap();
+                    .draw()?;
+
+                chart.draw_series(data.iter().zip(data.iter().skip(1)).map(
+                    |(&(_t0, x0, _u0), &(_t1, x1, _u1))| {
+                        PathElement::new(
+                            vec![(x0[0], x0[1]), (x1[0], x1[1])],
+                            &chart_params.create_label_color(),
+                        )
+                    },
+                ))?;
             }
 
             window.set_title(&get_window_title(current_input[0], current_input[1]));
