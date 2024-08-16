@@ -1,3 +1,4 @@
+use full_palette::PURPLE;
 // Plotters
 use plotters::prelude::*;
 use plotters_bitmap::bitmap_pixel::RGBPixel;
@@ -21,13 +22,37 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .axis_style(&WHITE)
         .draw()?;
 
-    let data = [(-1.0, -1.0), (1., 1.0)];
+    let data = [(-0.5, -0.5), (-0.5, 0.5), (0.5, 0.5), (-0.5, -0.5)];
 
     chart.draw_series(LineSeries::new(data, &YELLOW))?;
     chart.draw_series(std::iter::once(Rectangle::new(
         [(0.5, 0.5), (0.75, 0.75)],
         &WHITE,
     )))?;
+
+    // chart.draw_series(std::iter::once(Polygon::new(
+    //     [
+    //         (-0.9, 0.9),
+    //         (-0.8, 0.8),
+    //         (-0.7, 0.85),
+    //         (-0.8, 0.9),
+    //         (-0.9, 0.9),
+    //     ],
+    //     &PURPLE,
+    // )))?;
+
+    let path = PathElement::new(
+        [
+            (-0.9, 0.9),
+            (-0.8, 0.8),
+            (-0.7, 0.85),
+            (-0.8, 0.9),
+            (-0.9, 0.9),
+        ],
+        &PURPLE,
+    );
+
+    chart.draw_series(std::iter::once(path))?;
 
     Ok(())
 }
