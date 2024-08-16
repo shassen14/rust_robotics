@@ -5,9 +5,12 @@ authors = ["Samir Hassen"]
 edition = "2021"
 
 [dependencies]
+approx = "0.3.2"
 minifb = "0.27"
 nalgebra = "0.33.0"
-plotters = "0.3.3"
+plotters = "0.3.6"
+plotters-backend = "0.3.6"
 plotters-bitmap = "0.3.6"
 serde = { version = "1.0.205", features = ["derive"] }
+simba = "0.9.0"
 toml = "0.8.19"
