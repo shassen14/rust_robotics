@@ -1,5 +1,11 @@
 // TODO: what is this
 use std::borrow::{Borrow, BorrowMut};
+
+pub enum AngleUnits {
+    Radian,
+    Degree,
+}
+
 // Random buffer stuff found here: https://github.com/plotters-rs/plotters-minifb-demo
 #[allow(unused)]
 #[derive(Debug, Clone)]
