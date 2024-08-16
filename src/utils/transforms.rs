@@ -25,7 +25,6 @@ where
         let mut pitch = offsets[4];
         let mut yaw = offsets[5];
 
-        println!("{:?}, {:?}, {:?}", roll, pitch, yaw);
         match unit {
             AngleUnits::Degree => {
                 roll = convert::deg_to_rad(roll);
@@ -34,8 +33,6 @@ where
             }
             _ => {}
         }
-
-        println!("{:?}, {:?}, {:?}", roll, pitch, yaw);
 
         let b_to_i_q = na::UnitQuaternion::<T>::from_euler_angles(roll, pitch, yaw);
         let b_to_i_t = na::Translation3::<T>::new(offsets[0], offsets[1], offsets[2]);
