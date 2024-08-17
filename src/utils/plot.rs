@@ -1,11 +1,14 @@
 #[allow(unused)]
 // rust robotics
-use crate::models::base;
+use crate::utils::defs;
+use crate::utils::transforms::FrameTransform3;
 
 // 3rd party or std
 use minifb;
+use nalgebra as na;
 use plotters::prelude::*;
 use plotters::{chart::ChartState, coord::types::RangedCoordf64};
+use plotters_arrows;
 use plotters_bitmap::{bitmap_pixel::BGRXPixel, BitMapBackend};
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -129,13 +132,64 @@ pub fn create_2d_chartstate(
 }
 
 #[allow(unused)]
-pub fn calculate_rectangle<T>(
-    start_point: &[T; 2],
-    length_forward: T,
-    length_back: T,
-    width: T,
-    heading_angle: T,
+pub fn rectangle_element(
+    start_point: &[f64; 2],
+    length_forward: f64,
+    length_back: f64,
+    width: f64,
+    heading_angle: f64,
+    angle_units: defs::AngleUnits,
     chart_params: &ChartParams,
-) -> PathElement<(T, T)> {
-    todo!();
+) -> PathElement<(f64, f64)> {
+    let tf = FrameTransform3::new(
+        &[start_point[0], start_point[1], 0., 0., 0., heading_angle],
+        angle_units,
+    );
+    let point_top_left = tf.point_b_to_i(&na::Point3::new(length_forward, width / 2., 0.));
+    let point_top_right = tf.point_b_to_i(&na::Point3::new(length_forward, -width / 2., 0.));
+    let point_bot_left = tf.point_b_to_i(&na::Point3::new(-length_back, width / 2., 0.));
+    let point_bot_right = tf.point_b_to_i(&na::Point3::new(-length_back, -width / 2., 0.));
+
+    let data = [
+        (point_top_left.x, point_top_left.y),
+        (point_top_right.x, point_top_right.y),
+        (point_bot_right.x, point_bot_right.y),
+        (point_bot_left.x, point_bot_left.y),
+        (point_top_left.x, point_top_left.y),
+    ];
+
+    let label_color = &plotters::style::RGBColor(
+        chart_params.label_color[0],
+        chart_params.label_color[1],
+        chart_params.label_color[2],
+    );
+
+    PathElement::new(data, &label_color)
+}
+
+#[allow(unused)]
+pub fn arrow_element(
+    start_point: &[f64; 2],
+    length: f64,
+    heading_angle: f64,
+    angle_units: defs::AngleUnits,
+    chart_params: &ChartParams,
+) -> plotters_arrows::ThinArrow<(f64, f64), i32> {
+    let tf = FrameTransform3::new(
+        &[start_point[0], start_point[1], 0., 0., 0., heading_angle],
+        angle_units,
+    );
+    let end_point = tf.point_b_to_i(&na::Point3::new(length, 0., 0.));
+
+    let label_color = &plotters::style::RGBColor(
+        chart_params.label_color[0],
+        chart_params.label_color[1],
+        chart_params.label_color[2],
+    );
+
+    plotters_arrows::ThinArrow::new(
+        (start_point[0], start_point[1]),
+        (end_point[0], end_point[1]),
+        &label_color,
+    )
 }

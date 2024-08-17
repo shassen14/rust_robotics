@@ -23,10 +23,6 @@ use std::time::SystemTime;
 const DEG_TO_RAD: f64 = std::f64::consts::PI / 180.0;
 
 // TODO: read from config yml or some type of file for runtime instead of compile time
-// Plot Params
-const WIDTH: usize = 720;
-const HEIGHT: usize = 720;
-
 // Animation Params
 const SAMPLE_RATE: f64 = 100f64;
 const FPS: f64 = 30f64;
@@ -59,13 +55,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Obtain plot config params given the file
     let plot_config: plot::Config = files::read_config(config_path);
 
-    let window_params: plot::WindowParams = plot::WindowParams {
-        title: get_window_title(VEL_INIT, RWA_INIT),
-        width: WIDTH,
-        height: HEIGHT,
-    };
-
     let chart_params: plot::ChartParams = plot_config.chart_params;
+
+    let mut window_params: plot::WindowParams = plot_config.window_params;
+    window_params.title = get_window_title(VEL_INIT, RWA_INIT);
 
     let mut buf = defs::BufferWrapper(vec![0u32; window_params.width * window_params.height]);
 
@@ -133,6 +126,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 ts += sample_step;
 
                 data.push_back((ts, current_state, current_input));
+                data.pop_front();
             }
         }
 
@@ -149,7 +143,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         data.push_back((epoch, current_state, current_input));
 
         if epoch - last_flushed > frame_step {
-            while data.len() > 200 {
+            while data.len() > 2 {
                 data.pop_front();
             }
 
@@ -177,11 +171,32 @@ fn main() -> Result<(), Box<dyn Error>> {
                         )
                     },
                 ))?;
+
+                chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
+                    plot::rectangle_element(
+                        &[x0[0], x0[1]],
+                        1.1,
+                        1.,
+                        1.,
+                        x0[2],
+                        defs::AngleUnits::Radian,
+                        &chart_params,
+                    )
+                }))?;
+                chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
+                    plot::arrow_element(
+                        &[x0[0], x0[1]],
+                        3.,
+                        x0[2],
+                        defs::AngleUnits::Radian,
+                        &chart_params,
+                    )
+                }))?;
             }
 
             window.set_title(&get_window_title(current_input[0], current_input[1]));
 
-            window.update_with_buffer(buf.borrow(), WIDTH, HEIGHT)?;
+            window.update_with_buffer(buf.borrow(), window_params.width, window_params.height)?;
             last_flushed = epoch;
         }
     }
