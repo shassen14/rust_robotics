@@ -129,36 +129,31 @@ pub fn create_2d_chartstate(
 
 #[allow(unused)]
 pub fn rectangle_element(
-    start_point: &[f64; 2],
-    length_front: f64,
-    length_rear: f64,
-    width: f64,
-    heading_angle: f64,
-    angle_units: defs::AngleUnits,
+    points: &[(f64, f64); 4],
     color: &(u8, u8, u8),
 ) -> PathElement<(f64, f64)> {
-    let tf = FrameTransform3::new(
-        &[start_point[0], start_point[1], 0., 0., 0., heading_angle],
-        angle_units,
-    );
-    let point_top_left = tf.point_b_to_i(&na::Point3::new(length_front, width / 2., 0.));
-    let point_top_right = tf.point_b_to_i(&na::Point3::new(length_front, -width / 2., 0.));
-    let point_bot_left = tf.point_b_to_i(&na::Point3::new(-length_rear, width / 2., 0.));
-    let point_bot_right = tf.point_b_to_i(&na::Point3::new(-length_rear, -width / 2., 0.));
+    // TODO: cleaner way to do this?
+    let rect_points: [(f64, f64); 5] = [points[0], points[1], points[2], points[3], points[0]];
 
-    let data = [
-        (point_top_left.x, point_top_left.y),
-        (point_top_right.x, point_top_right.y),
-        (point_bot_right.x, point_bot_right.y),
-        (point_bot_left.x, point_bot_left.y),
-        (point_top_left.x, point_top_left.y),
-    ];
-
+    // Color
     let rect_color = &plotters::style::RGBColor(color.0, color.1, color.2);
 
-    PathElement::new(data, &rect_color)
+    PathElement::new(rect_points, &rect_color)
 }
 
+#[allow(unused)]
+pub fn rectangle_filled_element(
+    points: &[(f64, f64); 4],
+    color: &(u8, u8, u8),
+) -> Polygon<(f64, f64)> {
+    // TODO: cleaner way to do this?
+    let rect_points: [(f64, f64); 5] = [points[0], points[1], points[2], points[3], points[0]];
+
+    // Color
+    let rect_color = &plotters::style::RGBColor(color.0, color.1, color.2);
+
+    Polygon::new(rect_points, &rect_color)
+}
 #[allow(unused)]
 pub fn arrow_element(
     start_point: &(f64, f64),

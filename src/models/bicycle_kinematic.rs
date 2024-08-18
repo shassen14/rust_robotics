@@ -47,7 +47,7 @@ impl Model {
         self.length_rear
     }
 
-    /// Calculates total length
+    /// Calculates total length, wheel base
     ///
     /// * Arguments
     ///

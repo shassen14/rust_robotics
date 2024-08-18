@@ -1,6 +1,6 @@
 [window_params]
 title = "Bicycle Kinematic Model"
-width = 1080 # pixels
+width = 720 # pixels
 height = 720 # pixels
 
 [chart_params]
@@ -10,5 +10,5 @@ margin = 15
 label_size = 30
 label_font = "sans-serif"
 label_font_size = 15
-x_range = [-50.0, 50.0]
-y_range = [-50.0, 50.0]
+x_range = [-25.0, 25.0]
+y_range = [-25.0, 25.0]

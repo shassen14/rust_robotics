@@ -176,17 +176,51 @@ fn main() -> Result<(), Box<dyn Error>> {
                     },
                 ))?;
 
-                chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
-                    plot::rectangle_element(
-                        &[x0[0], x0[1]],
+                // TODO: cleaner way to do this? Shouldn't really need a for loop
+                // remove unwrap
+                {
+                    // data.back().iter().map(|&(_t0, x0, u0)| {
+                    // TODO: magic numbers
+                    let vehicle_points = math::calculate_rectangle_points(
+                        &(data.back().unwrap().1[0], data.back().unwrap().1[1]),
                         model.get_length_front(),
                         model.get_length_rear(),
-                        1.0,
-                        x0[2],
+                        0.9,
+                        0.9,
+                        data.back().unwrap().1[2],
                         defs::AngleUnits::Radian,
+                    );
+                    chart.draw_series(std::iter::once(plot::rectangle_element(
+                        &vehicle_points,
                         &chart_params.label_color,
-                    )
-                }))?;
+                    )))?;
+
+                    for i in 0..vehicle_points.len() {
+                        // TODO: magic numbers
+                        // TODO:cleaner way to have front wheels change wheel direction?
+                        // not nice with the needing of index
+                        let total_heading = if i < 2 {
+                            data.back().unwrap().1[2] + data.back().unwrap().2[1]
+                        } else {
+                            data.back().unwrap().1[2]
+                        };
+
+                        let tire_points = math::calculate_rectangle_points(
+                            &vehicle_points[i],
+                            0.5,
+                            0.5,
+                            0.25,
+                            0.25,
+                            total_heading,
+                            defs::AngleUnits::Radian,
+                        );
+                        chart.draw_series(std::iter::once(plot::rectangle_filled_element(
+                            &tire_points,
+                            &chart_params.label_color,
+                        )))?;
+                    }
+                }
+
                 chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
                     plot::arrow_element(
                         &(x0[0], x0[1]),
