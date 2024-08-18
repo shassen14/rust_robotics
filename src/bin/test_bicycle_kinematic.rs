@@ -50,13 +50,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
 
     // Obtain config_path from command line
-    let config_path = &args[1] as &str;
+    // TODO: make a class for this to streamline this and send helpful error messages
+    let animate_cfg_path = &args[1] as &str;
+    let bike_cfg_path = &args[2] as &str;
 
     // Obtain plot config params given the file
-    let plot_config: plot::Config = files::read_config(config_path);
+    let plot_config: plot::Config = files::read_config(animate_cfg_path);
 
     let chart_params: plot::ChartParams = plot_config.chart_params;
-
     let mut window_params: plot::WindowParams = plot_config.window_params;
     window_params.title = get_window_title(VEL_INIT, RWA_INIT);
 
@@ -69,7 +70,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut data: VecDeque<(f64, na::SVector<f64, 3>, na::SVector<f64, 2>)> = VecDeque::new();
 
-    let model = bicycle_kinematic::Model::new(1.0, 1.0);
+    // Could do it this way where a model is initialized and then read using the model
+    // let mut model = bicycle_kinematic::Model::new(1.0, 1.0);
+    // model.read(bike_cfg_path);
+    let model: bicycle_kinematic::Model = files::read_config(bike_cfg_path);
     let mut current_state: na::SVector<f64, 3> = na::SVector::<f64, 3>::zeros();
     let mut current_input: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(VEL_INIT, RWA_INIT);
 
@@ -175,21 +179,21 @@ fn main() -> Result<(), Box<dyn Error>> {
                 chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
                     plot::rectangle_element(
                         &[x0[0], x0[1]],
-                        1.1,
-                        1.,
-                        1.,
+                        model.get_length_front(),
+                        model.get_length_rear(),
+                        1.0,
                         x0[2],
                         defs::AngleUnits::Radian,
-                        &chart_params,
+                        &chart_params.label_color,
                     )
                 }))?;
                 chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
                     plot::arrow_element(
-                        &[x0[0], x0[1]],
+                        &(x0[0], x0[1]),
                         3.,
                         x0[2],
                         defs::AngleUnits::Radian,
-                        &chart_params,
+                        &(255u8, 255u8, 255u8),
                     )
                 }))?;
             }

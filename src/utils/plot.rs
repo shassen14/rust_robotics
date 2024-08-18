@@ -29,8 +29,8 @@ pub struct WindowParams {
 /// Parameters to make a chart
 #[derive(Debug, Deserialize)]
 pub struct ChartParams {
-    pub background_color: [u8; 3], // RGB
-    pub label_color: [u8; 3],      // RGB
+    pub background_color: (u8, u8, u8), // RGB
+    pub label_color: (u8, u8, u8),      // RGB
     pub margin: i32,
     pub label_size: i32,
     pub label_font: String,
@@ -42,17 +42,13 @@ pub struct ChartParams {
 impl ChartParams {
     pub fn create_background_color(&self) -> RGBColor {
         plotters::style::RGBColor(
-            self.background_color[0],
-            self.background_color[1],
-            self.background_color[2],
+            self.background_color.0,
+            self.background_color.1,
+            self.background_color.2,
         )
     }
     pub fn create_label_color(&self) -> RGBColor {
-        plotters::style::RGBColor(
-            self.label_color[0],
-            self.label_color[1],
-            self.label_color[2],
-        )
+        plotters::style::RGBColor(self.label_color.0, self.label_color.1, self.label_color.2)
     }
 }
 
@@ -80,15 +76,15 @@ pub fn create_2d_chartstate(
 ) -> ChartState<Cartesian2d<RangedCoordf64, RangedCoordf64>> {
     // TODO: remove unwrap and make the output result because this assumes happy path
     let background_color = &plotters::style::RGBColor(
-        chart_params.background_color[0],
-        chart_params.background_color[1],
-        chart_params.background_color[2],
+        chart_params.background_color.0,
+        chart_params.background_color.1,
+        chart_params.background_color.2,
     );
 
     let label_color = &plotters::style::RGBColor(
-        chart_params.label_color[0],
-        chart_params.label_color[1],
-        chart_params.label_color[2],
+        chart_params.label_color.0,
+        chart_params.label_color.1,
+        chart_params.label_color.2,
     );
 
     // Expects the buffer to mutable. I think this is to change the pixel values in each buffer
@@ -134,21 +130,21 @@ pub fn create_2d_chartstate(
 #[allow(unused)]
 pub fn rectangle_element(
     start_point: &[f64; 2],
-    length_forward: f64,
-    length_back: f64,
+    length_front: f64,
+    length_rear: f64,
     width: f64,
     heading_angle: f64,
     angle_units: defs::AngleUnits,
-    chart_params: &ChartParams,
+    color: &(u8, u8, u8),
 ) -> PathElement<(f64, f64)> {
     let tf = FrameTransform3::new(
         &[start_point[0], start_point[1], 0., 0., 0., heading_angle],
         angle_units,
     );
-    let point_top_left = tf.point_b_to_i(&na::Point3::new(length_forward, width / 2., 0.));
-    let point_top_right = tf.point_b_to_i(&na::Point3::new(length_forward, -width / 2., 0.));
-    let point_bot_left = tf.point_b_to_i(&na::Point3::new(-length_back, width / 2., 0.));
-    let point_bot_right = tf.point_b_to_i(&na::Point3::new(-length_back, -width / 2., 0.));
+    let point_top_left = tf.point_b_to_i(&na::Point3::new(length_front, width / 2., 0.));
+    let point_top_right = tf.point_b_to_i(&na::Point3::new(length_front, -width / 2., 0.));
+    let point_bot_left = tf.point_b_to_i(&na::Point3::new(-length_rear, width / 2., 0.));
+    let point_bot_right = tf.point_b_to_i(&na::Point3::new(-length_rear, -width / 2., 0.));
 
     let data = [
         (point_top_left.x, point_top_left.y),
@@ -158,38 +154,30 @@ pub fn rectangle_element(
         (point_top_left.x, point_top_left.y),
     ];
 
-    let label_color = &plotters::style::RGBColor(
-        chart_params.label_color[0],
-        chart_params.label_color[1],
-        chart_params.label_color[2],
-    );
+    let rect_color = &plotters::style::RGBColor(color.0, color.1, color.2);
 
-    PathElement::new(data, &label_color)
+    PathElement::new(data, &rect_color)
 }
 
 #[allow(unused)]
 pub fn arrow_element(
-    start_point: &[f64; 2],
+    start_point: &(f64, f64),
     length: f64,
     heading_angle: f64,
     angle_units: defs::AngleUnits,
-    chart_params: &ChartParams,
+    color: &(u8, u8, u8),
 ) -> plotters_arrows::ThinArrow<(f64, f64), i32> {
     let tf = FrameTransform3::new(
-        &[start_point[0], start_point[1], 0., 0., 0., heading_angle],
+        &[start_point.0, start_point.1, 0., 0., 0., heading_angle],
         angle_units,
     );
     let end_point = tf.point_b_to_i(&na::Point3::new(length, 0., 0.));
 
-    let label_color = &plotters::style::RGBColor(
-        chart_params.label_color[0],
-        chart_params.label_color[1],
-        chart_params.label_color[2],
-    );
+    let arrow_color = &plotters::style::RGBColor(color.0, color.1, color.2);
 
     plotters_arrows::ThinArrow::new(
-        (start_point[0], start_point[1]),
+        (start_point.0, start_point.1),
         (end_point[0], end_point[1]),
-        &label_color,
+        &arrow_color,
     )
 }
