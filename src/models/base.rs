@@ -57,7 +57,7 @@ pub trait System<T, const N: usize, const M: usize> {
     ///
     /// # Arguments
     ///
-    /// `self` - Model's parameters, functions, and values
+    /// * `self` - Model's parameters, functions, and values
     /// * `x` - System's current state
     /// * `u` - System's current control input
     /// * `t` - Current timestamp
