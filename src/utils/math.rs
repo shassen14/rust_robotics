@@ -71,3 +71,19 @@ pub fn calculate_rectangle_points(
         (point_bot_left.x, point_bot_left.y),
     ]
 }
+
+pub fn calculate_line_endpoints(
+    start_point: &(f64, f64),
+    length: f64,
+    heading_angle: f64,
+    angle_units: AngleUnits,
+) -> [(f64, f64); 2] {
+    let tf = FrameTransform3::new(
+        &[start_point.0, start_point.1, 0., 0., 0., heading_angle],
+        angle_units,
+    );
+    let end_point = tf.point_b_to_i(&na::Point3::new(length, 0., 0.));
+
+    // return points
+    [(start_point.0, start_point.1), (end_point.x, end_point.y)]
+}

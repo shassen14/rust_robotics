@@ -222,13 +222,13 @@ fn main() -> Result<(), Box<dyn Error>> {
                 }
 
                 chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
-                    plot::arrow_element(
+                    let end_points = math::calculate_line_endpoints(
                         &(x0[0], x0[1]),
                         3.,
                         x0[2],
                         defs::AngleUnits::Radian,
-                        &(255u8, 255u8, 255u8),
-                    )
+                    );
+                    plot::arrow_element(&end_points, &(255u8, 255u8, 255u8))
                 }))?;
             }
 
