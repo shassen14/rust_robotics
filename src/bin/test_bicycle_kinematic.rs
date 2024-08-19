@@ -190,7 +190,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                         data.back().unwrap().1[2],
                         defs::AngleUnits::Radian,
                     );
-                    chart.draw_series(std::iter::once(plot::rectangle_element(
+                    chart.draw_series(std::iter::once(plot::quadrilateral_element(
                         &vehicle_points,
                         &chart_params.label_color,
                     )))?;
@@ -214,7 +214,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                             total_heading,
                             defs::AngleUnits::Radian,
                         );
-                        chart.draw_series(std::iter::once(plot::rectangle_filled_element(
+                        chart.draw_series(std::iter::once(plot::quadrilateral_filled_element(
                             &tire_points,
                             &chart_params.label_color,
                         )))?;

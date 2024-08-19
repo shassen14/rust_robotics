@@ -126,7 +126,15 @@ pub fn create_2d_chartstate(
 }
 
 #[allow(unused)]
-pub fn rectangle_element(
+/// Outputs a PathElement where it is a 4 corner shape (quadrilateral)
+///
+/// * Arguments
+///
+/// * `points` - The 4 points to plot (must be ordered where point 0 -> 1 -> 2, etc)
+/// * `color` - RGB values [0,255] to color the shape
+/// * Returns a PathElement of the shape
+///
+pub fn quadrilateral_element(
     points: &[(f64, f64); 4],
     color: &(u8, u8, u8),
 ) -> PathElement<(f64, f64)> {
@@ -140,7 +148,15 @@ pub fn rectangle_element(
 }
 
 #[allow(unused)]
-pub fn rectangle_filled_element(
+/// Outputs a Polygon where it is a 4 corner shape (quadrilateral) fully colored
+///
+/// * Arguments
+///
+/// * `points` - The 4 points to plot (must be ordered where point 0 -> 1 -> 2, etc)
+/// * `color` - RGB values [0,255] to color the shape
+/// * Returns a Polygon of the shape
+///
+pub fn quadrilateral_filled_element(
     points: &[(f64, f64); 4],
     color: &(u8, u8, u8),
 ) -> Polygon<(f64, f64)> {
@@ -153,6 +169,14 @@ pub fn rectangle_filled_element(
     Polygon::new(rect_points, &rect_color)
 }
 #[allow(unused)]
+/// Outputs a Thin Arrow where it is has two end points (start points to the end)
+///
+/// * Arguments
+///
+/// * `end_points` - The 2 oints to plot (must be ordered where point 0 -> 1)
+/// * `color` - RGB values [0,255] to color the shape
+/// * Returns a ThinArrow
+///
 pub fn arrow_element(
     end_points: &[(f64, f64); 2],
     color: &(u8, u8, u8),
