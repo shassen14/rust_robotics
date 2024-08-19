@@ -15,6 +15,7 @@ use std::collections::HashMap;
 pub struct Config {
     pub window_params: WindowParams,
     pub chart_params: ChartParams,
+    pub animation_params: AnimationParams,
 }
 /// Parameters to make a window
 #[derive(Debug, Deserialize)]
@@ -48,6 +49,13 @@ impl ChartParams {
     pub fn create_label_color(&self) -> RGBColor {
         plotters::style::RGBColor(self.label_color.0, self.label_color.1, self.label_color.2)
     }
+}
+
+/// Parameters to make a window
+#[derive(Debug, Deserialize)]
+pub struct AnimationParams {
+    pub sample_rate: f64,
+    pub frame_rate: f64,
 }
 
 #[allow(unused)]
@@ -126,7 +134,7 @@ pub fn create_2d_chartstate(
 }
 
 #[allow(unused)]
-/// Outputs a PathElement where it is a 4 corner shape (quadrilateral)
+/// Outputs a PathElement where it is a shape
 ///
 /// * Arguments
 ///
@@ -134,21 +142,19 @@ pub fn create_2d_chartstate(
 /// * `color` - RGB values [0,255] to color the shape
 /// * Returns a PathElement of the shape
 ///
-pub fn quadrilateral_element(
-    points: &[(f64, f64); 4],
-    color: &(u8, u8, u8),
-) -> PathElement<(f64, f64)> {
+pub fn polygon_element(points: &Vec<(f64, f64)>, color: &(u8, u8, u8)) -> PathElement<(f64, f64)> {
     // TODO: cleaner way to do this?
-    let rect_points: [(f64, f64); 5] = [points[0], points[1], points[2], points[3], points[0]];
+    let mut polygon_points: Vec<(f64, f64)> = points.to_vec();
+    polygon_points.push(points[0]);
 
     // Color
-    let rect_color = &plotters::style::RGBColor(color.0, color.1, color.2);
+    let polygon_color = &plotters::style::RGBColor(color.0, color.1, color.2);
 
-    PathElement::new(rect_points, &rect_color)
+    PathElement::new(polygon_points, &polygon_color)
 }
 
 #[allow(unused)]
-/// Outputs a Polygon where it is a 4 corner shape (quadrilateral) fully colored
+/// Outputs a Polygon where it is a shape fully colored
 ///
 /// * Arguments
 ///
@@ -156,17 +162,18 @@ pub fn quadrilateral_element(
 /// * `color` - RGB values [0,255] to color the shape
 /// * Returns a Polygon of the shape
 ///
-pub fn quadrilateral_filled_element(
-    points: &[(f64, f64); 4],
+pub fn polygon_filled_element(
+    points: &Vec<(f64, f64)>,
     color: &(u8, u8, u8),
 ) -> Polygon<(f64, f64)> {
     // TODO: cleaner way to do this?
-    let rect_points: [(f64, f64); 5] = [points[0], points[1], points[2], points[3], points[0]];
+    let mut polygon_points: Vec<(f64, f64)> = points.to_vec();
+    polygon_points.push(points[0]);
 
     // Color
-    let rect_color = &plotters::style::RGBColor(color.0, color.1, color.2);
+    let polygon_color = &plotters::style::RGBColor(color.0, color.1, color.2);
 
-    Polygon::new(rect_points, &rect_color)
+    Polygon::new(polygon_points, &polygon_color)
 }
 #[allow(unused)]
 /// Outputs a Thin Arrow where it is has two end points (start points to the end)

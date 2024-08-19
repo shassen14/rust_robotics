@@ -23,9 +23,6 @@ use std::time::SystemTime;
 const DEG_TO_RAD: f64 = std::f64::consts::PI / 180.0;
 
 // TODO: read from config yml or some type of file for runtime instead of compile time
-// Animation Params
-const SAMPLE_RATE: f64 = 100f64;
-const FPS: f64 = 30f64;
 
 // initial states
 const VEL_INIT: f64 = 1.0;
@@ -60,6 +57,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let chart_params: plot::ChartParams = plot_config.chart_params;
     let mut window_params: plot::WindowParams = plot_config.window_params;
     window_params.title = get_window_title(VEL_INIT, RWA_INIT);
+    let animation_params: plot::AnimationParams = plot_config.animation_params;
 
     let mut buf = defs::BufferWrapper(vec![0u32; window_params.width * window_params.height]);
 
@@ -79,14 +77,14 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let start_time = SystemTime::now();
     let mut last_flushed = 0.;
-    let sample_step: f64 = 1.0 / SAMPLE_RATE;
-    let frame_step: f64 = 1.0 / FPS;
+    let sample_step: f64 = 1.0 / animation_params.sample_rate;
+    let frame_step: f64 = 1.0 / animation_params.frame_rate;
 
     while window.is_open() && !window.is_key_down(minifb::Key::Escape) {
         let epoch = SystemTime::now().duration_since(start_time)?.as_secs_f64();
 
         if let Some((ts, _, _)) = data.back() {
-            if epoch - ts < 1.0 / SAMPLE_RATE {
+            if epoch - ts < 1.0 / animation_params.sample_rate {
                 std::thread::sleep(std::time::Duration::from_secs_f64(epoch - ts));
                 continue;
             }
@@ -190,8 +188,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                         data.back().unwrap().1[2],
                         defs::AngleUnits::Radian,
                     );
-                    chart.draw_series(std::iter::once(plot::quadrilateral_element(
-                        &vehicle_points,
+                    chart.draw_series(std::iter::once(plot::polygon_element(
+                        &vehicle_points.to_vec(),
                         &chart_params.label_color,
                     )))?;
 
@@ -214,13 +212,14 @@ fn main() -> Result<(), Box<dyn Error>> {
                             total_heading,
                             defs::AngleUnits::Radian,
                         );
-                        chart.draw_series(std::iter::once(plot::quadrilateral_filled_element(
-                            &tire_points,
+                        chart.draw_series(std::iter::once(plot::polygon_filled_element(
+                            &tire_points.to_vec(),
                             &chart_params.label_color,
                         )))?;
                     }
                 }
 
+                // easy way to plot one element
                 chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
                     let end_points = math::calculate_line_endpoints(
                         &(x0[0], x0[1]),
