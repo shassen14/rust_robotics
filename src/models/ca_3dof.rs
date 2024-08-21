@@ -34,7 +34,7 @@ impl base::System<f64, 9, 0> for Model {
         na::SVector::<f64, 9>::from_vec(vec![x[1], x[2], 0., x[4], x[5], 0., x[7], x[8], 0.])
     }
 
-    fn get_jacobian(
+    fn calculate_jacobian(
         &self,
         _x: &nalgebra::SVector<f64, 9>,
         _u: &nalgebra::SVector<f64, 0>,

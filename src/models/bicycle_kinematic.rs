@@ -225,7 +225,7 @@ impl base::System<f64, 3, 2> for Model {
     /// with respect to each control input (u). [(NxN), (NxM)] since there are n states and
     /// M inputs.
     ///
-    fn get_jacobian(
+    fn calculate_jacobian(
         &self,
         x: &na::SVector<f64, 3>,
         u: &na::SVector<f64, 2>,
@@ -376,7 +376,7 @@ mod tests {
         let state0: na::SVector<f64, 3> = na::SVector::<f64, 3>::new(x0, y0, yaw0);
         let input0: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(vel0, steer0);
 
-        let jacobian = veh.get_jacobian(&state0, &input0, 0.);
+        let jacobian = veh.calculate_jacobian(&state0, &input0, 0.);
 
         // the magnitude of x_dot and y_dot combined should equal to forward velocity
         // this model assumes lateral velocity ~ 0

@@ -63,7 +63,7 @@ pub trait System<T, const N: usize, const M: usize> {
         na::SVector<T, N>: std::ops::Add<Output = na::SVector<T, N>>,
     {
         let func = |func_x: &na::SVector<T, N>, func_t: T| -> na::SVector<T, N> {
-            let linear_model = self.get_jacobian(func_x, u, func_t);
+            let linear_model = self.calculate_jacobian(func_x, u, func_t);
             // x_dot = Ax + Bu
             linear_model.0 * *func_x + linear_model.1 * *u
         };
@@ -101,7 +101,7 @@ pub trait System<T, const N: usize, const M: usize> {
     /// with respect to each control input (u). [(NxN), (NxM)] since there are n states and
     /// M inputs. These are the A and B matrices for linear systems
     ///
-    fn get_jacobian(
+    fn calculate_jacobian(
         &self,
         x: &na::SVector<T, N>,
         u: &na::SVector<T, M>,
