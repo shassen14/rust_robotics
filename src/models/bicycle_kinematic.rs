@@ -181,19 +181,9 @@ impl Model {
 /// Bicycle Kinematic Model with 3 states and 2 inputs
 ///
 /// x_dot = [pos_x_dot, pos_y_dot, heading_dot], global frame
+/// x = [pos_x, pos_y, heading]
 /// u = [vel_x, road_wheel_angle], body frame
 impl base::System<f64, 3, 2> for Model {
-    /// Derivative function x_dot = f(x, u, t) which is a function of
-    /// the system's current state, control input, and time
-    ///
-    /// # Arguments
-    ///
-    /// * `self` - Model's parameters, functions, and values
-    /// * `x` - System's current state
-    /// * `u` - System's current control input
-    /// * `t` - Current timestamp
-    /// * Returns rate of change of the system's states
-    ///
     fn get_derivatives(
         &self,
         x: &nalgebra::SVector<f64, 3>,
@@ -212,19 +202,6 @@ impl base::System<f64, 3, 2> for Model {
         na::SVector::<f64, 3>::new(pos_x_dot, pos_y_dot, yaw_dot)
     }
 
-    /// Get system's jacobian with respect to state and input partial derivatives
-    ///
-    /// # Arguments
-    ///
-    /// * `self` - Model's parameters, functions, and values
-    /// * `x` - System's current state
-    /// * `u` - System's current control input
-    /// * `t` - Current timestamp
-    /// * Returns a pair of matrices where the first is the partial derivative of f(x, u, t)
-    /// with respect to each state (x), and the second is the partial derivative of f(x, u, t)
-    /// with respect to each control input (u). [(NxN), (NxM)] since there are n states and
-    /// M inputs.
-    ///
     fn calculate_jacobian(
         &self,
         x: &na::SVector<f64, 3>,
@@ -237,13 +214,15 @@ impl base::System<f64, 3, 2> for Model {
         )
     }
 
-    /// Read a toml file to change the model's parameters if any
-    ///
-    /// # Arguments
-    ///
-    /// * `self` - Model's parameters, and values that could be changed from the toml file
-    /// * `filename` - File name to read values
-    ///
+    fn calculate_input(
+        &self,
+        x: &nalgebra::SVector<f64, 3>,
+        x_dot: &nalgebra::SVector<f64, 3>,
+        _t: f64,
+    ) -> nalgebra::SVector<f64, 2> {
+        todo!()
+    }
+
     fn read(&mut self, filename: &str) -> () {
         let data: Model = files::read_config(filename);
 

@@ -14,6 +14,12 @@ impl Model {
     }
 }
 
+/// Constant Acceleration 1 DOF
+///
+/// System x_dot: [position_dot, velocity_dot, acceleration_dot]
+/// System x: [position, velocity, acceleration]
+/// System u: none
+///
 impl base::System<f64, 3, 0> for Model {
     fn get_derivatives(
         &self,
@@ -31,6 +37,15 @@ impl base::System<f64, 3, 0> for Model {
         _t: f64,
     ) -> (na::SMatrix<f64, 3, 3>, na::SMatrix<f64, 3, 0>) {
         (Model::calculate_f(), na::SMatrix::<f64, 3, 0>::zeros())
+    }
+
+    fn calculate_input(
+        &self,
+        _x: &nalgebra::SVector<f64, 3>,
+        _x_dot: &nalgebra::SVector<f64, 3>,
+        _t: f64,
+    ) -> nalgebra::SVector<f64, 0> {
+        na::SVector::<f64, 0>::zeros()
     }
 
     /// No parameters to read for this model

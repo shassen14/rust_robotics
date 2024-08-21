@@ -9,7 +9,7 @@ use crate::models::base;
 pub struct Model;
 
 impl Model {
-    fn calculate_f() -> na::SMatrix<f64, 9, 9> {
+    const fn calculate_f() -> na::SMatrix<f64, 9, 9> {
         na::SMatrix::<f64, 9, 9>::from_array_storage(na::ArrayStorage([
             [0., 0., 0., 0., 0., 0., 0., 0., 0.],
             [1., 0., 0., 0., 0., 0., 0., 0., 0.],
@@ -24,6 +24,16 @@ impl Model {
     }
 }
 
+/// Constant Acceleration 1 DOF
+///
+/// System x_dot: [position_x_dot, velocity_x_dot, acceleration_x_dot, ..
+///             .. position_y_dot, velocity_y_dot, acceleration_y_dot, ..
+///             .. position_z_dot, velocity_z_dot, acceleration_z_dot]
+/// System x: [position_x, velocity_x, acceleration_x, ..
+///         .. position_y, velocity_y, acceleration_y, ..
+///         .. position_z, velocity_z, acceleration_z]
+/// System u: none
+///
 impl base::System<f64, 9, 0> for Model {
     fn get_derivatives(
         &self,
@@ -31,6 +41,15 @@ impl base::System<f64, 9, 0> for Model {
         _u: &nalgebra::SVector<f64, 0>,
         _t: f64,
     ) -> na::SVector<f64, 9> {
+        // [0, 1, 0, 0, 0, 0, 0, 0, 0], pos_x_dot = vel_x_dot
+        // [0, 0, 1, 0, 0, 0, 0, 0, 0], vel_x_dot = acc_x_dot
+        // [0, 0, 0, 0, 0, 0, 0, 0, 0], acc_x_dot = 0 (constant)
+        // [0, 0, 0, 0, 1, 0, 0, 0, 0], pos_y_dot = vel_y_dot
+        // [0, 0, 0, 0, 0, 1, 0, 0, 0], vel_y_dot = acc_y_dot
+        // [0, 0, 0, 0, 0, 0, 0, 0, 0], acc_y_dot = 0 (constant)
+        // [0, 0, 0, 0, 0, 0, 0, 1, 0], pos_z_dot = vel_z_dot
+        // [0, 0, 0, 0, 0, 0, 0, 0, 1], vel_z_dot = acc_z_dot
+        // [0, 0, 0, 0, 0, 0, 0, 0, 0], acc_z_dot = 0 (constant)
         na::SVector::<f64, 9>::from_vec(vec![x[1], x[2], 0., x[4], x[5], 0., x[7], x[8], 0.])
     }
 
@@ -41,6 +60,15 @@ impl base::System<f64, 9, 0> for Model {
         _t: f64,
     ) -> (na::SMatrix<f64, 9, 9>, na::SMatrix<f64, 9, 0>) {
         (Model::calculate_f(), na::SMatrix::<f64, 9, 0>::zeros())
+    }
+
+    fn calculate_input(
+        &self,
+        _x: &nalgebra::SVector<f64, 9>,
+        _x_dot: &nalgebra::SVector<f64, 9>,
+        _t: f64,
+    ) -> nalgebra::SVector<f64, 0> {
+        na::SVector::<f64, 0>::zeros()
     }
 
     /// No parameters to read for this model

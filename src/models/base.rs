@@ -88,7 +88,7 @@ pub trait System<T, const N: usize, const M: usize> {
         t: T,
     ) -> na::SVector<T, N>;
 
-    /// Get system's jacobian with respect to state and input partial derivatives
+    /// Calculate system's jacobian with respect to state and input partial derivatives
     ///
     /// # Arguments
     ///
@@ -107,6 +107,24 @@ pub trait System<T, const N: usize, const M: usize> {
         u: &na::SVector<T, M>,
         t: T,
     ) -> (na::SMatrix<T, N, N>, na::SMatrix<T, N, M>);
+
+    /// Calculate system's control inputs given the system's current states
+    /// to produce a desired rate of change.
+    ///
+    /// # Arguments
+    ///
+    /// * `self` - Model's parameters, functions, and values
+    /// * `x` - System's current state
+    /// * `x_dot` - System's desired rate of change
+    /// * `t` - Current timestamp
+    /// * Returns control inputs required to obtain the desired rate of change
+    ///
+    fn calculate_input(
+        &self,
+        x: &na::SVector<T, N>,
+        x_dot: &na::SVector<T, N>,
+        t: T,
+    ) -> na::SVector<T, M>;
 
     /// Read a toml file to change the model's parameters if any
     ///
