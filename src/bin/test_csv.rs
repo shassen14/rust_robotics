@@ -11,7 +11,7 @@ struct Record {
 }
 
 fn example() -> Result<(), Box<dyn Error>> {
-    let mut wtr = csv::Writer::from_path("logs/bob.csv")?;
+    let mut wtr = csv::Writer::from_path("logs/examples/test_csv.csv")?;
 
     // When writing records with Serde using structs, the header row is written
     // automatically.
