@@ -216,8 +216,8 @@ impl base::System<f64, 3, 2> for Model {
 
     fn calculate_input(
         &self,
-        x: &nalgebra::SVector<f64, 3>,
-        x_dot: &nalgebra::SVector<f64, 3>,
+        _x: &nalgebra::SVector<f64, 3>,
+        _x_dot: &nalgebra::SVector<f64, 3>,
         _t: f64,
     ) -> nalgebra::SVector<f64, 2> {
         todo!()

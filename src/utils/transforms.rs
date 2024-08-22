@@ -69,10 +69,9 @@ where
 mod tests {
     use core::f64;
 
+    use super::*;
     use approx::assert_relative_eq;
     use nalgebra::Point3;
-
-    use super::*;
 
     const ROTATION: [f64; 6] = [0., 0., 0., 90., 90., 90.];
     const TRANSLATION: [f64; 6] = [1., 2., 3., 0., 0., 0.];
