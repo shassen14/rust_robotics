@@ -8,16 +8,7 @@ pub fn calculate_lookahead_point<T>(
     lookahead_distance: T,
 ) -> (usize, T, na::Point3<T>)
 where
-    T: std::fmt::Debug
-        + Clone
-        + Copy
-        + std::cmp::PartialEq
-        + std::cmp::PartialOrd
-        + std::ops::Mul<Output = T>
-        + std::ops::Add<Output = T>
-        + std::ops::Sub<Output = T>
-        + SimdRealField
-        + 'static,
+    T: std::fmt::Debug + Clone + Copy + std::cmp::PartialOrd + SimdRealField + 'static,
 {
     let lookahead_distance_squared: T = lookahead_distance * lookahead_distance;
     for i in start_index..path.len() {
@@ -40,12 +31,23 @@ pub fn calculate_desired_yaw<T>(
     position_target: &na::Point3<T>,
 ) -> T
 where
-    T: Clone + Copy + std::ops::Sub<Output = T> + SimdRealField,
+    T: Clone + Copy + SimdRealField,
 {
     T::simd_atan2(
         position_target.y - position_current.y,
         position_target.x - position_current.x,
     )
+}
+
+pub fn pure_pursuit<T>(wheelbase: T, yaw_desired: T, yaw_current: T, target_distance: T) -> T
+where
+    T: Clone + Copy + SimdRealField,
+{
+    let yaw_relative = yaw_desired - yaw_current;
+    let curvature = (T::simd_sin(yaw_relative) + T::simd_sin(yaw_relative)) / target_distance;
+
+    // let denom: T = 1 as T;
+    T::simd_atan(wheelbase * curvature)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -118,5 +120,18 @@ mod tests {
         let answer2 = convert::deg_to_rad(-135.);
 
         assert_relative_eq!(desired_yaw2, answer2, epsilon = 1e-12);
+    }
+
+    #[test]
+    fn path_tracking_pure_pursuit() {
+        let yaw_desired: f64 = std::f64::consts::FRAC_PI_8 * 0.0;
+        let yaw_current: f64 = 0.;
+        let target_distance: f64 = 5.0; // m
+        let wheelbase = 2.5; // m
+
+        let rwa1 = pure_pursuit(wheelbase, yaw_desired, yaw_current, target_distance);
+        let answer1 = 0.0;
+
+        assert_relative_eq!(rwa1, answer1, epsilon = 1e-12);
     }
 }
