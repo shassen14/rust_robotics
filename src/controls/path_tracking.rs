@@ -35,12 +35,26 @@ where
     );
 }
 
+pub fn calculate_desired_yaw<T>(
+    position_current: &na::Point3<T>,
+    position_target: &na::Point3<T>,
+) -> T
+where
+    T: Clone + Copy + std::ops::Sub<Output = T> + SimdRealField,
+{
+    T::simd_atan2(
+        position_target.y - position_current.y,
+        position_target.x - position_current.x,
+    )
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Tests
 ///////////////////////////////////////////////////////////////////////////////
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::utils::convert;
     use approx::assert_relative_eq;
 
     #[test]
@@ -85,5 +99,24 @@ mod tests {
         for i in 0..2 {
             assert_relative_eq!(estimation2.2[i], answer2.2[i], epsilon = 1e-12);
         }
+    }
+
+    #[test]
+    fn path_tracking_desired_yaw() {
+        let position1 = na::Point3::new(0., 0., 0.);
+        let target1 = na::Point3::new(1., 1., 0.);
+
+        let desired_yaw1 = calculate_desired_yaw(&position1, &target1);
+        let answer1 = convert::deg_to_rad(45.);
+
+        assert_relative_eq!(desired_yaw1, answer1, epsilon = 1e-12);
+
+        let position2 = na::Point3::new(0., 0., 0.);
+        let target2 = na::Point3::new(-1., -1., 0.);
+
+        let desired_yaw2 = calculate_desired_yaw(&position2, &target2);
+        let answer2 = convert::deg_to_rad(-135.);
+
+        assert_relative_eq!(desired_yaw2, answer2, epsilon = 1e-12);
     }
 }
