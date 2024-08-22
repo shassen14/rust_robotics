@@ -11,14 +11,6 @@ helpFunction()
    exit 1 # Exit script after printing help
 }
 
-# function to make the build directory if it doesn't exist
-make_log_dir() {
-if [ ! -d ${LOG_DIR} ]; then
-  echo "Making the directory, ${LOG_DIR}"
-  mkdir ${LOG_DIR}
-fi
-}
-
 while getopts "f:" opt
 do
    case "$opt" in
@@ -35,7 +27,7 @@ valgrind --leak-check=full \
          --show-leak-kinds=all \
          --track-origins=yes \
          --verbose \
-         --log-file=${LOG_DIR}/${LOG_FILE} \
+         --log-file=${LOG_VALGRIND_DIR}/${LOG_FILE} \
          ${PROJECT_DIR}/target/debug/${parameterFile}
 
 echo "Finished valgrind ${PROJECT_DIR}/target/debug/${parameterFile}"
