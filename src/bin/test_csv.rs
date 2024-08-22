@@ -1,8 +1,8 @@
-use std::{error::Error, io, process};
+use std::{error::Error, io, process, result};
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct Record {
     city: String,
     region: String,
@@ -10,7 +10,7 @@ struct Record {
     population: Option<u64>,
 }
 
-fn example() -> Result<(), Box<dyn Error>> {
+fn example_writer() -> Result<(), Box<dyn Error>> {
     let mut wtr = csv::Writer::from_path("logs/examples/test_csv.csv")?;
 
     // When writing records with Serde using structs, the header row is written
@@ -31,9 +31,24 @@ fn example() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+fn example_reader() -> Result<(), Box<dyn Error>> {
+    let mut rdr = csv::Reader::from_path("logs/examples/test_csv.csv")?;
+
+    for result in rdr.deserialize() {
+        let record: Record = result?;
+        println!("{:#?}", record);
+    }
+    Ok(())
+}
+
 fn main() {
-    if let Err(err) = example() {
-        println!("error running example: {}", err);
+    if let Err(err) = example_writer() {
+        println!("error running writer example: {}", err);
+        process::exit(1);
+    }
+
+    if let Err(err) = example_reader() {
+        println!("error running reading example: {}", err);
         process::exit(1);
     }
 }
