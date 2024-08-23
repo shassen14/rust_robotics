@@ -1,6 +1,6 @@
 // rust robotics
 use rust_robotics::models::base::System;
-use rust_robotics::models::bicycle_kinematic;
+use rust_robotics::models::ground_vehicles::bicycle_kinematic;
 use rust_robotics::num_methods::runge_kutta;
 use rust_robotics::utils::convert;
 use rust_robotics::utils::defs;

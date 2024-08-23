@@ -1,4 +1,4 @@
-use rust_robotics::models::{base::System, bicycle_kinematic};
+use rust_robotics::models::{base::System, ground_vehicles::bicycle_kinematic};
 
 fn main() {
     let mut vehicle: bicycle_kinematic::Model = bicycle_kinematic::Model::new(0.0, 0.0);

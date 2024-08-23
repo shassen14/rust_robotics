@@ -1,6 +1,6 @@
 use nalgebra as na;
 use rust_robotics::models::base;
-use rust_robotics::models::ca_1dof;
+use rust_robotics::models::generic::ca_1dof;
 use rust_robotics::num_methods::runge_kutta;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
