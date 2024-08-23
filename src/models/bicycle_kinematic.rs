@@ -53,7 +53,7 @@ impl Model {
     ///
     /// * `self` - Model's parameters
     /// * Returns the length from the rear wheels (middle) to the center of gravity
-    fn calculate_length_total(&self) -> f64 {
+    pub fn get_wheelbase(&self) -> f64 {
         self.length_front + self.length_rear
     }
 
@@ -68,7 +68,7 @@ impl Model {
     ///
     fn calculate_sideslip(&self, road_wheel_angle: f64) -> f64 {
         // beta = atan(l_r * tan(rwa) / wheel_base)
-        f64::atan(self.length_rear * f64::tan(road_wheel_angle) / self.calculate_length_total())
+        f64::atan(self.length_rear * f64::tan(road_wheel_angle) / self.get_wheelbase())
     }
 
     // TODO: calculate a and calculate b seem to be right? Confirmed with online calculators
@@ -115,7 +115,7 @@ impl Model {
         x: &na::SVector<f64, 3>,
         u: &na::SVector<f64, 2>,
     ) -> na::SMatrix<f64, 3, 2> {
-        let length_total = self.calculate_length_total();
+        let length_total = self.get_wheelbase();
         let sideslip = self.calculate_sideslip(u[1]);
         // df0/ du0, df0/ du1,
         // df1/ du0, df1/ du1,
@@ -197,8 +197,7 @@ impl base::System<f64, 3, 2> for Model {
         // yaw_dot = vel_x * tan(road_wheel_angle) * cos(sideslip) / length_total
         let pos_x_dot: f64 = u[0] * f64::cos(x[2] + sideslip);
         let pos_y_dot: f64 = u[0] * f64::sin(x[2] + sideslip);
-        let yaw_dot: f64 =
-            u[0] * f64::tan(u[1]) * f64::cos(sideslip) / self.calculate_length_total();
+        let yaw_dot: f64 = u[0] * f64::tan(u[1]) * f64::cos(sideslip) / self.get_wheelbase();
         na::SVector::<f64, 3>::new(pos_x_dot, pos_y_dot, yaw_dot)
     }
 
