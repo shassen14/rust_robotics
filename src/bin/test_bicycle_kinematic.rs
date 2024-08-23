@@ -22,8 +22,6 @@ use std::time::SystemTime;
 // Conversions
 const DEG_TO_RAD: f64 = std::f64::consts::PI / 180.0;
 
-// TODO: read from config yml or some type of file for runtime instead of compile time
-
 // initial states
 const VEL_INIT: f64 = 1.0;
 const RWA_INIT: f64 = 0.0;
@@ -63,10 +61,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut window = plot::create_window(&window_params)?;
 
-    // TODO: magic numbers
     let cs = plot::create_2d_chartstate(buf.borrow_mut(), &window_params, &chart_params);
-
-    let mut data: VecDeque<(f64, na::SVector<f64, 3>, na::SVector<f64, 2>)> = VecDeque::new();
 
     // Could do it this way where a model is initialized and then read using the model
     // let mut model = bicycle_kinematic::Model::new(1.0, 1.0);
@@ -74,6 +69,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let model: bicycle_kinematic::Model = files::read_config(bike_cfg_path);
     let mut current_state: na::SVector<f64, 3> = na::SVector::<f64, 3>::zeros();
     let mut current_input: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(VEL_INIT, RWA_INIT);
+    let mut data: VecDeque<(f64, na::SVector<f64, 3>, na::SVector<f64, 2>)> = VecDeque::new();
 
     let start_time = SystemTime::now();
     let mut last_flushed = 0.;
