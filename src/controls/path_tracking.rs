@@ -1,5 +1,25 @@
 use nalgebra::{self as na};
+use serde::{Deserialize, Serialize};
 use simba::simd::SimdRealField;
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RecordPoint<T> {
+    pub time: T,
+    pub x: T,
+    pub y: T,
+    pub z: T,
+}
+
+impl<T> RecordPoint<T> {
+    pub fn new(time: T, x: T, y: T, z: T) -> Self {
+        RecordPoint {
+            time: time,
+            x: x,
+            y: y,
+            z: z,
+        }
+    }
+}
 
 pub fn calculate_lookahead_point<T>(
     path: &Vec<na::Point3<T>>,
@@ -27,8 +47,8 @@ where
 }
 
 pub fn calculate_desired_yaw<T>(
-    position_current: &na::Point3<T>,
-    position_target: &na::Point3<T>,
+    position_current: &na::Point2<T>,
+    position_target: &na::Point2<T>,
 ) -> T
 where
     T: Clone + Copy + SimdRealField,
@@ -39,14 +59,19 @@ where
     )
 }
 
-pub fn pure_pursuit<T>(wheelbase: T, yaw_desired: T, yaw_current: T, target_distance: T) -> T
+pub fn pure_pursuit<T>(
+    position_current: &na::Point2<T>,
+    position_target: &na::Point2<T>,
+    yaw_current: T,
+    target_distance: T,
+    wheelbase: T,
+) -> T
 where
     T: Clone + Copy + SimdRealField,
 {
+    let yaw_desired = calculate_desired_yaw(position_current, position_target);
     let yaw_relative = yaw_desired - yaw_current;
     let curvature = (T::simd_sin(yaw_relative) + T::simd_sin(yaw_relative)) / target_distance;
-
-    // let denom: T = 1 as T;
     T::simd_atan(wheelbase * curvature)
 }
 
@@ -105,16 +130,16 @@ mod tests {
 
     #[test]
     fn path_tracking_desired_yaw() {
-        let position1 = na::Point3::new(0., 0., 0.);
-        let target1 = na::Point3::new(1., 1., 0.);
+        let position1 = na::Point2::new(0., 0.);
+        let target1 = na::Point2::new(1., 1.);
 
         let desired_yaw1 = calculate_desired_yaw(&position1, &target1);
         let answer1 = convert::deg_to_rad(45.);
 
         assert_relative_eq!(desired_yaw1, answer1, epsilon = 1e-12);
 
-        let position2 = na::Point3::new(0., 0., 0.);
-        let target2 = na::Point3::new(-1., -1., 0.);
+        let position2 = na::Point2::new(0., 0.);
+        let target2 = na::Point2::new(-1., -1.);
 
         let desired_yaw2 = calculate_desired_yaw(&position2, &target2);
         let answer2 = convert::deg_to_rad(-135.);
@@ -124,12 +149,20 @@ mod tests {
 
     #[test]
     fn path_tracking_pure_pursuit() {
-        let yaw_desired: f64 = std::f64::consts::FRAC_PI_8 * 0.0;
+        let position_current = na::Point2::new(0., 0.);
+        let position_target = na::Point2::new(1., 0.);
+
         let yaw_current: f64 = 0.;
         let target_distance: f64 = 5.0; // m
         let wheelbase = 2.5; // m
 
-        let rwa1 = pure_pursuit(wheelbase, yaw_desired, yaw_current, target_distance);
+        let rwa1 = pure_pursuit(
+            &position_current,
+            &position_target,
+            yaw_current,
+            target_distance,
+            wheelbase,
+        );
         let answer1 = 0.0;
 
         assert_relative_eq!(rwa1, answer1, epsilon = 1e-12);
