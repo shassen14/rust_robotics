@@ -39,11 +39,14 @@ fn main() {
             [0., 0., 0., 0., 0., 0., 0., 1., 0.],
         ]));
 
+    let ovec = na::OVector::<f64, na::Dyn>::zeros(3);
+
     // const F: na::SMatrix<f64, 9, 9> = b;
 
     // for row in &B {
     //     println!("{}", row)
     // }
     println!("{}", F);
+    println!("{}", ovec);
     // println!("{}", b[(0, 1)]);
 }
