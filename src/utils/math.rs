@@ -6,6 +6,7 @@ use nalgebra as na;
 // functions. Just needing them
 
 /// Bounds a value of the same type between lower and upper bound
+/// [lower, upper]
 ///
 /// * Arguments
 ///
@@ -34,6 +35,40 @@ where
         return upper_bound;
     }
     value
+}
+
+/// Converts angle to be wrapped around the bounds [lower, upper)
+///
+/// * Arguments
+///
+/// * `value` - Value to possibly bound
+/// * `lower_bound` - Value cannot be less than lower_bound
+/// * `upper_bound` - Value cannot be greater than upper_bound
+/// * Returns the value between two bounds
+///
+pub fn bound_polar_value<T>(angle: T, lower_bound: T, upper_bound: T) -> T
+where
+    T: std::cmp::PartialOrd
+        + std::ops::Sub<Output = T>
+        + std::ops::SubAssign
+        + std::ops::AddAssign
+        + Copy,
+{
+    // upper bound should be greater than lower bound
+    assert!(lower_bound < upper_bound);
+
+    let period: T = upper_bound - lower_bound;
+
+    // add or subtract until the angle_output is within the bounds
+    let mut angle_output = angle;
+    while angle_output >= upper_bound || angle_output < lower_bound {
+        if angle_output >= upper_bound {
+            angle_output -= period;
+        } else if angle_output < lower_bound {
+            angle_output += period;
+        }
+    }
+    angle_output
 }
 
 /// Calculate 4 corner points given, the center points and lengths
