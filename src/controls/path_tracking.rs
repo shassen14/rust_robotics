@@ -2,6 +2,8 @@ use nalgebra::{self as na};
 use serde::{Deserialize, Serialize};
 use simba::simd::SimdRealField;
 
+use crate::utils::convert;
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RecordPoint<T> {
     pub time: T,
@@ -68,11 +70,13 @@ pub fn pure_pursuit<T>(
 ) -> T
 where
     T: Clone + Copy + SimdRealField,
+    f64: std::ops::Mul<T, Output = T>,
 {
     let yaw_desired = calculate_desired_yaw(position_current, position_target);
     let yaw_relative = yaw_desired - yaw_current;
     let curvature = (T::simd_sin(yaw_relative) + T::simd_sin(yaw_relative)) / target_distance;
-    T::simd_atan(wheelbase * curvature)
+    let rwa = T::simd_atan2(wheelbase * curvature, wheelbase / wheelbase);
+    rwa
 }
 
 ///////////////////////////////////////////////////////////////////////////////
