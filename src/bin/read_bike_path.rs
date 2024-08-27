@@ -21,11 +21,11 @@ use std::error::Error;
 use std::time::SystemTime;
 
 // initial states
-const VEL_INIT: f64 = 20.0;
+const VEL_INIT: f64 = 5.0;
 const RWA_INIT: f64 = 0.0;
 const VEL_STEP: f64 = 0.1;
 const VEL_UPPER_BOUND: f64 = 20.0; // m/s
-const VEL_LOWER_BOUND: f64 = 0.0; // m/s
+const VEL_LOWER_BOUND: f64 = -10.0; // m/s
 const RWA_UPPER_BOUND: f64 = 40.0; // deg
 const RWA_LOWER_BOUND: f64 = -40.0; // deg
 
@@ -77,7 +77,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     // let mut model = bicycle_kinematic::Model::new(1.0, 1.0);
     // model.read(bike_cfg_path);
     let model: bicycle_kinematic::Model = files::read_config(bike_cfg_path);
-    let mut current_state: na::SVector<f64, 3> = na::SVector::<f64, 3>::zeros();
+    let mut current_state: na::SVector<f64, 3> =
+        na::SVector::<f64, 3>::new(0.0, 10.0, convert::deg_to_rad(-45.0));
     let mut current_input: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(VEL_INIT, RWA_INIT);
     let mut data: VecDeque<(f64, na::SVector<f64, 3>, na::SVector<f64, 2>)> = VecDeque::new();
 
