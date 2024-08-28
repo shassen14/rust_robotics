@@ -7,12 +7,11 @@ use rust_robotics::utils::defs;
 use rust_robotics::utils::defs::AngleUnits;
 use rust_robotics::utils::files;
 use rust_robotics::utils::math;
-use rust_robotics::utils::plot;
+use rust_robotics::utils::plot2;
 use rust_robotics::utils::transforms::FrameTransform3;
 
 // 3rd party or std
 use core::f64;
-use minifb::{Key, KeyRepeat};
 use nalgebra as na;
 use plotters::prelude::*;
 use plotters_bitmap::{bitmap_pixel::BGRXPixel, BitMapBackend};
@@ -23,8 +22,8 @@ use std::error::Error;
 use std::time::SystemTime;
 
 // Conversions
-const LENGTH1: f64 = 3.0;
-const LENGTH2: f64 = 2.5;
+const LENGTH1: f64 = 5.0;
+const LENGTH2: f64 = 5.0;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Read command line arguments
@@ -36,18 +35,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     // let bike_cfg_path = &args[2] as &str;
 
     // Obtain plot config params given the file
-    let plot_config: plot::Config = files::read_config(animate_cfg_path);
+    let plot_config: plot2::Config = files::read_config(animate_cfg_path);
 
-    let chart_params: plot::ChartParams = plot_config.chart_params;
-    let mut window_params: plot::WindowParams = plot_config.window_params;
+    let chart_params: plot2::ChartParams = plot_config.chart_params;
+    let mut window_params: plot2::WindowParams = plot_config.window_params;
     window_params.title = "Two Joint Robotic Arm".to_string();
-    let animation_params: plot::AnimationParams = plot_config.animation_params;
+    let animation_params: plot2::AnimationParams = plot_config.animation_params;
 
     let mut buf = defs::BufferWrapper(vec![0u32; window_params.width * window_params.height]);
 
-    let mut window = plot::create_window(&window_params)?;
+    let mut window = plot2::create_window(&window_params)?;
 
-    let cs = plot::create_2d_chartstate(buf.borrow_mut(), &window_params, &chart_params);
+    let cs = plot2::create_2d_chartstate(buf.borrow_mut(), &window_params, &chart_params);
 
     let model: two_joint_arm::Model<f64> = two_joint_arm::Model {
         link_lengths: [LENGTH1, LENGTH2],
@@ -60,9 +59,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut data: VecDeque<(f64, na::SVector<f64, 8>, na::SVector<f64, 2>)> = VecDeque::new();
 
     let mut controller: pid::Controller<2> = pid::Controller::<2>::new(
-        na::SVector::<f64, 2>::new(0.75, 0.75),
-        na::SVector::<f64, 2>::new(0.0001, 0.0001),
-        na::SVector::<f64, 2>::new(0.01, 0.01),
+        na::SVector::<f64, 2>::new(1.0, 0.8),
+        na::SVector::<f64, 2>::new(0.000, 0.000),
+        na::SVector::<f64, 2>::new(0.1, 0.1),
         na::SVector::<f64, 2>::new(-0.1, -0.1),
         na::SVector::<f64, 2>::new(0.1, 0.1),
     );
@@ -71,6 +70,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut last_flushed = 0.;
     let sample_step: f64 = 1.0 / animation_params.sample_rate;
     let frame_step: f64 = 1.0 / animation_params.frame_rate;
+
+    let mut angle_desired: na::SVector<f64, 2> =
+        na::SVector::<f64, 2>::new(current_state[2], current_state[6]);
+    let mut mouse_chart_position: (f64, f64) = (current_state[4], current_state[5]);
 
     while window.is_open() && !window.is_key_down(minifb::Key::Escape) {
         let epoch = SystemTime::now().duration_since(start_time)?.as_secs_f64();
@@ -89,40 +92,23 @@ fn main() -> Result<(), Box<dyn Error>> {
                     None
                 };
 
-                let mut angle_desired: na::SVector<f64, 2>;
                 if mouse_position.is_some() {
-                    let offsets = [
-                        -376.,
-                        348.,
-                        0.,
-                        f64::consts::PI,
-                        0.0 * f64::consts::PI,
-                        f64::consts::FRAC_PI_2 * 0.,
-                    ];
-                    // TODO: Magic numbers need to make this be able to change with the window size and plot axes
-                    let transform = FrameTransform3::new(&offsets, AngleUnits::Radian);
-                    let p = transform.point_b_to_i(&na::Point3::new(
-                        mouse_position.unwrap().0 as f64,
-                        mouse_position.unwrap().1 as f64,
-                        0.,
-                    )) / 67.0;
+                    mouse_chart_position = plot2::mouse_chart_position(
+                        (
+                            mouse_position.unwrap().0 as f64,
+                            mouse_position.unwrap().1 as f64,
+                        ),
+                        &window_params,
+                        &chart_params,
+                    );
 
-                    angle_desired = model.inverse_kinematics(&na::SVector::<f64, 2>::new(p.x, p.y));
-                } else {
-                    angle_desired = na::SVector::<f64, 2>::new(current_state[2], current_state[6]);
+                    // println!("{:?}", mouse_chart_position);
+                    angle_desired = model.inverse_kinematics(&na::SVector::<f64, 2>::new(
+                        mouse_chart_position.0,
+                        mouse_chart_position.1,
+                    ));
                 }
-
                 let x_dot_desired = model.calculate_x_dot_desired(&angle_desired, &current_state);
-                // current_state[0] = model.link_lengths[0] * f64::cos(angle_desired[0]);
-                // current_state[1] = model.link_lengths[1] * f64::sin(angle_desired[0]);
-                // current_state[2] = angle_desired[0];
-
-                // current_state[4] = current_state[0]
-                //     + model.link_lengths[1] * f64::cos(angle_desired[0] + angle_desired[1]);
-
-                // current_state[5] = current_state[1]
-                //     + model.link_lengths[1] * f64::sin(angle_desired[0] + angle_desired[1]);
-                // current_state[6] = angle_desired[1];
 
                 // current_input = model.calculate_input(&current_state, &x_dot_desired, ts);
                 current_input = controller.compute(&na::SVector::<f64, 2>::new(
@@ -136,9 +122,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                     sample_step,
                     &runge_kutta::rk4,
                 );
-                println!("angle_desired: {}", angle_desired);
-                println!("x_dot_desired: {}", x_dot_desired);
-                println!("current input: {}", current_input);
+                // println!("angle_desired: {}", angle_desired);
+                // println!("x_dot_desired: {}", x_dot_desired);
+                // println!("current input: {}", current_input);
 
                 // println!("current_state: {}", current_state);
 
@@ -192,6 +178,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 //     },
                 // ))?;
 
+                // TODO: terrible way to draw the second joint
                 chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
                     let end_points = math::calculate_line_endpoints(
                         &(x0[0], x0[1]),
@@ -205,12 +192,19 @@ fn main() -> Result<(), Box<dyn Error>> {
                     )
                 }))?;
 
+                // TODO: terrible way to draw the first joint
                 chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
                     PathElement::new(
                         vec![(0.0, 0.0), (x0[0], x0[1])],
                         &RGBColor(255u8, 255u8, 255u8),
                     )
                 }))?;
+
+                chart.draw_series(std::iter::once(Cross::new(
+                    mouse_chart_position,
+                    5,
+                    &RGBColor(255, 0, 0),
+                )))?;
             }
 
             window.set_title("Robotic Arm");

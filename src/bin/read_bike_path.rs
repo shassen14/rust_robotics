@@ -7,7 +7,7 @@ use rust_robotics::utils::convert;
 use rust_robotics::utils::defs;
 use rust_robotics::utils::files;
 use rust_robotics::utils::math;
-use rust_robotics::utils::plot;
+use rust_robotics::utils::plot2;
 
 // 3rd party or std
 use minifb::{Key, KeyRepeat};
@@ -47,18 +47,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     let bike_cfg_path = &args[2] as &str;
 
     // Obtain plot config params given the file
-    let plot_config: plot::Config = files::read_config(animate_cfg_path);
+    let plot_config: plot2::Config = files::read_config(animate_cfg_path);
 
-    let chart_params: plot::ChartParams = plot_config.chart_params;
-    let mut window_params: plot::WindowParams = plot_config.window_params;
+    let chart_params: plot2::ChartParams = plot_config.chart_params;
+    let mut window_params: plot2::WindowParams = plot_config.window_params;
     window_params.title = get_window_title(VEL_INIT, RWA_INIT);
-    let animation_params: plot::AnimationParams = plot_config.animation_params;
+    let animation_params: plot2::AnimationParams = plot_config.animation_params;
 
     let mut buf = defs::BufferWrapper(vec![0u32; window_params.width * window_params.height]);
 
-    let mut window = plot::create_window(&window_params)?;
+    let mut window = plot2::create_window(&window_params)?;
 
-    let cs = plot::create_2d_chartstate(buf.borrow_mut(), &window_params, &chart_params);
+    let cs = plot2::create_2d_chartstate(buf.borrow_mut(), &window_params, &chart_params);
 
     // csv readers and writers
     let mut csv_rdr = csv::Reader::from_path("logs/examples/example_path.csv")?;
@@ -229,7 +229,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                         data.back().unwrap().1[2],
                         defs::AngleUnits::Radian,
                     );
-                    chart.draw_series(std::iter::once(plot::polygon_element(
+                    chart.draw_series(std::iter::once(plot2::polygon_element(
                         &vehicle_points.to_vec(),
                         &chart_params.label_color,
                     )))?;
@@ -253,7 +253,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                             total_heading,
                             defs::AngleUnits::Radian,
                         );
-                        chart.draw_series(std::iter::once(plot::polygon_filled_element(
+                        chart.draw_series(std::iter::once(plot2::polygon_filled_element(
                             &tire_points.to_vec(),
                             &chart_params.label_color,
                         )))?;
@@ -268,7 +268,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                         x0[2],
                         defs::AngleUnits::Radian,
                     );
-                    plot::arrow_element(&end_points, &(255u8, 255u8, 255u8))
+                    plot2::arrow_element(&end_points, &(255u8, 255u8, 255u8))
                 }))?;
             }
 

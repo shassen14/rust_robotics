@@ -11,6 +11,10 @@ use plotters_bitmap::{bitmap_pixel::BGRXPixel, BitMapBackend};
 use serde::Deserialize;
 use std::collections::HashMap;
 
+use crate::utils::defs::AngleUnits;
+use crate::utils::transforms::FrameTransform3;
+use nalgebra as na;
+
 #[derive(Deserialize)]
 pub struct Config {
     pub window_params: WindowParams,
@@ -133,6 +137,48 @@ pub fn create_2d_chartstate(
     chart.into_chart_state()
 }
 
+pub fn mouse_chart_position(
+    position: (f64, f64),
+    window_params: &WindowParams,
+    chart_params: &ChartParams,
+) -> (f64, f64) {
+    // assuming second value is greater than the first
+    assert!(chart_params.x_range[0] < chart_params.x_range[1]);
+    assert!(chart_params.y_range[0] < chart_params.y_range[1]);
+
+    // [-1, 1] percentage for the chart's offset depending on the axes range
+    let x0_range_percentage =
+        -chart_params.x_range[0] / (chart_params.x_range[1] - chart_params.x_range[0]);
+    let y0_range_percentage =
+        -chart_params.y_range[0] / (chart_params.y_range[1] - chart_params.y_range[0]);
+
+    // x and y offsets dependent on window size, label size, and margin
+    let x_offset: f64 = window_params.width as f64 * x0_range_percentage
+        + chart_params.label_size as f64 * (1. - x0_range_percentage)
+        + chart_params.margin as f64 * (1. - 2.0 * x0_range_percentage);
+    let y_offset: f64 = window_params.height as f64 * (1. - y0_range_percentage)
+        - chart_params.label_size as f64 * (1. - y0_range_percentage)
+        - chart_params.margin as f64 * (1. - 2.0 * y0_range_percentage);
+
+    // convert window axes (+x right, +y down, +z into the page) to +x right, +y up, +z out of the page
+    // and translate it to the 0, 0 coordinate on the plot
+    let offsets = [-x_offset, y_offset, 0., std::f64::consts::PI, 0., 0.];
+    let transform = FrameTransform3::new(&offsets, AngleUnits::Radian);
+    let mut p = transform.point_b_to_i(&na::Point3::new(position.0, position.1, 0.));
+
+    // assuming linear graph axes, convert pixel to axes units
+    p.x /= (window_params.width as f64
+        - chart_params.label_size as f64
+        - chart_params.margin as f64 * 2.0)
+        / (chart_params.x_range[1] - chart_params.x_range[0]);
+    p.y /= (window_params.height as f64
+        - chart_params.label_size as f64
+        - chart_params.margin as f64 * 2.0)
+        / (chart_params.y_range[1] - chart_params.y_range[0]); //67.0;
+                                                               // println!("{:?}", (p.x, p.y));
+    (p.x, p.y)
+}
+
 #[allow(unused)]
 /// Outputs a PathElement where it is a shape
 ///
@@ -175,6 +221,7 @@ pub fn polygon_filled_element(
 
     Polygon::new(polygon_points, &polygon_color)
 }
+
 #[allow(unused)]
 /// Outputs a Thin Arrow where it is has two end points (start points to the end)
 ///

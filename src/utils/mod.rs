@@ -3,5 +3,5 @@ pub mod convert;
 pub mod defs;
 pub mod files;
 pub mod math;
-pub mod plot;
+pub mod plot2;
 pub mod transforms;
