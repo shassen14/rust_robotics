@@ -104,12 +104,12 @@ impl base::System<f64, 8, 2> for Model<f64> {
         // joint 2
         x_dot[4] = (-self.link_lengths[0] * f64::sin(x[2])
             - self.link_lengths[1] * f64::sin(x[2] + x[6]))
-            * x[3]
-            + (-self.link_lengths[1] * f64::sin(x[2] + x[6])) * x[7];
+            * (x[3] + u[0])
+            + (-self.link_lengths[1] * f64::sin(x[2] + x[6])) * (x[7] + u[1]);
         x_dot[5] = (self.link_lengths[0] * f64::cos(x[2])
             + self.link_lengths[1] * f64::cos(x[2] + x[6]))
-            * x[3]
-            + (self.link_lengths[1] * f64::cos(x[2] + x[6])) * x[7];
+            * (x[3] + u[0])
+            + (self.link_lengths[1] * f64::cos(x[2] + x[6])) * (x[7] + u[1]);
         x_dot[6] = x[7] + u[1];
         x_dot[7] = 0.0;
 

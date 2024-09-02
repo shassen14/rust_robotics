@@ -174,8 +174,7 @@ pub fn mouse_chart_position(
     p.y /= (window_params.height as f64
         - chart_params.label_size as f64
         - chart_params.margin as f64 * 2.0)
-        / (chart_params.y_range[1] - chart_params.y_range[0]); //67.0;
-                                                               // println!("{:?}", (p.x, p.y));
+        / (chart_params.y_range[1] - chart_params.y_range[0]);
     (p.x, p.y)
 }
 

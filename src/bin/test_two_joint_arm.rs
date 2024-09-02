@@ -4,11 +4,9 @@ use rust_robotics::models::base::System;
 use rust_robotics::models::humanoid::two_joint_arm;
 use rust_robotics::num_methods::runge_kutta;
 use rust_robotics::utils::defs;
-use rust_robotics::utils::defs::AngleUnits;
 use rust_robotics::utils::files;
 use rust_robotics::utils::math;
 use rust_robotics::utils::plot2;
-use rust_robotics::utils::transforms::FrameTransform3;
 
 // 3rd party or std
 use core::f64;
@@ -59,9 +57,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut data: VecDeque<(f64, na::SVector<f64, 8>, na::SVector<f64, 2>)> = VecDeque::new();
 
     let mut controller: pid::Controller<2> = pid::Controller::<2>::new(
-        na::SVector::<f64, 2>::new(1.0, 0.8),
+        na::SVector::<f64, 2>::new(1.5, 1.5),
         na::SVector::<f64, 2>::new(0.000, 0.000),
-        na::SVector::<f64, 2>::new(0.1, 0.1),
+        na::SVector::<f64, 2>::new(0.4, 0.4),
         na::SVector::<f64, 2>::new(-0.1, -0.1),
         na::SVector::<f64, 2>::new(0.1, 0.1),
     );
@@ -122,10 +120,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                     sample_step,
                     &runge_kutta::rk4,
                 );
-                // println!("angle_desired: {}", angle_desired);
                 // println!("x_dot_desired: {}", x_dot_desired);
                 // println!("current input: {}", current_input);
-
                 // println!("current_state: {}", current_state);
 
                 ts += sample_step;
@@ -169,14 +165,13 @@ fn main() -> Result<(), Box<dyn Error>> {
                     .light_line_style(&TRANSPARENT)
                     .draw()?;
 
-                // chart.draw_series(data.iter().zip(data.iter().skip(1)).map(
-                //     |(&(_t0, x0, _u0), &(_t1, x1, _u1))| {
-                //         PathElement::new(
-                //             vec![(x0[0], x0[1]), (x1[0], x1[1])],
-                //             &chart_params.create_label_color(),
-                //         )
-                //     },
-                // ))?;
+                // TODO: terrible way to draw the first joint
+                chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
+                    PathElement::new(
+                        vec![(0.0, 0.0), (x0[0], x0[1])],
+                        &RGBColor(255u8, 255u8, 255u8),
+                    )
+                }))?;
 
                 // TODO: terrible way to draw the second joint
                 chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
@@ -188,14 +183,6 @@ fn main() -> Result<(), Box<dyn Error>> {
                     );
                     PathElement::new(
                         vec![end_points[0], end_points[1]],
-                        &RGBColor(255u8, 255u8, 255u8),
-                    )
-                }))?;
-
-                // TODO: terrible way to draw the first joint
-                chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
-                    PathElement::new(
-                        vec![(0.0, 0.0), (x0[0], x0[1])],
                         &RGBColor(255u8, 255u8, 255u8),
                     )
                 }))?;
