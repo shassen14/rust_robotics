@@ -1,5 +1,18 @@
 extern crate nalgebra as na;
+
 use crate::num_methods::defs;
+
+// pub enum NumDim {
+//     Two,
+//     Three,
+// }
+
+// pub fn num_dim_to_value(dimension: NumDim) -> u8 {
+//     match dimension {
+//         NumDim::Two => 2,
+//         NumDim::Three => 3,
+//     }
+// }
 
 /// System is a public interface that all models should implement to
 /// learn or to adjust details about the system where
@@ -115,14 +128,14 @@ pub trait System<T, const N: usize, const M: usize> {
     ///
     /// * `self` - Model's parameters, functions, and values
     /// * `x` - System's current state
-    /// * `x_dot` - System's desired rate of change
+    /// * `x_dot_desired` - System's desired rate of change
     /// * `t` - Current timestamp
     /// * Returns control inputs required to obtain the desired rate of change
     ///
     fn calculate_input(
         &self,
         x: &na::SVector<T, N>,
-        x_dot: &na::SVector<T, N>,
+        x_dot_desired: &na::SVector<T, N>,
         t: T,
     ) -> na::SVector<T, M>;
 
@@ -135,3 +148,56 @@ pub trait System<T, const N: usize, const M: usize> {
     ///
     fn read(&mut self, filename: &str) -> ();
 }
+
+/// SystemH is a public interface that humanoid models should implement where
+/// T Type, N number of states, M number of inputs
+///
+/// This is an extension of SystemH for specific
+///
+pub trait SystemH<T, const N: usize, const M: usize, const Dim: u8> {
+    fn num_states_to_num_dim_ratio(&self) -> u8;
+
+    fn feasible_state_initial(&self, angles_desired: &[T]) -> na::SVector<T, N>;
+
+    fn inverse_kinematics(
+        &self,
+        position_desired: &[f64],
+        x: &na::SVector<T, N>,
+        u: &na::SVector<T, M>,
+        t: T,
+    ) -> &[T];
+}
+
+// impl<S, T, const N: usize, const M: usize> SystemH<T, N, M, 2> for S
+// where
+//     S: System<T, N, M>,
+// {
+//     fn num_states_to_num_dim_ratio(&self) -> u8 {
+//         4u8
+//     }
+
+//     fn feasible_state_initial(&self, angles_desired: &[T]) -> na::SVector<T, N> {
+//         todo!()
+//     }
+
+//     fn inverse_kinematics(&self, position_desired: &[T]) -> &[T] {
+//         todo!()
+//     }
+// }
+
+// impl<S, T, const N: usize, const M: usize> SystemH<T, N, M, 3> for S
+// where
+//     S: System<T, N, M>,
+// {
+//     fn num_states_to_num_dim_ratio(&self) -> u8 {
+//         todo!()
+//     }
+
+//     fn feasible_state_initial(&self, angles_desired: &[T]) -> na::SVector<T, N> {
+//         todo!()
+//     }
+
+//     fn inverse_kinematics(&self, position_desired: &[T]) -> &[T] {
+//         todo!()
+//     }
+// }
