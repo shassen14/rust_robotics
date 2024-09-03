@@ -159,13 +159,7 @@ pub trait SystemH<T, const N: usize, const M: usize, const Dim: u8> {
 
     fn feasible_state_initial(&self, angles_desired: &[T]) -> na::SVector<T, N>;
 
-    fn inverse_kinematics(
-        &self,
-        position_desired: &[f64],
-        x: &na::SVector<T, N>,
-        u: &na::SVector<T, M>,
-        t: T,
-    ) -> &[T];
+    fn inverse_kinematics(&self, position_desired: Vec<f64>, x: &na::SVector<T, N>) -> Vec<T>;
 }
 
 // impl<S, T, const N: usize, const M: usize> SystemH<T, N, M, 2> for S
