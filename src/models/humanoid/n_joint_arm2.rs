@@ -75,15 +75,12 @@ impl<const N: usize, const M: usize> base::SystemH<f64, N, M, 2> for Model<f64, 
         let mut pos_jac_vec: Vec<f64> = vec![0.0; N / (ratio / 2)];
         let mut angles_vec: Vec<f64> = vec![0.0; N / ratio];
 
-        let mut angle_sum = 0.;
-
         for i in 0..dof {
             println!("i: {}", i);
-            angle_sum += x[ratio * i + 2];
 
             for j in i..dof {
-                pos_jac_vec[2 * i] -= self.link_lengths[j] * f64::sin(angle_sum);
-                pos_jac_vec[2 * i + 1] += self.link_lengths[j] * f64::cos(angle_sum);
+                pos_jac_vec[2 * i] -= self.link_lengths[j] * f64::sin(x[ratio * i + 2]);
+                pos_jac_vec[2 * i + 1] += self.link_lengths[j] * f64::cos(x[ratio * i + 2]);
             }
 
             angles_vec[i] = x[ratio * i + 2];
