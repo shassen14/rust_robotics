@@ -1,19 +1,5 @@
-extern crate nalgebra as na;
-
 use crate::num_methods::defs;
-
-// pub enum NumDim {
-//     Two,
-//     Three,
-// }
-
-// pub fn num_dim_to_value(dimension: NumDim) -> u8 {
-//     match dimension {
-//         NumDim::Two => 2,
-//         NumDim::Three => 3,
-//     }
-// }
-
+use nalgebra as na;
 /// System is a public interface that all models should implement to
 /// learn or to adjust details about the system where
 /// T Type, N number of states, M number of inputs
@@ -78,6 +64,10 @@ pub trait System<T, const N: usize, const M: usize> {
         let func = |func_x: &na::SVector<T, N>, func_t: T| -> na::SVector<T, N> {
             let linear_model = self.calculate_jacobian(func_x, u, func_t);
             // x_dot = Ax + Bu
+            // TODO: the correct formula is something dx_dot = A* dx + B du
+            // since the jacobian is derivative relative to the state and inputs.
+            // Would keeping track of previous states help?
+            // Integrating this would obtain dx and then add that to the current x?
             linear_model.0 * *func_x + linear_model.1 * *u
         };
         integrator(&func, x, t, t + dt)
@@ -150,11 +140,11 @@ pub trait System<T, const N: usize, const M: usize> {
 }
 
 /// SystemH is a public interface that humanoid models should implement where
-/// T Type, N number of states, M number of inputs
+/// T Type, N number of states, M number of inputs, D dimensions
 ///
 /// This is an extension of SystemH for specific
 ///
-pub trait SystemH<T, const N: usize, const M: usize, const Dim: u8> {
+pub trait SystemH<T, const N: usize, const M: usize, const D: u8> {
     fn num_states_to_num_dim_ratio(&self) -> u8;
 
     fn feasible_state_initial(&self, angles_desired: &[T]) -> na::SVector<T, N>;
