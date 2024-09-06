@@ -45,6 +45,9 @@ Architecturally, the project is a WIP. The vision is to work on algorithms in th
         * [Hard coded CSV File](/logs/examples/example_path.csv)
     * [Read Path from CSV and Path Track with Pure Pursuit](/src/bin/read_bike_path.rs) 
         * `cargo run --release --bin read_bike_path configs/examples/animation_bicycle.toml configs/examples/bicycle_kinematic.toml`
+![Pure Pursuit on a Predetermined Path using Kinematic Bicycle Model](https://github.com/shassen14/rust_robotics_media/blob/main/models/bicycle_kinematic_pure_pursuit.gif)
+    
+
 
 
 
