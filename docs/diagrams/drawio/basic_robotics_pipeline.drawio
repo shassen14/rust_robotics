@@ -1,0 +1,135 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" version="24.7.7">
+  <diagram name="Page-1" id="JkTOb7egcxgc8h1to_6p">
+    <mxGraphModel dx="1147" dy="656" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="oaFJKfLlmDRGR765Or4I-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="oaFJKfLlmDRGR765Or4I-1" target="oaFJKfLlmDRGR765Or4I-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-8" value="Images, points,&lt;div&gt;distances&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="oaFJKfLlmDRGR765Or4I-6">
+          <mxGeometry x="-0.15" y="-4" relative="1" as="geometry">
+            <mxPoint x="9" y="-24" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-1" value="&lt;div&gt;Visual Sensors&lt;/div&gt;&lt;div&gt;(i.e. camera, radar, lidar, sonar)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="80" y="280" width="80" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="oaFJKfLlmDRGR765Or4I-2" target="oaFJKfLlmDRGR765Or4I-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-10" value="&lt;div&gt;Position, velocities,&lt;/div&gt;&lt;div&gt;attitudes&lt;/div&gt;&lt;div&gt;split sensor data&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="oaFJKfLlmDRGR765Or4I-7">
+          <mxGeometry x="0.0167" y="-1" relative="1" as="geometry">
+            <mxPoint y="29" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-2" value="&lt;div&gt;Nav Sensors&lt;/div&gt;&lt;div&gt;(i.e. compass, gps, imu, dvl, depth)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="80" y="440" width="80" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="oaFJKfLlmDRGR765Or4I-4" target="oaFJKfLlmDRGR765Or4I-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-16" value="Range, bearing,&lt;div&gt;azimuth, size&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="oaFJKfLlmDRGR765Or4I-12">
+          <mxGeometry x="-0.25" y="4" relative="1" as="geometry">
+            <mxPoint x="6" y="-50" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-4" value="Object Detection, Target Tracking" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="280" y="280" width="80" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="oaFJKfLlmDRGR765Or4I-5" target="oaFJKfLlmDRGR765Or4I-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-15" value="Vehicle states (i.e. position, velocities,&lt;div&gt;accelerations, attitude in the world)&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="oaFJKfLlmDRGR765Or4I-14">
+          <mxGeometry y="-1" relative="1" as="geometry">
+            <mxPoint x="129" y="70" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="oaFJKfLlmDRGR765Or4I-5" target="oaFJKfLlmDRGR765Or4I-17">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="560" y="500" />
+              <mxPoint x="560" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="oaFJKfLlmDRGR765Or4I-5" target="oaFJKfLlmDRGR765Or4I-18">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="500" />
+              <mxPoint x="720" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-5" value="Localization, Inertial Navigation System" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="280" y="440" width="80" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="oaFJKfLlmDRGR765Or4I-11" target="oaFJKfLlmDRGR765Or4I-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-26" value="Target&lt;div&gt;locations,&lt;div&gt;size in&lt;/div&gt;&lt;div&gt;the world&lt;/div&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="oaFJKfLlmDRGR765Or4I-24">
+          <mxGeometry x="-0.725" y="-1" relative="1" as="geometry">
+            <mxPoint x="29" y="-41" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-27" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="oaFJKfLlmDRGR765Or4I-11" target="oaFJKfLlmDRGR765Or4I-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-11" value="Mapping" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="440" y="360" width="80" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="1" source="oaFJKfLlmDRGR765Or4I-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="760" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-33" value="Desired states&lt;div&gt;(i.e. position,&lt;/div&gt;&lt;div&gt;velocities, etc.)&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="oaFJKfLlmDRGR765Or4I-25">
+          <mxGeometry x="-0.5031" y="1" relative="1" as="geometry">
+            <mxPoint x="20" y="-29" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;strokeColor=none;" edge="1" parent="1" source="oaFJKfLlmDRGR765Or4I-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="640" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;strokeWidth=2;endArrow=none;endFill=0;startArrow=classic;startFill=1;" edge="1" parent="1" source="oaFJKfLlmDRGR765Or4I-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="640" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-31" value="Goal or desired location" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="oaFJKfLlmDRGR765Or4I-29">
+          <mxGeometry x="0.143" relative="1" as="geometry">
+            <mxPoint y="-37" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-17" value="Obstacle Avoidance, Path/Motion Planning" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="600" y="360" width="80" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="oaFJKfLlmDRGR765Or4I-18" target="oaFJKfLlmDRGR765Or4I-20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-34" value="Thruster input,&lt;div&gt;steering angle,&lt;/div&gt;&lt;div&gt;torque, brake %&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="oaFJKfLlmDRGR765Or4I-23">
+          <mxGeometry x="-0.05" relative="1" as="geometry">
+            <mxPoint y="-30" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-18" value="Controls" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="760" y="360" width="80" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-20" value="&lt;div&gt;Model, Actuators (i.e.&lt;span style=&quot;background-color: initial;&quot;&gt;motors, thrusters,&lt;/span&gt;&lt;/div&gt;&lt;div&gt;throttle, brake)&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="920" y="360" width="80" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-35" value="Hardware" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="80" y="130" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-37" value="Software" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="80" y="170" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="oaFJKfLlmDRGR765Or4I-38" value="Not doing" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="80" y="210" width="60" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
