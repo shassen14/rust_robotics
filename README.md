@@ -3,7 +3,7 @@ This project was inspired by [PythonRobotics](https://github.com/AtsushiSakai/Py
 
 # Table of Contents 
 * [Current Project State](#current-project-state)
-* [Requirements](#requirements)
+* [Requirements/Quick Install](#requirementsquick-install)
 
 
 # Current Project State
@@ -22,10 +22,11 @@ Architecturally, the project is a WIP. The vision is to work on algorithms in th
         * [Kinematic Bicycle](/src/models/ground_vehicles/bicycle_kinematic.rs)
         * [N Joint 2D Robotic Arm](/src/models/humanoid/n_joint_arm2.rs)
 
-# Project Requirements/Quick Install
+# Requirements/Quick Install
 1. [Rust Installation](https://www.rust-lang.org/tools/install) for your specified OS
 2. Clone this repo and change your directory into this repo using the command line interface
 3. `cargo build --release`
+    * Release build optimizes for storage size and cpu usage
 
 ## Run Example Binaries
 **Assumption is you are in the repo directory in the command line interface**
@@ -34,6 +35,7 @@ Architecturally, the project is a WIP. The vision is to work on algorithms in th
 
 * [N Joint 2D Robotic Arm Example](/src/bin/test_n_joint_arm2.rs)
     * `cargo run --release --bin test_n_joint_arm2 configs/examples/animation_n_joint_arm2.toml`
+![N Joint Robotic Arm Simulation](https://github.com/shassen14/rust_robotics_media/blob/main/models/n_joint_robotic_arm_2d.gif)
 
 * Kinematic Bicycle Model Examples
     * [Simple Drive Around with Keyboard](/src/bin/test_bicycle_kinematic.rs) 
