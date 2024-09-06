@@ -1,5 +1,6 @@
 use crate::num_methods::defs::VectorFn;
 use nalgebra as na;
+use num_traits;
 
 #[allow(dead_code)]
 /// Integrate a function, dx/dt = func(x, t), using Runge-Kutta 1st order (Euler) for a single timestep
@@ -19,9 +20,7 @@ pub fn rk1<T, const R: usize>(
     tf: T,
 ) -> na::SVector<T, R>
 where
-    T: std::ops::Sub<Output = T> // T - T = T
-        + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>> // T * Vec = Vec
-        + Copy, // T is copyable
+    T: num_traits::Float + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>, // T * Vec = Vec
     na::SVector<T, R>: std::ops::Add<na::SVector<T, R>, Output = na::SVector<T, R>>, // Vec + Vec = Vec
 {
     let dt: T = tf - t0;
@@ -46,17 +45,13 @@ pub fn rk2<T, const R: usize>(
     tf: T,
 ) -> na::SVector<T, R>
 where
-    T: std::ops::Sub<Output = T> // T - T = T
-        + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>> // T * Vec = Vec
-        + std::ops::Add<Output = T> // T + T = T
-        + Copy, // T is copyable
+    T: num_traits::Float + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>, // T * Vec = Vec,
     na::SVector<T, R>: std::ops::Add<na::SVector<T, R>, Output = na::SVector<T, R>>, // Vec + Vec = Vec
-    f64: std::ops::Mul<T, Output = T>,                                               // f64 * T = T
 {
     let dt: T = tf - t0;
     let k1: na::SVector<T, R> = func(x0, t0);
     let k2: na::SVector<T, R> = func(&(*x0 + dt * k1), t0 + dt);
-    *x0 + 0.5 * dt * (k1 + k2)
+    *x0 + T::from(0.5).unwrap() * dt * (k1 + k2)
 }
 
 #[allow(dead_code)]
@@ -77,21 +72,18 @@ pub fn rk3<T, const R: usize>(
     tf: T,
 ) -> na::SVector<T, R>
 where
-    T: std::ops::Sub<Output = T> // T - T = T
-        + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>> // T * Vec = Vec
-        + std::ops::Add<Output = T> // T + T = T
-        + std::ops::Div<f64, Output = T> // T / f64 = T
-        + Copy, // T is copyable
+    T: num_traits::Float + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>, // T * Vec = Vec
     na::SVector<T, R>: std::ops::Add<na::SVector<T, R>, Output = na::SVector<T, R>>, // Vec + Vec = Vec
-    f64: std::ops::Mul<T, Output = T> // f64 * T = T
-        + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>, // f64 * Vec = Vec
 {
     let dt: T = tf - t0;
     let k1: na::SVector<T, R> = func(x0, t0);
     let k2: na::SVector<T, R> = func(&(*x0 + dt * k1), t0 + dt);
-    let k3: na::SVector<T, R> = func(&(*x0 + (dt / 4.) * (k1 + k2)), t0 + dt / 2.);
+    let k3: na::SVector<T, R> = func(
+        &(*x0 + (dt / T::from(4).unwrap()) * (k1 + k2)),
+        t0 + dt / T::from(2).unwrap(),
+    );
 
-    *x0 + (dt / 6.) * (k1 + k2 + 4. * k3)
+    *x0 + (dt / T::from(6).unwrap()) * (k1 + k2 + T::from(4).unwrap() * k3)
 }
 
 #[allow(dead_code)]
@@ -112,23 +104,17 @@ pub fn rk4<T, const R: usize>(
     tf: T,
 ) -> na::SVector<T, R>
 where
-    T: std::ops::Sub<Output = T> // T - T = T
-        + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>> // T * Vec = Vec
-        + std::ops::Div<f64, Output = T> // T / f64 = T
-        + std::ops::Mul<f64, Output = T> // T * f64 = T
-        + std::ops::Add<Output = T> // T + T = T
-        + Copy, // T is copyable
+    T: num_traits::Float + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>, // T * Vec = Vecca
     na::SVector<T, R>: std::ops::Add<na::SVector<T, R>, Output = na::SVector<T, R>>, // Vec + Vec = Vec
-    f64: std::ops::Mul<T, Output = T> // f64 * T = T
-        + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>, // f64 * Vec = Vec
 {
+    let two: T = T::from(2).unwrap();
     let dt: T = tf - t0;
     let k1: na::SVector<T, R> = func(x0, t0);
-    let k2: na::SVector<T, R> = func(&(*x0 + (dt / 2.) * k1), t0 + dt / 2.);
-    let k3: na::SVector<T, R> = func(&(*x0 + (dt / 2.) * k2), t0 + dt / 2.);
+    let k2: na::SVector<T, R> = func(&(*x0 + (dt / two) * k1), t0 + dt / two);
+    let k3: na::SVector<T, R> = func(&(*x0 + (dt / two) * k2), t0 + dt / two);
     let k4: na::SVector<T, R> = func(&(*x0 + dt * k3), tf);
 
-    *x0 + (dt / 6.) * (k1 + 2. * k2 + 2. * k3 + k4)
+    *x0 + (dt / T::from(6).unwrap()) * (k1 + two * k2 + two * k3 + k4)
 }
 
 ///////////////////////////////////////////////////////////////////////////////

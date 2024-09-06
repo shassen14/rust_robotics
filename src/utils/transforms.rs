@@ -4,7 +4,6 @@ use crate::utils::defs::AngleUnits;
 
 // 3rd Party
 use nalgebra::{self as na};
-use simba::simd::SimdRealField;
 
 /// x, y, z, roll, pitch, yaw
 /// TODO:
@@ -14,10 +13,9 @@ pub struct FrameTransform3<T> {
     i_to_b_iso: na::Isometry3<T>,
 }
 
-impl<T: SimdRealField> FrameTransform3<T>
+impl<T> FrameTransform3<T>
 where
-    T: Copy,
-    T::Element: SimdRealField,
+    T: na::RealField + Copy,
     f64: std::ops::Mul<T, Output = T>,
 {
     pub fn new(offsets: &[T; 6], unit: AngleUnits) -> Self {

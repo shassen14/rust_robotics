@@ -1,6 +1,5 @@
 use nalgebra::{self as na};
 use serde::{Deserialize, Serialize};
-use simba::simd::SimdRealField;
 
 use crate::utils::convert;
 
@@ -30,7 +29,7 @@ pub fn calculate_lookahead_point<T>(
     lookahead_distance: T,
 ) -> (usize, T, na::Point3<T>)
 where
-    T: std::fmt::Debug + Clone + Copy + std::cmp::PartialOrd + SimdRealField + 'static,
+    T: na::RealField + std::fmt::Debug + Copy + 'static,
 {
     let lookahead_distance_squared: T = lookahead_distance * lookahead_distance;
     for i in start_index..path.len() {
@@ -53,9 +52,9 @@ pub fn calculate_desired_yaw<T>(
     position_target: &na::Point2<T>,
 ) -> T
 where
-    T: Clone + Copy + SimdRealField,
+    T: na::RealField + Clone + Copy,
 {
-    T::simd_atan2(
+    T::atan2(
         position_target.y - position_current.y,
         position_target.x - position_current.x,
     )
@@ -69,13 +68,13 @@ pub fn pure_pursuit<T>(
     wheelbase: T,
 ) -> T
 where
-    T: Clone + Copy + SimdRealField,
-    f64: std::ops::Mul<T, Output = T>,
+    T: na::RealField + std::fmt::Debug + Copy + 'static,
 {
     let yaw_desired = calculate_desired_yaw(position_current, position_target);
     let yaw_relative = yaw_desired - yaw_current;
-    let curvature = (T::simd_sin(yaw_relative) + T::simd_sin(yaw_relative)) / target_distance;
-    let rwa = T::simd_atan2(wheelbase * curvature, wheelbase / wheelbase);
+    // let curvature = (T::simd_sin(yaw_relative) + T::simd_sin(yaw_relative)) / target_distance;
+    let curvature = (T::sin(yaw_relative) + T::sin(yaw_relative)) / target_distance;
+    let rwa = T::atan2(wheelbase * curvature, wheelbase / wheelbase);
     rwa
 }
 
