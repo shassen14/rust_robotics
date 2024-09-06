@@ -10,6 +10,7 @@ Architecturally, the project is a WIP. The vision is to work on algorithms in th
 
 ## Basic Robotics Pipeline
 This is generally how data flows to get robots to achieve goals autonomously. We will work on algorithms unintuitively from the bottom to upstream.
+
 ![Basic Robotics Pipeline](https://github.com/shassen14/rust_robotics_media/blob/main/general/basic_robotics_pipeline.drawio.png)
 
 **NOTE: Since this is the beginning, the program is very volatile and could easily have breaking changes**
@@ -36,6 +37,7 @@ This is generally how data flows to get robots to achieve goals autonomously. We
 
 * [N Joint 2D Robotic Arm Example](/src/bin/test_n_joint_arm2.rs)
     * `cargo run --release --bin test_n_joint_arm2 configs/examples/animation_n_joint_arm2.toml`
+
 ![N Joint Robotic Arm Simulation](https://github.com/shassen14/rust_robotics_media/blob/main/models/n_joint_robotic_arm_2d.gif)
 
 * Kinematic Bicycle Model Examples
@@ -46,6 +48,7 @@ This is generally how data flows to get robots to achieve goals autonomously. We
         * [Hard coded CSV File](/logs/examples/example_path.csv)
     * [Read Path from CSV and Path Track with Pure Pursuit](/src/bin/read_bike_path.rs) 
         * `cargo run --release --bin read_bike_path configs/examples/animation_bicycle.toml configs/examples/bicycle_kinematic.toml`
+
 ![Pure Pursuit on a Predetermined Path using Kinematic Bicycle Model](https://github.com/shassen14/rust_robotics_media/blob/main/models/bicycle_kinematic_pure_pursuit.gif)
     
 
