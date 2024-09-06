@@ -5,10 +5,11 @@ This project was inspired by [PythonRobotics](https://github.com/AtsushiSakai/Py
 * [Current Project State](#current-project-state)
 * [Requirements/Quick Install](#requirementsquick-install)
 
-
 # Current Project State
 Architecturally, the project is a WIP. The vision is to work on algorithms in the following manner (i.e. system modeling -> controls -> path/motion planning -> inertial sensor imitation -> localization -> basic visual sensor imitation -> mapping).
 
+## Basic Robotics Pipeline
+This is generally how data flows to get robots to achieve goals autonomously. We will work on algorithms unintuitively from the bottom to upstream.
 ![Basic Robotics Pipeline](https://github.com/shassen14/rust_robotics_media/blob/main/general/basic_robotics_pipeline.drawio.png)
 
 **NOTE: Since this is the beginning, the program is very volatile and could easily have breaking changes**
