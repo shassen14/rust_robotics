@@ -23,19 +23,6 @@ use std::time::SystemTime;
 const STATES: usize = 24;
 const INPUTS: usize = 6;
 
-fn get_link_lengths(points: Vec<(f64, f64)>) -> Vec<f64> {
-    // let length = points.len();
-    let mut link_lengths = vec![0.0; points.len() - 1];
-    for i in 0..points.len() - 1 {
-        link_lengths[i] = f64::sqrt(
-            f64::powi(points[i].0 - points[i + 1].0, 2)
-                + f64::powi(points[i].1 - points[i + 1].1, 2),
-        );
-    }
-
-    link_lengths
-}
-
 fn main() -> Result<(), Box<dyn Error>> {
     // Read command line arguments
     let args: Vec<String> = env::args().collect();
@@ -49,8 +36,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let plot_config: plot2::Config = files::read_config(animate_cfg_path);
 
     let chart_params: plot2::ChartParams = plot_config.chart_params;
-    let mut window_params: plot2::WindowParams = plot_config.window_params;
-    window_params.title = "Two Joint Robotic Arm".to_string();
+    let window_params: plot2::WindowParams = plot_config.window_params;
     let animation_params: plot2::AnimationParams = plot_config.animation_params;
 
     let mut buf = defs::BufferWrapper(vec![0u32; window_params.width * window_params.height]);
@@ -80,12 +66,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             STATES,
             INPUTS,
             2,
-        >>::feasible_state_initial(&model, &angles);
-    // current_state[STATES - 1] = 0.1;
-    // current_state[STATES - 5] = 0.1;
-    // current_state[STATES - 9] = 0.1;
-    // current_state[STATES - 13] = 0.1;
-    // current_state[3] = 0.1;
+        >>::calculate_feasible_state_initial(&model, &angles);
 
     let mut current_input: na::SVector<f64, INPUTS> = na::SVector::<f64, INPUTS>::zeros();
     let mut data: VecDeque<(f64, na::SVector<f64, STATES>, na::SVector<f64, INPUTS>)> =
@@ -234,7 +215,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 )))?;
             }
 
-            window.set_title("Robotic Arm");
+            // window.set_title("Robotic Arm");
 
             window.update_with_buffer(buf.borrow(), window_params.width, window_params.height)?;
             last_flushed = epoch;

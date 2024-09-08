@@ -1,7 +1,7 @@
 use nalgebra::{self as na};
 use serde::{Deserialize, Serialize};
 
-use crate::utils::convert;
+// TODO: place pub struct somewhere else to save paths
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RecordPoint<T> {
@@ -21,6 +21,11 @@ impl<T> RecordPoint<T> {
         }
     }
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// TODO: Make this a class? Not sure if I can generalize this for other
+// path tracking classes
+///////////////////////////////////////////////////////////////////////////////
 
 pub fn calculate_lookahead_point<T>(
     path: &Vec<na::Point3<T>>,
