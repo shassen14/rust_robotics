@@ -51,6 +51,30 @@ This is generally how data flows to get robots to achieve goals autonomously. We
 
 ![Pure Pursuit on a Predetermined Path using Kinematic Bicycle Model](https://github.com/shassen14/rust_robotics_media/blob/main/models/bicycle_kinematic_pure_pursuit.gif)
     
+# To-Do's
+
+## Robotics Related
+1. Base interface for controls
+    * Base interface for pathtracking as an extension?
+1. Double check jacobians for all models
+1. Feedforward control input for all models
+
+
+## Non-Robotics Related
+1. Function returns Result<> instead of the expected values for error handling
+1. Function arguments have std::option for optional arguments. This will help with default API values.
+1. Ability to move axis range while plotting for animations. 
+    * Like a panning camera to center around an object
+1. Multiplot function wrappers to graph multiple plots at the same time in animations
+    * Need to have mouse point position converted to graph location
+1. 3D plotting for animations
+1. Combination of 3D plots and 2D plots
+1. Utilities for command line argument for binaries
+1. CSV to SQLite
+    * [external packagege](https://github.com/rusqlite/rusqlite)
+1. Move binaries to examples
+    * Examples need a generic program flow
+1. Github workflow
 
 
 
