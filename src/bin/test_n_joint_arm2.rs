@@ -30,7 +30,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Obtain config_path from command line
     // TODO: make a class for this to streamline this and send helpful error messages
     let animate_cfg_path = &args[1] as &str;
-    // let bike_cfg_path = &args[2] as &str;
 
     // Obtain plot config params given the file
     let plot_config: plot2::Config = files::read_config(animate_cfg_path);
@@ -85,10 +84,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let sample_step: f64 = 1.0 / animation_params.sample_rate;
     let frame_step: f64 = 1.0 / animation_params.frame_rate;
 
-    let mut angle_desired: Vec<f64> = model.inverse_kinematics(
-        vec![current_state[STATES - 4], current_state[STATES - 3]],
-        &current_state,
-    );
+    let mut angle_desired: Vec<f64>;
     let mut mouse_chart_position: (f64, f64) =
         (current_state[STATES - 4], current_state[STATES - 3]);
 
@@ -139,14 +135,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                     &runge_kutta::rk4,
                 );
 
-                // println!("x_dot_desired: {}", x_dot_desired);
-                println!("angle_desired: {:?}", angle_desired);
-                // println!("current input: {}", current_input);
-                // println!("current_state: {}", current_state);
-
                 ts += sample_step;
 
-                // println!("{}", current_state);
                 data.push_back((ts, current_state, current_input));
                 data.pop_front();
             }
@@ -203,9 +193,6 @@ fn main() -> Result<(), Box<dyn Error>> {
                         previous_point = (x[4 * i], x[4 * i + 1]);
                     }
                     link_points.push(previous_point);
-                    // let link_lengths = get_link_lengths(link_points);
-                    // println!("x_cur: {}", current_state);
-                    // println!("link_lengths: {:?}", link_lengths);
                 }
 
                 chart.draw_series(std::iter::once(Cross::new(
@@ -214,8 +201,6 @@ fn main() -> Result<(), Box<dyn Error>> {
                     &RGBColor(255, 0, 0),
                 )))?;
             }
-
-            // window.set_title("Robotic Arm");
 
             window.update_with_buffer(buf.borrow(), window_params.width, window_params.height)?;
             last_flushed = epoch;

@@ -107,12 +107,6 @@ fn main() -> Result<(), Box<dyn Error>> {
                         Key::Down => {
                             current_input[0] -= VEL_STEP;
                         }
-                        // Key::Left => {
-                        //     current_input[1] += RWA_STEP;
-                        // }
-                        // Key::Right => {
-                        //     current_input[1] -= RWA_STEP;
-                        // }
                         _ => {
                             continue;
                         }

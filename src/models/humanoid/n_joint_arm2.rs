@@ -1,5 +1,5 @@
 // rust robotics
-use crate::models::base::{self, System, SystemH};
+use crate::models::base::{self, SystemH};
 use crate::utils::files;
 
 // 3rd party or std
