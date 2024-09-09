@@ -163,7 +163,7 @@ pub fn mouse_chart_position(
     // convert window axes (+x right, +y down, +z into the page) to +x right, +y up, +z out of the page
     // and translate it to the 0, 0 coordinate on the plot
     let offsets = [-x_offset, y_offset, 0., std::f64::consts::PI, 0., 0.];
-    let transform = FrameTransform3::new(&offsets, AngleUnits::Radian);
+    let transform = FrameTransform3::new(&offsets, Some(AngleUnits::Radian));
     let mut p = transform.point_b_to_i(&na::Point3::new(position.0, position.1, 0.));
 
     // assuming linear graph axes, convert pixel to axes units

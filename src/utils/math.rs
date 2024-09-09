@@ -91,7 +91,7 @@ pub fn calculate_rectangle_points(
 ) -> [(f64, f64); 4] {
     let tf = FrameTransform3::new(
         &[start_point.0, start_point.1, 0., 0., 0., heading_angle],
-        angle_units,
+        Some(angle_units),
     );
     let point_top_left = tf.point_b_to_i(&na::Point3::new(length_front, width_left, 0.));
     let point_top_right = tf.point_b_to_i(&na::Point3::new(length_front, -width_right, 0.));
@@ -115,7 +115,7 @@ pub fn calculate_line_endpoints(
 ) -> [(f64, f64); 2] {
     let tf = FrameTransform3::new(
         &[start_point.0, start_point.1, 0., 0., 0., heading_angle],
-        angle_units,
+        Some(angle_units),
     );
     let end_point = tf.point_b_to_i(&na::Point3::new(length, 0., 0.));
 

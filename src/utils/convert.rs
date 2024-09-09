@@ -7,9 +7,9 @@
 ///
 pub fn rad_to_deg<T>(angle: T) -> T
 where
-    f64: std::ops::Mul<T, Output = T>,
+    T: num_traits::Float,
 {
-    (180f64 / std::f64::consts::PI) * angle
+    (T::from(180).unwrap() / T::from(std::f64::consts::PI).unwrap()) * angle
 }
 
 /// Converts an assumed angle's units from degrees to radians
@@ -21,9 +21,9 @@ where
 ///
 pub fn deg_to_rad<T>(angle: T) -> T
 where
-    f64: std::ops::Mul<T, Output = T>,
+    T: num_traits::Float,
 {
-    (std::f64::consts::PI / 180f64) * angle
+    (T::from(std::f64::consts::PI).unwrap() / T::from(180).unwrap()) * angle
 }
 
 #[cfg(test)]

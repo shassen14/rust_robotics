@@ -15,21 +15,22 @@ pub struct FrameTransform3<T> {
 
 impl<T> FrameTransform3<T>
 where
-    T: na::RealField + Copy,
-    f64: std::ops::Mul<T, Output = T>,
+    T: na::RealField + num_traits::Float + Copy,
 {
-    pub fn new(offsets: &[T; 6], unit: AngleUnits) -> Self {
+    pub fn new(offsets: &[T; 6], unit: Option<AngleUnits>) -> Self {
         let mut roll = offsets[3];
         let mut pitch = offsets[4];
         let mut yaw = offsets[5];
 
+        // If unit is radian, then do nothing.
+        // If unit is None or degree, convert to radian. Default API
         match unit {
-            AngleUnits::Degree => {
+            Some(AngleUnits::Radian) => {}
+            _ => {
                 roll = convert::deg_to_rad(roll);
                 pitch = convert::deg_to_rad(pitch);
                 yaw = convert::deg_to_rad(yaw);
             }
-            _ => {}
         }
 
         let b_to_i_q = na::UnitQuaternion::<T>::from_euler_angles(roll, pitch, yaw);
@@ -77,7 +78,7 @@ mod tests {
 
     #[test]
     fn test_transform_pt_rotation() {
-        let tf = FrameTransform3::<f64>::new(&ROTATION, AngleUnits::Degree);
+        let tf = FrameTransform3::<f64>::new(&ROTATION, Some(AngleUnits::Degree));
 
         println!("b to i Isometry: {}", tf.get_b_to_i_iso());
         println!("i to b Isometry: {}", tf.get_i_to_b_iso());
@@ -114,7 +115,7 @@ mod tests {
 
     #[test]
     fn test_transform_pt_translation() {
-        let tf = FrameTransform3::<f64>::new(&TRANSLATION, AngleUnits::Degree);
+        let tf = FrameTransform3::<f64>::new(&TRANSLATION, Some(AngleUnits::Degree));
 
         println!("b to i Isometry: {}", tf.get_b_to_i_iso());
         println!("i to b Isometry: {}", tf.get_i_to_b_iso());
@@ -151,7 +152,7 @@ mod tests {
 
     #[test]
     fn test_transform_pt_combined() {
-        let tf = FrameTransform3::<f64>::new(&COMBINED, AngleUnits::Degree);
+        let tf = FrameTransform3::<f64>::new(&COMBINED, None);
 
         println!("b to i Isometry: {}", tf.get_b_to_i_iso());
         println!("i to b Isometry: {}", tf.get_i_to_b_iso());
