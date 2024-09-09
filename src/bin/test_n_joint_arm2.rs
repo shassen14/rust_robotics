@@ -23,19 +23,6 @@ use std::time::SystemTime;
 const STATES: usize = 24;
 const INPUTS: usize = 6;
 
-fn get_link_lengths(points: Vec<(f64, f64)>) -> Vec<f64> {
-    // let length = points.len();
-    let mut link_lengths = vec![0.0; points.len() - 1];
-    for i in 0..points.len() - 1 {
-        link_lengths[i] = f64::sqrt(
-            f64::powi(points[i].0 - points[i + 1].0, 2)
-                + f64::powi(points[i].1 - points[i + 1].1, 2),
-        );
-    }
-
-    link_lengths
-}
-
 fn main() -> Result<(), Box<dyn Error>> {
     // Read command line arguments
     let args: Vec<String> = env::args().collect();
@@ -43,14 +30,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Obtain config_path from command line
     // TODO: make a class for this to streamline this and send helpful error messages
     let animate_cfg_path = &args[1] as &str;
-    // let bike_cfg_path = &args[2] as &str;
 
     // Obtain plot config params given the file
     let plot_config: plot2::Config = files::read_config(animate_cfg_path);
 
     let chart_params: plot2::ChartParams = plot_config.chart_params;
-    let mut window_params: plot2::WindowParams = plot_config.window_params;
-    window_params.title = "Two Joint Robotic Arm".to_string();
+    let window_params: plot2::WindowParams = plot_config.window_params;
     let animation_params: plot2::AnimationParams = plot_config.animation_params;
 
     let mut buf = defs::BufferWrapper(vec![0u32; window_params.width * window_params.height]);
@@ -80,12 +65,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             STATES,
             INPUTS,
             2,
-        >>::feasible_state_initial(&model, &angles);
-    // current_state[STATES - 1] = 0.1;
-    // current_state[STATES - 5] = 0.1;
-    // current_state[STATES - 9] = 0.1;
-    // current_state[STATES - 13] = 0.1;
-    // current_state[3] = 0.1;
+        >>::calculate_feasible_state_initial(&model, &angles);
 
     let mut current_input: na::SVector<f64, INPUTS> = na::SVector::<f64, INPUTS>::zeros();
     let mut data: VecDeque<(f64, na::SVector<f64, STATES>, na::SVector<f64, INPUTS>)> =
@@ -104,10 +84,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let sample_step: f64 = 1.0 / animation_params.sample_rate;
     let frame_step: f64 = 1.0 / animation_params.frame_rate;
 
-    let mut angle_desired: Vec<f64> = model.inverse_kinematics(
-        vec![current_state[STATES - 4], current_state[STATES - 3]],
-        &current_state,
-    );
+    let mut angle_desired: Vec<f64>;
     let mut mouse_chart_position: (f64, f64) =
         (current_state[STATES - 4], current_state[STATES - 3]);
 
@@ -158,14 +135,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                     &runge_kutta::rk4,
                 );
 
-                // println!("x_dot_desired: {}", x_dot_desired);
-                println!("angle_desired: {:?}", angle_desired);
-                // println!("current input: {}", current_input);
-                // println!("current_state: {}", current_state);
-
                 ts += sample_step;
 
-                // println!("{}", current_state);
                 data.push_back((ts, current_state, current_input));
                 data.pop_front();
             }
@@ -222,9 +193,6 @@ fn main() -> Result<(), Box<dyn Error>> {
                         previous_point = (x[4 * i], x[4 * i + 1]);
                     }
                     link_points.push(previous_point);
-                    // let link_lengths = get_link_lengths(link_points);
-                    // println!("x_cur: {}", current_state);
-                    // println!("link_lengths: {:?}", link_lengths);
                 }
 
                 chart.draw_series(std::iter::once(Cross::new(
@@ -233,8 +201,6 @@ fn main() -> Result<(), Box<dyn Error>> {
                     &RGBColor(255, 0, 0),
                 )))?;
             }
-
-            window.set_title("Robotic Arm");
 
             window.update_with_buffer(buf.borrow(), window_params.width, window_params.height)?;
             last_flushed = epoch;

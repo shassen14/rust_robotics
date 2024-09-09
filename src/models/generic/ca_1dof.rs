@@ -6,6 +6,10 @@ pub struct Model;
 
 impl Model {
     fn calculate_f() -> na::SMatrix<f64, 3, 3> {
+        // input is column based instead of row based
+        // pos_dot = vel
+        // vel_dot = acc
+        // acc_dot = 0.0
         na::SMatrix::<f64, 3, 3>::from_array_storage(na::ArrayStorage([
             [0., 0., 0.],
             [1., 0., 0.],

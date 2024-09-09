@@ -1,9 +1,10 @@
 // rust robotics
-use crate::models::base::{self, System, SystemH};
+use crate::models::base::{self, SystemH};
 use crate::utils::files;
 
 // 3rd party or std
-extern crate nalgebra as na;
+use nalgebra as na;
+use num_traits;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -12,18 +13,14 @@ pub struct Model<T, const N: usize, const M: usize> {
 }
 
 impl<T, const N: usize, const M: usize> Model<T, N, M> {
-    fn calculate_a(&self) -> na::SMatrix<T, N, N> {
-        todo!()
-    }
-
     fn distance_squared_to_goal(
         &self,
         position_current: &na::SVector<T, 2>,
         position_goal: &na::SVector<T, 2>,
     ) -> (na::SVector<T, 2>, T)
     where
+        T: num_traits::Float,
         na::SVector<T, 2>: std::ops::Sub<Output = na::SVector<T, 2>>,
-        T: std::ops::Add<Output = T> + std::ops::Mul<Output = T> + Copy,
     {
         let error = *position_goal - *position_current;
 
@@ -38,7 +35,7 @@ impl<const N: usize, const M: usize> base::SystemH<f64, N, M, 2> for Model<f64, 
         4u8
     }
 
-    fn feasible_state_initial(&self, angles_desired: &[f64]) -> na::SVector<f64, N> {
+    fn calculate_feasible_state_initial(&self, angles_desired: &[f64]) -> na::SVector<f64, N> {
         let ratio =
             <Model<f64, N, M> as SystemH<f64, N, M, 2>>::num_states_to_num_dim_ratio(self) as usize;
         let dof = N / ratio;
@@ -76,8 +73,6 @@ impl<const N: usize, const M: usize> base::SystemH<f64, N, M, 2> for Model<f64, 
         let mut angles_vec: Vec<f64> = vec![0.0; N / ratio];
 
         for i in 0..dof {
-            println!("i: {}", i);
-
             for j in i..dof {
                 pos_jac_vec[2 * i] -= self.link_lengths[j] * f64::sin(x[ratio * i + 2]);
                 pos_jac_vec[2 * i + 1] += self.link_lengths[j] * f64::cos(x[ratio * i + 2]);
@@ -91,18 +86,14 @@ impl<const N: usize, const M: usize> base::SystemH<f64, N, M, 2> for Model<f64, 
         // TODO: no unwrap
         let jacobian_inverse = position_jacobian.pseudo_inverse(1e-12).unwrap();
 
-        let (error, distance_squared) = self.distance_squared_to_goal(
+        let (error, _) = self.distance_squared_to_goal(
             &na::SVector::<f64, 2>::new(x[ratio * dof - 4], x[ratio * dof - 3]),
             &na::SVector::<f64, 2>::new(position_desired[0], position_desired[1]),
         );
 
-        let joint_angle_goals = jacobian_inverse.clone() * error;
+        let joint_angle_difference = jacobian_inverse.clone() * error;
 
-        println!("error: {}, jacobian_inverse: {}", error, jacobian_inverse);
-
-        println!("joint angles: {}", joint_angle_goals);
-
-        joint_angle_goals.data.as_vec().to_vec()
+        joint_angle_difference.data.as_vec().to_vec()
     }
 }
 
@@ -142,28 +133,7 @@ impl<const N: usize, const M: usize> base::System<f64, N, M> for Model<f64, N, M
             }
             x_dot[ratio * i + 2] = x[ratio * i + 3] + u[i];
             x_dot[ratio * i + 3] = 0.0;
-
-            // if i == 0 {
-            //     x_dot[i] = -self.link_lengths[i] * f64::sin(x[i + 2]) * (x[i + 3] + u[i]);
-            //     x_dot[i + 1] = self.link_lengths[i] * f64::cos(x[i + 2]) * (x[i + 3] + u[i]);
-            //     x_dot[i + 2] = x[ratio * i + 3] + u[i];
-            //     x_dot[i + 3] = 0.0;
-            // } else {
-            //     x_dot[ratio * i] = x_dot[ratio * (i - 1)]
-            //         - self.link_lengths[i]
-            //             * f64::sin(angle_sum)
-            //             * (x[ratio * (i - 1) + 3] + u[i - 1])
-            //         - (self.link_lengths[i] * f64::sin(angle_sum) * (x[ratio * i + 3] + u[i]));
-            //     x_dot[ratio * i + 1] = x_dot[ratio * (i - 1) + 1]
-            //         + self.link_lengths[i]
-            //             * f64::cos(angle_sum)
-            //             * (x[ratio * (i - 1) + 3] + u[i - 1])
-            //         + (self.link_lengths[i] * f64::cos(angle_sum) * (x[ratio * i + 3] + u[i]));
-            //     x_dot[ratio * i + 2] = x[ratio * i + 3] + u[i];
-            //     x_dot[ratio * i + 3] = 0.0;
-            // }
         }
-        // println!("x_dot: {}", x_dot);
 
         x_dot
     }
@@ -175,10 +145,6 @@ impl<const N: usize, const M: usize> base::System<f64, N, M> for Model<f64, N, M
         u: &na::SVector<f64, M>,
         _t: f64,
     ) -> (na::SMatrix<f64, N, N>, na::SMatrix<f64, N, M>) {
-        // (
-        //     Model::calculate_a(&self, x, u),
-        //     Model::calculate_b(&self, x, u),
-        // )
         todo!();
     }
 
@@ -194,8 +160,8 @@ impl<const N: usize, const M: usize> base::System<f64, N, M> for Model<f64, N, M
 
     #[allow(unused)]
     fn read(&mut self, filename: &str) -> () {
-        todo!()
-        // let data: Model = files::read_config(filename);
+        let data: Model<f64, N, M> = files::read_config(filename);
+        self.link_lengths = data.link_lengths;
     }
 }
 

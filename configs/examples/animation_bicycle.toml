@@ -4,14 +4,14 @@ width = 720 # pixels
 height = 720 # pixels
 
 [chart_params]
-background_color = [0, 0, 0]
-label_color = [0, 250, 0]
-margin = 15
+background_color = [0, 0, 0] # rgb
+label_color = [0, 250, 0] # rgb
+margin = 17
 label_size = 30
 label_font = "sans-serif"
 label_font_size = 15
-x_range = [-25.0, 25.0]
-y_range = [-25.0, 25.0]
+x_range = [-80.0, 80.0]
+y_range = [-80.0, 80.0]
 
 [animation_params]
 sample_rate = 100
