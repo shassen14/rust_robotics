@@ -575,4 +575,87 @@ mod tests {
             assert_relative_eq!(tf_tf_velocity[i], velocity[i], epsilon = 1e-12);
         }
     }
+
+    // TODO: Only tests if acceleration transforms forward and back between frames. Think of simple cases of knowing the
+    // answer intuitively
+    #[test]
+    fn test_transform_lin_acc_combined() {
+        let tf = FrameTransform3::<f64>::new(&COMBINED, Some(AngleUnits::Radian));
+
+        println!("b to i Isometry: {}", tf.get_b_to_i_iso());
+        println!("i to b Isometry: {}", tf.get_i_to_b_iso());
+
+        let acceleration = Point3::<f64>::new(1., 2., 3.);
+        let angular_acceleration_body = Point3::<f64>::new(
+            std::f64::consts::FRAC_PI_2,
+            std::f64::consts::FRAC_PI_2,
+            std::f64::consts::FRAC_PI_2,
+        );
+        let angular_velocity_body = Point3::<f64>::new(
+            std::f64::consts::FRAC_PI_2,
+            std::f64::consts::FRAC_PI_2,
+            std::f64::consts::FRAC_PI_2,
+        );
+        let angular_acceleration_inertial =
+            tf.angular_acceleration_b_to_i(&angular_acceleration_body);
+        let angular_velocity_inertial = tf.angular_velocity_b_to_i(&angular_velocity_body);
+
+        // equivalent to tf.get_b_to_i_iso().rotation * point
+        let tf_acceleration = tf.linear_acceleration_b_to_i(
+            &acceleration,
+            &angular_acceleration_body,
+            &angular_velocity_body,
+        );
+        // answer has to do with the original linear acceleration and the angular acceleration cross product with translations
+        // let answer_tf_acceleration = Point3::new(
+        //     1.0 + std::f64::consts::FRAC_PI_2 * 1.0,
+        //     2.0 + std::f64::consts::FRAC_PI_2 * -2.0,
+        //     3.0 + std::f64::consts::FRAC_PI_2 * 1.0,
+        // );
+
+        // let tf_acceleration2 = tf.linear_acceleration_i_to_b(
+        //     &acceleration,
+        //     &angular_acceleration_inertial,
+        //     &angular_velocity_inertial,
+        // );
+        // // answer has to do with the original linear acceleration and the angular acceleration cross product with translations
+        // let answer_tf_acceleration2 = Point3::new(
+        //     1.0 + std::f64::consts::FRAC_PI_2 * -1.0,
+        //     2.0 + std::f64::consts::FRAC_PI_2 * 2.0,
+        //     3.0 + std::f64::consts::FRAC_PI_2 * -1.0,
+        // );
+
+        // should be the original acceleration
+        let tf_tf_acceleration = tf.linear_acceleration_i_to_b(
+            &tf_acceleration,
+            &angular_acceleration_inertial,
+            &angular_velocity_inertial,
+        );
+
+        // println!("tf_acceleration: {}", tf_acceleration);
+        // println!("answer_tf_acceleration: {}", answer_tf_acceleration);
+        // for i in 0..=2 {
+        //     assert_relative_eq!(
+        //         tf_acceleration[i],
+        //         answer_tf_acceleration[i],
+        //         epsilon = 1e-12
+        //     );
+        // }
+
+        // println!("tf_acceleration2: {}", tf_acceleration2);
+        // println!("answer_tf_acceleration2: {}", answer_tf_acceleration2);
+        // for i in 0..=2 {
+        //     assert_relative_eq!(
+        //         tf_acceleration2[i],
+        //         answer_tf_acceleration2[i],
+        //         epsilon = 1e-12
+        //     );
+        // }
+
+        println!("tf_tf_acceleration: {}", tf_tf_acceleration);
+        println!("acceleration: {}", acceleration);
+        for i in 0..=2 {
+            assert_relative_eq!(tf_tf_acceleration[i], acceleration[i], epsilon = 1e-12);
+        }
+    }
 }
