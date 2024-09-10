@@ -122,3 +122,25 @@ pub fn calculate_line_endpoints(
     // return points
     [(start_point.0, start_point.1), (end_point.x, end_point.y)]
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_bound_value() {
+        let inside_bound = 3;
+        let below_bound = -1;
+        let above_bound = 10;
+        let bounds = [1, 5];
+
+        assert_eq!(
+            bound_value(inside_bound, bounds[0], bounds[1]),
+            inside_bound
+        );
+
+        assert_eq!(bound_value(below_bound, bounds[0], bounds[1]), bounds[0]);
+
+        assert_eq!(bound_value(above_bound, bounds[0], bounds[1]), bounds[1]);
+    }
+}
