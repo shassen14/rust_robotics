@@ -52,10 +52,16 @@ where
         + std::ops::Sub<Output = T>
         + std::ops::SubAssign
         + std::ops::AddAssign
+        + std::fmt::Debug
         + Copy,
 {
     // upper bound should be greater than lower bound
-    assert!(lower_bound < upper_bound);
+    assert!(
+        lower_bound < upper_bound,
+        "lower bound ({:?}) must be lower than upper bound ({:?})",
+        lower_bound,
+        upper_bound
+    );
 
     let period: T = upper_bound - lower_bound;
 
@@ -126,6 +132,7 @@ pub fn calculate_line_endpoints(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use approx::assert_relative_eq;
 
     #[test]
     fn test_bound_value() {
@@ -151,5 +158,40 @@ mod tests {
         let bounds = [5, 1];
 
         bound_value(value, bounds[0], bounds[1]);
+    }
+
+    #[test]
+    fn test_bound_polar_value() {
+        let inside_bound = 0. * std::f64::consts::PI;
+        let below_bound = -8. * std::f64::consts::PI;
+        let above_bound = 8. * std::f64::consts::PI;
+        let bounds = [-1. * std::f64::consts::PI, 1. * std::f64::consts::PI];
+
+        assert_relative_eq!(
+            bound_polar_value(inside_bound, bounds[0], bounds[1]),
+            inside_bound,
+            epsilon = 1e-12
+        );
+
+        assert_relative_eq!(
+            bound_polar_value(below_bound, bounds[0], bounds[1]),
+            0.0,
+            epsilon = 1e-12
+        );
+
+        assert_relative_eq!(
+            bound_polar_value(above_bound, bounds[0], bounds[1]),
+            0.0,
+            epsilon = 1e-12
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_bound_polar_value_panic() {
+        let value = -5.;
+        let bounds = [std::f64::consts::PI, -std::f64::consts::PI];
+
+        bound_polar_value(value, bounds[0], bounds[1]);
     }
 }
