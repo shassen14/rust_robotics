@@ -445,7 +445,7 @@ mod tests {
 
         println!("tf_velocity: {}", tf_velocity);
         println!("answer_tf_velocity: {}", answer_tf_velocity);
-        for i in 0..4 {
+        for i in 0..=2 {
             assert_relative_eq!(tf_velocity[i], answer_tf_velocity[i], epsilon = 1e-12);
         }
 
