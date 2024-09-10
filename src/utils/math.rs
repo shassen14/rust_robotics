@@ -143,4 +143,13 @@ mod tests {
 
         assert_eq!(bound_value(above_bound, bounds[0], bounds[1]), bounds[1]);
     }
+
+    #[test]
+    #[should_panic]
+    fn test_bound_value_panic() {
+        let value = 3;
+        let bounds = [5, 1];
+
+        bound_value(value, bounds[0], bounds[1]);
+    }
 }
