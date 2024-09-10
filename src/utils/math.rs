@@ -14,7 +14,6 @@ use nalgebra as na;
 /// * `lower_bound` - Value cannot be less than lower_bound
 /// * `upper_bound` - Value cannot be greater than upper_bound
 /// * Returns the value between two bounds
-///
 pub fn bound_value<T>(value: T, lower_bound: T, upper_bound: T) -> T
 where
     T: std::fmt::Debug + std::cmp::PartialOrd,
@@ -41,11 +40,10 @@ where
 ///
 /// * Arguments
 ///
-/// * `value` - Value to possibly bound
+/// * `angle` - Value to possibly bound
 /// * `lower_bound` - Value cannot be less than lower_bound
 /// * `upper_bound` - Value cannot be greater than upper_bound
-/// * Returns the value between two bounds
-///
+/// * Returns the angle equivalent to the original wrapped around the bounds
 pub fn bound_polar_value<T>(angle: T, lower_bound: T, upper_bound: T) -> T
 where
     T: std::cmp::PartialOrd
@@ -81,11 +79,14 @@ where
 ///
 /// * Arguments
 ///
-/// * `value` - Value to possibly bound
-/// * `lower_bound` - Value cannot be less than lower_bound
-/// * `upper_bound` - Value cannot be greater than upper_bound
-/// * Returns the value between two bounds
-///
+/// * `start_point` - 2D point (x, y)
+/// * `length_front` - Number of units away from starting point forward (magnitude)
+/// * `length_rear` - Number of units away from starting point backwards (magnitude)
+/// * `width_left` - Number of units away from starting points to the left (magnitude)
+/// * `width_left` - Number of units away from starting points to the right (magnitude)
+/// * `heading_angle` - Inertial angle going towards the front (direction)
+/// * `angle_units` - Radians or Degrees
+/// * Returns four 2D points (forward left -> forward right -> bottom right -> bottom left)
 pub fn calculate_rectangle_points(
     start_point: &(f64, f64),
     length_front: f64,
@@ -113,6 +114,15 @@ pub fn calculate_rectangle_points(
     ]
 }
 
+/// Calculate 2 end points given the starting point, angle, and length
+///
+/// * Arguments
+///
+/// * `start_point` - 2D point (x, y)
+/// * `length` - Number of units away from starting point (magnitude)
+/// * `heading_angle` - Inertial angle going toward the second point (direction)
+/// * `angle_units` - Radians or Degrees
+/// * Returns two 2D points where starting point is the first index and end point is the second index
 pub fn calculate_line_endpoints(
     start_point: &(f64, f64),
     length: f64,
