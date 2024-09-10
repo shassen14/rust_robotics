@@ -52,6 +52,39 @@ where
         self.i_to_b_iso
     }
 
+    pub fn angle_b_to_i(&self, angle_body: &na::Point3<T>) -> na::Point3<T> {
+        self.b_to_i_iso.rotation * angle_body
+    }
+
+    pub fn angle_i_to_b(&self, angle_inertial: &na::Point3<T>) -> na::Point3<T> {
+        self.i_to_b_iso.rotation * angle_inertial
+    }
+
+    pub fn angular_velocity_b_to_i(&self, angular_velocity_body: &na::Point3<T>) -> na::Point3<T> {
+        self.b_to_i_iso.rotation * angular_velocity_body
+    }
+
+    pub fn angular_velocity_i_to_b(
+        &self,
+        angular_velocity_inertial: &na::Point3<T>,
+    ) -> na::Point3<T> {
+        self.i_to_b_iso.rotation * angular_velocity_inertial
+    }
+
+    pub fn angular_acceleration_b_to_i(
+        &self,
+        angular_acceleration_body: &na::Point3<T>,
+    ) -> na::Point3<T> {
+        self.b_to_i_iso.rotation * angular_acceleration_body
+    }
+
+    pub fn angular_acceleration_i_to_b(
+        &self,
+        angular_acceleration_inertial: &na::Point3<T>,
+    ) -> na::Point3<T> {
+        self.i_to_b_iso.rotation * angular_acceleration_inertial
+    }
+
     pub fn point_b_to_i(&self, point: &na::Point3<T>) -> na::Point3<T> {
         self.b_to_i_iso.transform_point(point)
     }
