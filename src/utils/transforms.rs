@@ -112,11 +112,9 @@ where
             * na::Vector3::new(ang_vel_i[0], ang_vel_i[1], ang_vel_i[2]);
 
         // Calculate the angular velocity contribution due to translation lever arm
-        let lin_vel_from_lever =
-            angular_velocity_inertial_vec.cross(&self.b_to_i_iso.translation.vector);
-
         // Add together because of superposition
-        self.b_to_i_iso.rotation * linear_velocity_body + lin_vel_from_lever
+        self.b_to_i_iso.rotation * linear_velocity_body
+            + angular_velocity_inertial_vec.cross(&self.b_to_i_iso.translation.vector)
     }
 
     pub fn linear_velocity_i_to_b(
@@ -133,11 +131,73 @@ where
             * na::Vector3::new(ang_vel_b[0], ang_vel_b[1], ang_vel_b[2]);
 
         // Calculate the angular velocity contribution due to translation lever arm
-        let lin_vel_from_lever =
-            angular_velocity_body_vec.cross(&self.i_to_b_iso.translation.vector);
-
         // Add together because of superposition
-        self.i_to_b_iso.rotation * linear_velocity_inertial + lin_vel_from_lever
+        self.i_to_b_iso.rotation * linear_velocity_inertial
+            + angular_velocity_body_vec.cross(&self.i_to_b_iso.translation.vector)
+    }
+
+    pub fn linear_acceleration_b_to_i(
+        &self,
+        linear_acceleration_body: &na::Point3<T>,
+        angular_acceleration_body: &na::Point3<T>,
+        angular_velocity_body: &na::Point3<T>,
+    ) -> na::Point3<T> {
+        // Should be okay to unwrap.
+        // Convert units to rad/s
+        let ang_accel_i = self
+            .angular_acceleration_b_to_i(angular_acceleration_body)
+            .to_homogeneous();
+        let angular_acceleration_inertial_vec = self.angle_conversion_factor()
+            * na::Vector3::new(ang_accel_i[0], ang_accel_i[1], ang_accel_i[2]);
+
+        let ang_vel_i = self
+            .angular_velocity_b_to_i(angular_velocity_body)
+            .to_homogeneous();
+        let angular_velocity_inertial_vec = self.angle_conversion_factor()
+            * na::Vector3::new(ang_vel_i[0], ang_vel_i[1], ang_vel_i[2]);
+
+        // Rotate linear body accelerations to align with inertial frame.
+        // Calculate angular accelerations' contributions by taking its cross product with
+        // the lever arm (translations).
+        // Calculate the centripetal acceleration using the angular velocity cross product twice
+        // with the lever arm (translations).
+        // Add together because of superposition
+        self.b_to_i_iso.rotation * linear_acceleration_body
+            + angular_acceleration_inertial_vec.cross(&self.b_to_i_iso.translation.vector)
+            + angular_velocity_inertial_vec
+                .cross(&angular_velocity_inertial_vec.cross(&self.b_to_i_iso.translation.vector))
+    }
+
+    pub fn linear_acceleration_i_to_b(
+        &self,
+        linear_acceleration_inertial: &na::Point3<T>,
+        angular_acceleration_inertial: &na::Point3<T>,
+        angular_velocity_inertial: &na::Point3<T>,
+    ) -> na::Point3<T> {
+        // Should be okay to unwrap.
+        // Convert units to rad/s
+        let ang_accel_b = self
+            .angular_acceleration_i_to_b(angular_acceleration_inertial)
+            .to_homogeneous();
+        let angular_acceleration_inertial_vec = self.angle_conversion_factor()
+            * na::Vector3::new(ang_accel_b[0], ang_accel_b[1], ang_accel_b[2]);
+
+        let ang_vel_b = self
+            .angular_velocity_i_to_b(angular_velocity_inertial)
+            .to_homogeneous();
+        let angular_velocity_body_vec = self.angle_conversion_factor()
+            * na::Vector3::new(ang_vel_b[0], ang_vel_b[1], ang_vel_b[2]);
+
+        // Rotate linear body accelerations to align with inertial frame.
+        // Calculate angular accelerations' contributions by taking its cross product with
+        // the lever arm (translations).
+        // Calculate the centripetal acceleration using the angular velocity cross product twice
+        // with the lever arm (translations).
+        // Add together because of superposition
+        self.i_to_b_iso.rotation * linear_acceleration_inertial
+            + angular_acceleration_inertial_vec.cross(&self.i_to_b_iso.translation.vector)
+            + angular_velocity_body_vec
+                .cross(&angular_velocity_body_vec.cross(&self.i_to_b_iso.translation.vector))
     }
 
     fn angle_conversion_factor(&self) -> T {
