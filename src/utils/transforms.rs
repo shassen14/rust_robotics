@@ -464,13 +464,17 @@ mod tests {
 
     #[test]
     fn test_transform_lin_vel_translation() {
-        let tf = FrameTransform3::<f64>::new(&TRANSLATION, Some(AngleUnits::Degree));
+        let tf = FrameTransform3::<f64>::new(&TRANSLATION, Some(AngleUnits::Radian));
 
         println!("b to i Isometry: {}", tf.get_b_to_i_iso());
         println!("i to b Isometry: {}", tf.get_i_to_b_iso());
 
         let velocity = Point3::<f64>::new(1., 2., 3.);
-        let angular_velocity_body = Point3::<f64>::new(90., 90., 90.);
+        let angular_velocity_body = Point3::<f64>::new(
+            std::f64::consts::FRAC_PI_2,
+            std::f64::consts::FRAC_PI_2,
+            std::f64::consts::FRAC_PI_2,
+        );
         let angular_velocity_inertial = tf.angular_velocity_b_to_i(&angular_velocity_body);
 
         // equivalent to tf.get_b_to_i_iso().rotation * point
