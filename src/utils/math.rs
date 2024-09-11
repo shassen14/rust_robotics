@@ -204,4 +204,54 @@ mod tests {
 
         bound_polar_value(value, bounds[0], bounds[1]);
     }
+
+    #[test]
+    fn test_calc_rectangle_points() {
+        let start_point = (1.0, 1.0);
+        let length_front = 3.0;
+        let length_rear = 2.0;
+        let width_left = 1.0;
+        let width_right = 2.0;
+        let heading_angle = 90.;
+        let angle_units = AngleUnits::Degree;
+
+        let calc_points = calculate_rectangle_points(
+            &start_point,
+            length_front,
+            length_rear,
+            width_left,
+            width_right,
+            heading_angle,
+            angle_units,
+        );
+        let answer = [(0.0, 4.0), (3.0, 4.0), (3.0, -1.0), (0.0, -1.0)];
+
+        println!("calc_points: {:?}", calc_points);
+        println!("answer: {:?}", answer);
+
+        for i in 0..4 {
+            assert_relative_eq!(calc_points[i].0, answer[i].0, epsilon = 1e-12);
+            assert_relative_eq!(calc_points[i].1, answer[i].1, epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_calc_line_endpoints() {
+        let start_point = (1.0, 1.0);
+        let length = 5.0;
+        let heading_angle = 90.;
+        let angle_units = AngleUnits::Degree;
+
+        let calc_points =
+            calculate_line_endpoints(&start_point, length, heading_angle, angle_units);
+        let answer = [(1.0, 1.0), (1.0, 6.0)];
+
+        println!("calc_points: {:?}", calc_points);
+        println!("answer: {:?}", answer);
+
+        for i in 0..2 {
+            assert_relative_eq!(calc_points[i].0, answer[i].0, epsilon = 1e-12);
+            assert_relative_eq!(calc_points[i].1, answer[i].1, epsilon = 1e-12);
+        }
+    }
 }
