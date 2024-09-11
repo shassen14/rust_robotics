@@ -41,4 +41,4 @@ component_management:
       statuses:           # the core component has its own statuses
         - type: project
           target: auto
-        - type: patch
+        # - type: patch
