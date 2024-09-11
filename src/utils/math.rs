@@ -14,7 +14,6 @@ use nalgebra as na;
 /// * `lower_bound` - Value cannot be less than lower_bound
 /// * `upper_bound` - Value cannot be greater than upper_bound
 /// * Returns the value between two bounds
-///
 pub fn bound_value<T>(value: T, lower_bound: T, upper_bound: T) -> T
 where
     T: std::fmt::Debug + std::cmp::PartialOrd,
@@ -41,21 +40,26 @@ where
 ///
 /// * Arguments
 ///
-/// * `value` - Value to possibly bound
+/// * `angle` - Value to possibly bound
 /// * `lower_bound` - Value cannot be less than lower_bound
 /// * `upper_bound` - Value cannot be greater than upper_bound
-/// * Returns the value between two bounds
-///
+/// * Returns the angle equivalent to the original wrapped around the bounds
 pub fn bound_polar_value<T>(angle: T, lower_bound: T, upper_bound: T) -> T
 where
     T: std::cmp::PartialOrd
         + std::ops::Sub<Output = T>
         + std::ops::SubAssign
         + std::ops::AddAssign
+        + std::fmt::Debug
         + Copy,
 {
     // upper bound should be greater than lower bound
-    assert!(lower_bound < upper_bound);
+    assert!(
+        lower_bound < upper_bound,
+        "lower bound ({:?}) must be lower than upper bound ({:?})",
+        lower_bound,
+        upper_bound
+    );
 
     let period: T = upper_bound - lower_bound;
 
@@ -75,11 +79,14 @@ where
 ///
 /// * Arguments
 ///
-/// * `value` - Value to possibly bound
-/// * `lower_bound` - Value cannot be less than lower_bound
-/// * `upper_bound` - Value cannot be greater than upper_bound
-/// * Returns the value between two bounds
-///
+/// * `start_point` - 2D point (x, y)
+/// * `length_front` - Number of units away from starting point forward (magnitude)
+/// * `length_rear` - Number of units away from starting point backwards (magnitude)
+/// * `width_left` - Number of units away from starting points to the left (magnitude)
+/// * `width_left` - Number of units away from starting points to the right (magnitude)
+/// * `heading_angle` - Inertial angle going towards the front (direction)
+/// * `angle_units` - Radians or Degrees
+/// * Returns four 2D points (forward left -> forward right -> bottom right -> bottom left)
 pub fn calculate_rectangle_points(
     start_point: &(f64, f64),
     length_front: f64,
@@ -107,6 +114,15 @@ pub fn calculate_rectangle_points(
     ]
 }
 
+/// Calculate 2 end points given the starting point, angle, and length
+///
+/// * Arguments
+///
+/// * `start_point` - 2D point (x, y)
+/// * `length` - Number of units away from starting point (magnitude)
+/// * `heading_angle` - Inertial angle going toward the second point (direction)
+/// * `angle_units` - Radians or Degrees
+/// * Returns two 2D points where starting point is the first index and end point is the second index
 pub fn calculate_line_endpoints(
     start_point: &(f64, f64),
     length: f64,
@@ -121,4 +137,121 @@ pub fn calculate_line_endpoints(
 
     // return points
     [(start_point.0, start_point.1), (end_point.x, end_point.y)]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use approx::assert_relative_eq;
+
+    #[test]
+    fn test_bound_value() {
+        let inside_bound = 3;
+        let below_bound = -1;
+        let above_bound = 10;
+        let bounds = [1, 5];
+
+        assert_eq!(
+            bound_value(inside_bound, bounds[0], bounds[1]),
+            inside_bound
+        );
+
+        assert_eq!(bound_value(below_bound, bounds[0], bounds[1]), bounds[0]);
+
+        assert_eq!(bound_value(above_bound, bounds[0], bounds[1]), bounds[1]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_bound_value_panic() {
+        let value = 3;
+        let bounds = [5, 1];
+
+        bound_value(value, bounds[0], bounds[1]);
+    }
+
+    #[test]
+    fn test_bound_polar_value() {
+        let inside_bound = 0. * std::f64::consts::PI;
+        let below_bound = -8. * std::f64::consts::PI;
+        let above_bound = 8. * std::f64::consts::PI;
+        let bounds = [-1. * std::f64::consts::PI, 1. * std::f64::consts::PI];
+
+        assert_relative_eq!(
+            bound_polar_value(inside_bound, bounds[0], bounds[1]),
+            inside_bound,
+            epsilon = 1e-12
+        );
+
+        assert_relative_eq!(
+            bound_polar_value(below_bound, bounds[0], bounds[1]),
+            0.0,
+            epsilon = 1e-12
+        );
+
+        assert_relative_eq!(
+            bound_polar_value(above_bound, bounds[0], bounds[1]),
+            0.0,
+            epsilon = 1e-12
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_bound_polar_value_panic() {
+        let value = -5.;
+        let bounds = [std::f64::consts::PI, -std::f64::consts::PI];
+
+        bound_polar_value(value, bounds[0], bounds[1]);
+    }
+
+    #[test]
+    fn test_calc_rectangle_points() {
+        let start_point = (1.0, 1.0);
+        let length_front = 3.0;
+        let length_rear = 2.0;
+        let width_left = 1.0;
+        let width_right = 2.0;
+        let heading_angle = 90.;
+        let angle_units = AngleUnits::Degree;
+
+        let calc_points = calculate_rectangle_points(
+            &start_point,
+            length_front,
+            length_rear,
+            width_left,
+            width_right,
+            heading_angle,
+            angle_units,
+        );
+        let answer = [(0.0, 4.0), (3.0, 4.0), (3.0, -1.0), (0.0, -1.0)];
+
+        println!("calc_points: {:?}", calc_points);
+        println!("answer: {:?}", answer);
+
+        for i in 0..4 {
+            assert_relative_eq!(calc_points[i].0, answer[i].0, epsilon = 1e-12);
+            assert_relative_eq!(calc_points[i].1, answer[i].1, epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_calc_line_endpoints() {
+        let start_point = (1.0, 1.0);
+        let length = 5.0;
+        let heading_angle = 90.;
+        let angle_units = AngleUnits::Degree;
+
+        let calc_points =
+            calculate_line_endpoints(&start_point, length, heading_angle, angle_units);
+        let answer = [(1.0, 1.0), (1.0, 6.0)];
+
+        println!("calc_points: {:?}", calc_points);
+        println!("answer: {:?}", answer);
+
+        for i in 0..2 {
+            assert_relative_eq!(calc_points[i].0, answer[i].0, epsilon = 1e-12);
+            assert_relative_eq!(calc_points[i].1, answer[i].1, epsilon = 1e-12);
+        }
+    }
 }
