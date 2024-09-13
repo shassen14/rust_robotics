@@ -1,4 +1,6 @@
 use crate::num_methods::defs::VectorFn;
+use crate::num_methods::defs::VectorFnD;
+
 use nalgebra as na;
 use num_traits;
 
@@ -104,7 +106,7 @@ pub fn rk4<T, const R: usize>(
     tf: T,
 ) -> na::SVector<T, R>
 where
-    T: num_traits::Float + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>, // T * Vec = Vecca
+    T: num_traits::Float + std::ops::Mul<na::SVector<T, R>, Output = na::SVector<T, R>>, // T * Vec = Vec
     na::SVector<T, R>: std::ops::Add<na::SVector<T, R>, Output = na::SVector<T, R>>, // Vec + Vec = Vec
 {
     let two: T = T::from(2).unwrap();
@@ -115,6 +117,59 @@ where
     let k4: na::SVector<T, R> = func(&(*x0 + dt * k3), tf);
 
     *x0 + (dt / T::from(6).unwrap()) * (k1 + two * k2 + two * k3 + k4)
+}
+
+pub fn rk1d<T>(func: &dyn VectorFnD<T>, x0: &na::DVector<T>, t0: T, tf: T) -> na::DVector<T>
+where
+    T: std::ops::Sub<Output = T> // T - T = T
+        + std::ops::Mul<na::DVector<T>, Output = na::DVector<T>> // T * Vec = Vec
+        + Copy, // T is copyable
+    na::DVector<T>: std::ops::Add<Output = na::DVector<T>>,
+{
+    let dt: T = tf - t0;
+    x0.clone() + dt * func(x0, t0)
+}
+
+pub fn rk2d<T>(func: &dyn VectorFnD<T>, x0: &na::DVector<T>, t0: T, tf: T) -> na::DVector<T>
+where
+    T: num_traits::Float + std::ops::Mul<na::DVector<T>, Output = na::DVector<T>>, // T * Vec = Vec,
+    na::DVector<T>: std::ops::Add<na::DVector<T>, Output = na::DVector<T>>, // Vec + Vec = Vec
+{
+    let dt: T = tf - t0;
+    let k1: na::DVector<T> = func(x0, t0);
+    let k2: na::DVector<T> = func(&(x0.clone() + dt * k1.clone()), t0 + dt);
+    x0.clone() + T::from(0.5).unwrap() * dt * (k1 + k2)
+}
+
+pub fn rk3d<T>(func: &dyn VectorFnD<T>, x0: &na::DVector<T>, t0: T, tf: T) -> na::DVector<T>
+where
+    T: num_traits::Float + std::ops::Mul<na::DVector<T>, Output = na::DVector<T>>, // T * Vec = Vec
+    na::DVector<T>: std::ops::Add<na::DVector<T>, Output = na::DVector<T>>, // Vec + Vec = Vec
+{
+    let dt: T = tf - t0;
+    let k1: na::DVector<T> = func(x0, t0);
+    let k2: na::DVector<T> = func(&(x0.clone() + dt * k1.clone()), t0 + dt);
+    let k3: na::DVector<T> = func(
+        &(x0.clone() + (dt / T::from(4).unwrap()) * (k1.clone() + k2.clone())),
+        t0 + dt / T::from(2).unwrap(),
+    );
+
+    x0.clone() + (dt / T::from(6).unwrap()) * (k1 + k2 + T::from(4).unwrap() * k3)
+}
+
+pub fn rk4d<T>(func: &dyn VectorFnD<T>, x0: &na::DVector<T>, t0: T, tf: T) -> na::DVector<T>
+where
+    T: num_traits::Float + std::ops::Mul<na::DVector<T>, Output = na::DVector<T>>, // T * Vec = Vec
+    na::DVector<T>: std::ops::Add<na::DVector<T>, Output = na::DVector<T>>, // Vec + Vec = Vec
+{
+    let two: T = T::from(2).unwrap();
+    let dt: T = tf - t0;
+    let k1: na::DVector<T> = func(x0, t0);
+    let k2: na::DVector<T> = func(&(x0.clone() + (dt / two) * k1.clone()), t0 + dt / two);
+    let k3: na::DVector<T> = func(&(x0.clone() + (dt / two) * k2.clone()), t0 + dt / two);
+    let k4: na::DVector<T> = func(&(x0.clone() + dt * k3.clone()), tf);
+
+    x0.clone() + (dt / T::from(6).unwrap()) * (k1 + two * k2 + two * k3 + k4)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -298,11 +353,10 @@ mod tests {
         step: f64,
         max_error: &na::SVector<f64, 3>,
     ) -> () {
-        const N: usize = 3;
-        let func = |x: &na::SVector<f64, N>, _: f64| {
+        let func = |x: &na::SVector<f64, 3>, _: f64| {
             #[allow(non_snake_case)]
-            let A: na::SMatrix<f64, N, N> =
-                na::SMatrix::<f64, N, N>::new(0., 1., 0., 0., 0., 1., 0., 0., 0.);
+            let A: na::SMatrix<f64, 3, 3> =
+                na::SMatrix::<f64, 3, 3>::new(0., 1., 0., 0., 0., 1., 0., 0., 0.);
             A * x
         };
 
@@ -310,11 +364,11 @@ mod tests {
         test_integration(
             integrator,
             &func,
-            &na::SVector::<f64, N>::new(x0, vel0, accel0),
+            &na::SVector::<f64, 3>::new(x0, vel0, accel0),
             start,
             end,
             step,
-            &na::SVector::<f64, N>::new(
+            &na::SVector::<f64, 3>::new(
                 x0 + vel0 * total_time + 0.5 * accel0 * total_time * total_time,
                 vel0 + accel0 * total_time,
                 accel0,
