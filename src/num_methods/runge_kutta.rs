@@ -119,6 +119,8 @@ where
     *x0 + (dt / T::from(6).unwrap()) * (k1 + two * k2 + two * k3 + k4)
 }
 
+// TODO: write descriptions.
+// TODO: check matrix size???
 pub fn rk1d<T>(func: &dyn VectorFnD<T>, x0: &na::DVector<T>, t0: T, tf: T) -> na::DVector<T>
 where
     T: std::ops::Sub<Output = T> // T - T = T
