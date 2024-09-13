@@ -49,41 +49,41 @@ jobs:
           fail_ci_if_error: true
 
   # Copied from https://github.com/evenfurther/pathfinding. Update if necessary
-  benchmarks:
-    runs-on: ubuntu-latest
+  # benchmarks:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
-        name: Checkout
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-stable-${{ hashFiles('Cargo.toml') }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       name: Checkout
+  #     - uses: actions/cache@v4
+  #       with:
+  #         path: |
+  #           ~/.cargo/registry
+  #           ~/.cargo/git
+  #           target
+  #         key: ${{ runner.os }}-cargo-stable-${{ hashFiles('Cargo.toml') }}
 
-      - uses: actions-rs/toolchain@v1
-        name: Install Rust toolchain
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
+  #     - uses: actions-rs/toolchain@v1
+  #       name: Install Rust toolchain
+  #       with:
+  #         profile: minimal
+  #         toolchain: stable
+  #         override: true
 
-      - uses: baptiste0928/cargo-install@v3
-        name: Install cargo-codspeed (with cache)
-        with:
-          crate: cargo-codspeed
+  #     - uses: baptiste0928/cargo-install@v3
+  #       name: Install cargo-codspeed (with cache)
+  #       with:
+  #         crate: cargo-codspeed
 
-      - uses: actions-rs/cargo@v1
-        name: Build benchmarks
-        with:
-          command: codspeed
-          args: build
+  #     - uses: actions-rs/cargo@v1
+  #       name: Build benchmarks
+  #       with:
+  #         command: codspeed
+  #         args: build
 
-      - uses: CodSpeedHQ/action@v3
-        name: Run benchmarks
-        with:
-          run: cargo codspeed run
+  #     - uses: CodSpeedHQ/action@v3
+  #       name: Run benchmarks
+  #       with:
+  #         run: cargo codspeed run
 
 
