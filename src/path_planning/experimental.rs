@@ -38,7 +38,7 @@ pub struct Motion2 {
     pub cost: f64,
 }
 
-const MODEL: [Motion2; 4] = [
+const MODEL: [Motion2; 8] = [
     Motion2 {
         dx: 1,
         dy: 0,
@@ -59,6 +59,26 @@ const MODEL: [Motion2; 4] = [
         dy: -1,
         cost: 1.0,
     },
+    Motion2 {
+        dx: 1,
+        dy: 1,
+        cost: 1.414,
+    },
+    Motion2 {
+        dx: -1,
+        dy: 1,
+        cost: 1.414,
+    },
+    Motion2 {
+        dx: 1,
+        dy: -1,
+        cost: 1.414,
+    },
+    Motion2 {
+        dx: -1,
+        dy: -1,
+        cost: 1.414,
+    },
 ];
 
 pub struct Dijkstra2 {
@@ -71,6 +91,16 @@ pub struct Dijkstra2 {
 }
 
 impl Dijkstra2 {
+    pub fn new(resolution: f64, x_bounds: (f64, f64), y_bounds: (f64, f64)) -> Self {
+        Dijkstra2 {
+            resolution: resolution,
+            x_bounds: x_bounds,
+            y_bounds: y_bounds,
+            x_length: x_bounds.1 - x_bounds.0,
+            y_length: y_bounds.1 - y_bounds.0,
+        }
+    }
+
     // index is just 0, 1, 2, 3... f64 to make it easier to math operations
     pub fn calculate_position(
         &self,
@@ -97,10 +127,9 @@ impl Dijkstra2 {
     }
 
     pub fn calculate_index(&self, node: &Node2) -> i32 {
-        let index_approx = (node.y - self.y_bounds.0 as i32) * self.x_length as i32
-            + (node.x - self.x_bounds.0 as i32);
-        return index_approx;
-        // return index_approx.round() as i32;
+        let index_approx = (node.y as f64 - self.y_bounds.0) * self.x_length as f64
+            + (node.x as f64 - self.x_bounds.0);
+        index_approx.round() as i32
     }
 
     pub fn verify_node(&self, node: &Node2) -> bool {
@@ -238,7 +267,7 @@ impl Dijkstra2 {
                 if !open_set.contains_key(&n_id) {
                     open_set.insert(n_id, node);
                 } else {
-                    if open_set.get(&n_id).unwrap().cost <= node.cost {
+                    if open_set.get(&n_id).unwrap().cost >= node.cost {
                         // This path is the best until now. record it!
                         // this will change n_id key with the value node
                         open_set.insert(n_id, node);

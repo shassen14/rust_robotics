@@ -45,21 +45,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .axis_style(&WHITE)
         .draw()?;
 
-    let object = experimental::Dijkstra2 {
-        resolution: 0.5,
-        x_bounds: (chart_params.x_range[0], chart_params.x_range[1]),
-        y_bounds: (chart_params.y_range[0], chart_params.y_range[1]),
-        x_length: chart_params.x_range[1] - chart_params.x_range[0],
-        y_length: chart_params.y_range[1] - chart_params.y_range[0],
-    };
+    let object = experimental::Dijkstra2::new(
+        0.5,
+        (chart_params.x_range[0], chart_params.x_range[1]),
+        (chart_params.y_range[0], chart_params.y_range[1]),
+    );
 
     let dijkstra_path = object.plan(
         &na::SVector::<f64, 2>::new(0.0, 0.0),
-        &na::SVector::<f64, 2>::new(1.0, 4.0),
+        &na::SVector::<f64, 2>::new(2.0, 3.0),
     );
-    // let data = [(-0.5, -0.5), (-0.5, 0.5), (0.5, 0.5), (-0.5, -0.5)];
 
-    chart.draw_series(LineSeries::new(dijkstra_path, &YELLOW))?;
+    chart.draw_series(std::iter::once(PathElement::new(dijkstra_path, &YELLOW)))?;
     // chart.draw_series(std::iter::once(Rectangle::new(
     //     [(0.5, 0.5), (0.75, 0.75)],
     //     &WHITE,
