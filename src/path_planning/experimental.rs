@@ -4,23 +4,33 @@ use std::{cmp::Ordering, collections::HashMap};
 // Dijkstra
 // Rust copy from https://github.com/AtsushiSakai/PythonRobotics/blob/master/PathPlanning/Dijkstra/dijkstra.py
 
-#[derive(Debug, PartialOrd, Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 pub struct Node2 {
     pub x: i32,
     pub y: i32,
     pub parent_index: i32,
-    pub cost: f64,
+    pub cost: usize,
 }
 
 // TODO: what is the point of this? No sense of ordering for hashmaps. why???
 impl Ord for Node2 {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        if self.cost < other.cost {
-            return Ordering::Less;
-        } else if self.cost > other.cost {
-            return Ordering::Greater;
-        }
-        Ordering::Equal
+    fn cmp(&self, other: &Self) -> Ordering {
+        other
+            .cost
+            .cmp(&self.cost)
+            .then_with(|| self.parent_index.cmp(&other.parent_index))
+        // if self.cost < other.cost {
+        //     return Ordering::Less;
+        // } else if self.cost > other.cost {
+        //     return Ordering::Greater;
+        // }
+        // Ordering::Equal
+    }
+}
+
+impl PartialOrd for Node2 {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -35,49 +45,49 @@ impl Eq for Node2 {}
 pub struct Motion2 {
     pub dx: i32,
     pub dy: i32,
-    pub cost: f64,
+    pub cost: usize,
 }
 
 const MODEL: [Motion2; 8] = [
     Motion2 {
         dx: 1,
         dy: 0,
-        cost: 1.0,
+        cost: 100,
     },
     Motion2 {
         dx: -1,
         dy: 0,
-        cost: 1.0,
+        cost: 100,
     },
     Motion2 {
         dx: 0,
         dy: 1,
-        cost: 1.0,
+        cost: 100,
     },
     Motion2 {
         dx: 0,
         dy: -1,
-        cost: 1.0,
+        cost: 100,
     },
     Motion2 {
         dx: 1,
         dy: 1,
-        cost: 1.414,
+        cost: 141,
     },
     Motion2 {
         dx: -1,
         dy: 1,
-        cost: 1.414,
+        cost: 141,
     },
     Motion2 {
         dx: 1,
         dy: -1,
-        cost: 1.414,
+        cost: 141,
     },
     Motion2 {
         dx: -1,
         dy: -1,
-        cost: 1.414,
+        cost: 141,
     },
 ];
 
@@ -184,14 +194,14 @@ impl Dijkstra2 {
         let start = Node2 {
             x: start_index.x,
             y: start_index.y,
-            cost: 0.0,
+            cost: 0,
             parent_index: -1,
         };
 
         let mut goal = Node2 {
             x: goal_index.x,
             y: goal_index.y,
-            cost: 0.0,
+            cost: 0,
             parent_index: -1,
         };
 
@@ -215,8 +225,8 @@ impl Dijkstra2 {
             // TODO: this clones/copies
             // let current = *open_set.get(&min_cost_id).unwrap_or(&default);
 
-            // let min_cost_id = *open_set.iter().min().unwrap().0;
-            let min_cost_id = *open_set.iter().min_by(|a, b| a.1.cmp(&b.1)).unwrap().0;
+            let min_cost_id = *open_set.iter().min().unwrap().0;
+            // let min_cost_id = *open_set.iter().max_by(|a, b| a.1.cmp(&b.1)).unwrap().0;
             // let min_cost_id = *open_set.iter().next().unwrap().0;
 
             // TODO: this clones/copies
