@@ -12,6 +12,7 @@ num-traits = "0.2"
 plotters = "0.3"
 plotters-arrows = "0.1"
 plotters-bitmap = "0.3"
+rustc-hash = { version = "2.0", default-features = true }
 serde = { version = "1", features = ["derive"] }
 toml = "0.8.19"
 

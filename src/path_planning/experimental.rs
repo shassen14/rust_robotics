@@ -359,7 +359,7 @@ pub struct Motion<T: PrimInt, const N: usize> {
     pub cost: usize,
 }
 
-const MODEL2: [Motion<i32, 2>; 4] = [
+const MODEL2: [Motion<i32, 2>; 8] = [
     Motion::<i32, 2> {
         change: na::SVector::<i32, 2>::new(1, 0),
         cost: 100,
@@ -376,22 +376,22 @@ const MODEL2: [Motion<i32, 2>; 4] = [
         change: na::SVector::<i32, 2>::new(0, -1),
         cost: 100,
     },
-    // Motion::<i32, 2> {
-    //     change: na::SVector::<i32, 2>::new(1, 1),
-    //     cost: 141,
-    // },
-    // Motion::<i32, 2> {
-    //     change: na::SVector::<i32, 2>::new(-1, 1),
-    //     cost: 141,
-    // },
-    // Motion::<i32, 2> {
-    //     change: na::SVector::<i32, 2>::new(1, -1),
-    //     cost: 141,
-    // },
-    // Motion::<i32, 2> {
-    //     change: na::SVector::<i32, 2>::new(-1, -1),
-    //     cost: 141,
-    // },
+    Motion::<i32, 2> {
+        change: na::SVector::<i32, 2>::new(1, 1),
+        cost: 141,
+    },
+    Motion::<i32, 2> {
+        change: na::SVector::<i32, 2>::new(-1, 1),
+        cost: 141,
+    },
+    Motion::<i32, 2> {
+        change: na::SVector::<i32, 2>::new(1, -1),
+        cost: 141,
+    },
+    Motion::<i32, 2> {
+        change: na::SVector::<i32, 2>::new(-1, -1),
+        cost: 141,
+    },
 ];
 
 pub struct D2 {
@@ -461,10 +461,12 @@ impl D2 {
             self.calculate_position_1d(goal_node.index.x as f64, self.x_bounds[0]),
             self.calculate_position_1d(goal_node.index.y as f64, self.y_bounds[0]),
         )];
+        let mut current_index = goal_node.index;
         let mut parent_index = goal_node.parent_index;
 
-        while parent_index != start_node.index {
+        while current_index != start_node.index {
             let node = *closed_set.get(&parent_index).unwrap();
+            current_index = node.index;
 
             path.push((
                 self.calculate_position_1d(node.index.x as f64, self.x_bounds[0]),
@@ -472,7 +474,7 @@ impl D2 {
             ));
             parent_index = node.parent_index;
         }
-        path
+        path.into_iter().rev().collect()
     }
 
     pub fn plan(
@@ -502,33 +504,15 @@ impl D2 {
         let mut closed_set: FxHashMap<na::SVector<i32, 2>, Node<i32, 2>> = FxHashMap::default();
         open_set.insert(start.index, start);
 
-        // TODO: figure out how to not do while true
-        loop {
-            // println!("Open Set: {:?}", open_set);
+        while !open_set.is_empty() {
             // TODO: unsafe, outputs option
             // TODO: slow. different way than .iter().min(). different data structure? min heap?
-
-            if open_set.is_empty() {
-                println!("yooooooo no goal found");
-                break;
-            }
-
             // let min_cost_id = *open_set.iter().min().unwrap().0;
+            // TODO need to figure out a different way to find this index
             let min_cost_id = *open_set.iter().max_by(|a, b| a.1.cmp(&b.1)).unwrap().0;
-            // let min_cost_id = *open_set.iter().next().unwrap().0;
 
             // TODO: this clones/copies
             let current = *open_set.get(&min_cost_id).unwrap();
-
-            // if current.x == goal.x {
-            //     println!("Min Cost ID: {:?}", min_cost_id);
-            //     println!("Current: {:?}", current);
-            //     println!(
-            //         "Goal: {:?}, goal index: {}",
-            //         goal,
-            //         self.calculate_index(&goal)
-            //     );
-            // }
 
             if current.index == goal.index {
                 println!("Found goal");
@@ -569,8 +553,6 @@ impl D2 {
                 }
             }
         }
-        // println!("End Open Set: {:?}", open_set);
-        // println!("End Close Set: {:?}", closed_set);
         self.calculate_final_path(&start, &goal, &closed_set)
     }
 }

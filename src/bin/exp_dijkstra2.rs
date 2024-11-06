@@ -45,31 +45,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .axis_style(&WHITE)
         .draw()?;
 
-    let object = experimental::D2::new(0.2, chart_params.x_range, chart_params.y_range);
+    let object = experimental::D2::new(1.0, chart_params.x_range, chart_params.y_range);
 
     let dijkstra_path = object.plan(
         &na::SVector::<f64, 2>::new(0.0, 0.0),
-        &na::SVector::<f64, 2>::new(132.0, -40.0),
+        &na::SVector::<f64, 2>::new(5.0, 4.4),
     );
 
-    chart.draw_series(std::iter::once(PathElement::new(dijkstra_path, &YELLOW)))?;
-    // chart.draw_series(std::iter::once(Rectangle::new(
-    //     [(0.5, 0.5), (0.75, 0.75)],
-    //     &WHITE,
-    // )))?;
-
-    // let path = PathElement::new(
-    //     [
-    //         (-0.9, 0.9),
-    //         (-0.8, 0.8),
-    //         (-0.7, 0.85),
-    //         (-0.8, 0.9),
-    //         (-0.9, 0.9),
-    //     ],
-    //     &PURPLE,
-    // );
-
-    // chart.draw_series(std::iter::once(path))?;
+    println!("d path: {:?}", dijkstra_path);
+    chart.draw_series(LineSeries::new(dijkstra_path, &YELLOW))?;
 
     Ok(())
 }
