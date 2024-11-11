@@ -42,7 +42,7 @@ impl<T: Zero> CircleS<T> {
     pub fn default() -> Self {
         CircleS {
             center: (Zero::zero(), Zero::zero()),
-            radius: (Zero::zero()),
+            radius: Zero::zero(),
         }
     }
 }
