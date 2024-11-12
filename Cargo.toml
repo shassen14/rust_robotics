@@ -16,6 +16,10 @@ rustc-hash = { version = "2.0", default-features = true }
 serde = { version = "1", features = ["derive"] }
 toml = "0.8.19"
 
+[dev-dependencies]
+approx = "0.3.2"
+codspeed-criterion-compat = "2.7.1"
+
 # copied from https://stackoverflow.com/questions/29008127/why-are-rust-executables-so-huge
 # TODO: Figure out my own needs
 [profile.release]
@@ -25,14 +29,16 @@ codegen-units = 1 # Reduce number of codegen units to increase optimizations
 panic = 'abort' # Abort on panic
 strip = true # Strip symbols from binary*
 
-[dev-dependencies]
-approx = "0.3.2"
-codspeed-criterion-compat = "2.7.1"
-
 [[bench]]
 name = "num_methods"
 harness = false
 
+# path planning
 [[example]]
 name = "dijkstra"
 path = "examples/path_planning/dijkstra.rs"
+
+# utils
+[[example]]
+name = "generate_custom_map.rs"
+path = "examples/utils/generate_custom_map.rs"
