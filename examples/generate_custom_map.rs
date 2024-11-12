@@ -115,18 +115,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
 
     // This will be a circle regardless of axis
-    // for (shape, _cost) in obstacles {
-    //     match shape {
-    //         Shape2D::Circle(circle) => {
-    //             chart.draw_series(std::iter::once(Circle::new(
-    //                 circle.center,
-    //                 circle.radius * 65.0, // 65 for -5 5
-    //                 &YELLOW,
-    //             )))?;
-    //         }
-    //         Shape2D::Polygon(polygon) => {}
-    //     }
-    // }
+    for (shape, _cost) in obstacles {
+        match shape {
+            Shape2D::Circle(circle) => {
+                chart.draw_series(std::iter::once(plot2::circle_element(
+                    circle.center,
+                    circle.radius,
+                    36u8,
+                    &(0u8, 130u8, 130u8),
+                )))?;
+            }
+            Shape2D::Polygon(polygon) => {}
+        }
+    }
 
     for (y_index, row) in grid.map.iter().enumerate() {
         for (x_index, value) in row.iter().enumerate() {

@@ -4,6 +4,7 @@ use crate::utils::defs;
 
 // 3rd party or std
 use minifb;
+use num_traits::Float;
 use plotters::prelude::*;
 use plotters::{chart::ChartState, coord::types::RangedCoordf64};
 use plotters_arrows;
@@ -216,9 +217,9 @@ pub fn polygon_filled_element(
     polygon_points.push(points[0]);
 
     // Color
-    let polygon_color = &plotters::style::RGBColor(color.0, color.1, color.2);
+    let color = &plotters::style::RGBColor(color.0, color.1, color.2);
 
-    Polygon::new(polygon_points, &polygon_color)
+    Polygon::new(polygon_points, &color)
 }
 
 #[allow(unused)]
@@ -234,11 +235,46 @@ pub fn arrow_element(
     end_points: &[(f64, f64); 2],
     color: &(u8, u8, u8),
 ) -> plotters_arrows::ThinArrow<(f64, f64), i32> {
-    let arrow_color = &plotters::style::RGBColor(color.0, color.1, color.2);
+    let color = &plotters::style::RGBColor(color.0, color.1, color.2);
 
     plotters_arrows::ThinArrow::new(
         (end_points[0].0, end_points[0].1),
         (end_points[1].0, end_points[1].1),
-        &arrow_color,
+        &color,
     )
+}
+
+#[allow(unused)]
+/// Outputs a Thin Arrow where it is has two end points (start points to the end)
+///
+/// * Arguments
+///
+/// * `end_points` - The 2 oints to plot (must be ordered where point 0 -> 1)
+/// * `color` - RGB values [0,255] to color the shape
+/// * Returns a ThinArrow
+///
+pub fn circle_element<T>(
+    center: (T, T),
+    radius: T,
+    parts: u8,
+    color: &(u8, u8, u8),
+) -> Polygon<(T, T)>
+where
+    T: Float,
+{
+    let color = &plotters::style::RGBColor(color.0, color.1, color.2);
+
+    let angle: T = T::from(2.0 * std::f64::consts::PI).unwrap()
+        / T::from(parts).expect("Invalid circle element argument");
+    let points: Vec<(T, T)> = (0..parts)
+        .into_iter()
+        .map(|part| {
+            (
+                center.0 + radius * T::cos(angle * T::from(part).unwrap()),
+                center.1 + radius * T::sin(angle * T::from(part).unwrap()),
+            )
+        })
+        .collect();
+
+    Polygon::new(points, color)
 }
