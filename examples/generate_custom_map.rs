@@ -75,14 +75,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let resolution = 1.0;
     let bottom_left_pos = Position2D(chart_params.x_range[0], chart_params.y_range[0]);
-    let top_right_pos = Position2D(chart_params.x_range[1], chart_params.y_range[1]);
-    let start_pos = Position2D(0.0, 0.0);
-    let goal_pos = Position2D(-5.0, 3.3);
-
-    let bottom_left_index = calculate_index(&bottom_left_pos, &bottom_left_pos, resolution);
-    let top_right_index = calculate_index(&top_right_pos, &bottom_left_pos, resolution);
-    let start_index = calculate_index(&start_pos, &bottom_left_pos, resolution);
-    let goal_index = calculate_index(&goal_pos, &bottom_left_pos, resolution);
 
     let obstacles = vec![
         (

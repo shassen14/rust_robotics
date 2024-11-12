@@ -1,5 +1,9 @@
 use rust_robotics::path_planning::dijkstra;
 use rust_robotics::utils::files;
+use rust_robotics::utils::geometry;
+use rust_robotics::utils::geometry::CircleS;
+use rust_robotics::utils::geometry::Shape2D;
+use rust_robotics::utils::map_generator;
 use rust_robotics::utils::plot2;
 
 // Plotters
@@ -35,7 +39,7 @@ fn calculate_cost(index: &Index2D) -> usize {
 
 impl Index2D {
     // first index is lower left, 2nd index is top right
-    fn verify_node(&self, index_bounds: [Index2D; 2]) -> bool {
+    fn verify_node(&self, map: &Vec<Vec<u8>>, index_bounds: [Index2D; 2]) -> bool {
         if self.0 < index_bounds[0].0 || self.0 > index_bounds[1].0 {
             return false;
         }
@@ -43,11 +47,17 @@ impl Index2D {
         if self.1 < index_bounds[0].1 || self.1 > index_bounds[1].1 {
             return false;
         }
+
+        if map[self.1 as usize][self.0 as usize] > 0 {
+            return false;
+        }
+
         true
     }
 
     fn populate_children(
         &self,
+        map: &Vec<Vec<u8>>,
         index_bounds: &[Index2D; 2],
         model: &Vec<Index2D>,
     ) -> Vec<(Index2D, usize)> {
@@ -57,7 +67,7 @@ impl Index2D {
         for motion in model {
             let node = Index2D(self.0 + motion.0, self.1 + motion.1);
 
-            if node.verify_node(*index_bounds) {
+            if node.verify_node(map, *index_bounds) {
                 children.push((node, calculate_cost(&motion)));
             }
         }
@@ -102,11 +112,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .axis_style(&WHITE)
         .draw()?;
 
-    let resolution = 0.4;
+    let resolution = 1.0;
     let bottom_left_pos = Position2D(chart_params.x_range[0], chart_params.y_range[0]);
     let top_right_pos = Position2D(chart_params.x_range[1], chart_params.y_range[1]);
-    let start_pos = Position2D(0.0, 0.0);
-    let goal_pos = Position2D(-5.0, 3.3);
+    let start_pos = Position2D(-30.0, -65.0);
+    let goal_pos = Position2D(0.0, 70.0);
 
     let bottom_left_index = calculate_index(&bottom_left_pos, &bottom_left_pos, resolution);
     let top_right_index = calculate_index(&top_right_pos, &bottom_left_pos, resolution);
@@ -124,6 +134,40 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Index2D(-1, -1),
     ];
 
+    let obstacles = vec![
+        (
+            geometry::Shape2D::Circle(CircleS::new((0.0, 0.0), 1.0)),
+            1u8,
+        ),
+        (
+            geometry::Shape2D::Circle(CircleS::new((5.0, 0.0), 2.0)),
+            1u8,
+        ),
+        (
+            geometry::Shape2D::Circle(CircleS::new((20.0, 20.0), 5.0)),
+            1u8,
+        ),
+        (
+            geometry::Shape2D::Circle(CircleS::new((0.0, 50.0), 10.0)),
+            1u8,
+        ),
+        (
+            geometry::Shape2D::Circle(CircleS::new((-30.0, -50.0), 10.0)),
+            1u8,
+        ),
+        (
+            geometry::Shape2D::Circle(CircleS::new((-20.0, 0.0), 15.0)),
+            1u8,
+        ),
+    ];
+
+    let grid = map_generator::GridMap2D::new(
+        &obstacles,
+        &chart_params.x_range,
+        &chart_params.y_range,
+        resolution,
+    );
+
     println!(
         "Start Position: {:?} \tStart Index: {:?}",
         start_pos, start_index
@@ -135,8 +179,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
 
     let dijkstra_path = dijkstra::plan(&start_index, &goal_index, &mut |p| {
-        p.populate_children(&[bottom_left_index, top_right_index], &model)
+        p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
     });
+
+    chart.draw_series(std::iter::once(Cross::new(
+        (start_pos.0, start_pos.1),
+        5,
+        &RED,
+    )))?;
+    chart.draw_series(std::iter::once(Cross::new(
+        (goal_pos.0, goal_pos.1),
+        5,
+        &RED,
+    )))?;
+
+    for (shape, _cost) in obstacles {
+        match shape {
+            Shape2D::Circle(circle) => {
+                chart.draw_series(std::iter::once(plot2::circle_element(
+                    circle.center,
+                    circle.radius,
+                    36u8,
+                    &(0u8, 130u8, 130u8),
+                )))?;
+            }
+            Shape2D::Polygon(polygon) => {}
+        }
+    }
 
     let pos_path: Vec<(f64, f64)> = dijkstra_path
         .expect("No path found")

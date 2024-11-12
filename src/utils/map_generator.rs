@@ -80,7 +80,9 @@ where
                         *cost,
                     ));
                 }
-                geometry::Shape2D::<U>::Polygon(polygon) => {}
+                geometry::Shape2D::<U>::Polygon(polygon) => {
+                    todo!()
+                }
             }
         }
 
@@ -117,7 +119,9 @@ where
                         }
                     }
                 }
-                geometry::Shape2D::<usize>::Polygon(polygon) => {}
+                geometry::Shape2D::<usize>::Polygon(polygon) => {
+                    todo!()
+                }
             }
         }
     }
