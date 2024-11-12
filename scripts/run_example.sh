@@ -19,11 +19,16 @@ do
    esac
 done
 
-# parameterFile = "${parameterFile,,}"
+# lower case the input
+parameterFile=$(echo "${parameterFile}" | tr '[:upper:]' '[:lower:]' )
+
 # TODO: find all file names excluding ".rs" in examples, put in a list, and then 
 # be able to run those files according to some standard way of organizing files
 
-if [ "${parameterFile,,}" == "dijkstra" ];
-then
-  cargo run --release --example dijkstra ${CONFIG_DIR}/path_planning/dijkstra_animation.toml
+if [ ${parameterFile} == "dijkstra" ]; then
+  cargo run --release --example ${parameterFile} ${CONFIG_DIR}/path_planning/${parameterFile}_animation.toml
+elif [ ${parameterFile} == "generate_custom_map" ]; then
+    cargo run --release --example ${parameterFile} ${CONFIG_DIR}/utils/${parameterFile}_animation.toml
+else
+  echo "$parameterFile"
 fi

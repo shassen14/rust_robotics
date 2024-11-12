@@ -40,5 +40,5 @@ path = "examples/path_planning/dijkstra.rs"
 
 # utils
 [[example]]
-name = "generate_custom_map.rs"
+name = "generate_custom_map"
 path = "examples/utils/generate_custom_map.rs"

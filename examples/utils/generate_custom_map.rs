@@ -25,18 +25,6 @@ fn calculate_position(index: &Index2D, min_position: &Position2D, resolution: f6
     )
 }
 
-fn calculate_index(position: &Position2D, min_position: &Position2D, resolution: f64) -> Index2D {
-    Index2D(
-        ((position.0 - min_position.0) / resolution).round() as i32,
-        ((position.1 - min_position.1) / resolution).round() as i32,
-    )
-}
-
-fn calculate_cost(index: &Index2D) -> usize {
-    let index_f: (f64, f64) = (index.0 as f64, index.1 as f64);
-    (f64::sqrt(index_f.0 * index_f.0 + index_f.1 * index_f.1) * 100.0).round() as usize
-}
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env::set_var("RUST_BACKTRACE", "1");
     // Read command line arguments
