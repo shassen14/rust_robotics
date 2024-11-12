@@ -32,3 +32,7 @@ codspeed-criterion-compat = "2.7.1"
 [[bench]]
 name = "num_methods"
 harness = false
+
+[[example]]
+name = "dijkstra"
+path = "examples/path_planning/dijkstra.rs"
