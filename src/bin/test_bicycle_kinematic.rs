@@ -50,7 +50,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let bike_cfg_path = &args[2] as &str;
 
     // Obtain plot config params given the file
-    let plot_config: plot2::Config = files::read_config(animate_cfg_path);
+    let plot_config: plot2::Config = files::read_toml(animate_cfg_path);
 
     let chart_params: plot2::ChartParams = plot_config.chart_params;
     let mut window_params: plot2::WindowParams = plot_config.window_params;
@@ -66,7 +66,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Could do it this way where a model is initialized and then read using the model
     // let mut model = bicycle_kinematic::Model::new(1.0, 1.0);
     // model.read(bike_cfg_path);
-    let model: bicycle_kinematic::Model = files::read_config(bike_cfg_path);
+    let model: bicycle_kinematic::Model = files::read_toml(bike_cfg_path);
     let mut current_state: na::SVector<f64, 3> = na::SVector::<f64, 3>::zeros();
     let mut current_input: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(VEL_INIT, RWA_INIT);
     let mut data: VecDeque<(f64, na::SVector<f64, 3>, na::SVector<f64, 2>)> = VecDeque::new();

@@ -3,7 +3,7 @@ use std::fs;
 use std::process::exit;
 
 // Found from https://codingpackets.com/blog/rust-load-a-toml-file/
-pub fn read_config<T>(config_path: &str) -> T
+pub fn read_toml<T>(config_path: &str) -> T
 where
     T: DeserializeOwned,
 {

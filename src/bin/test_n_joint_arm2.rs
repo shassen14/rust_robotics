@@ -32,7 +32,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let animate_cfg_path = &args[1] as &str;
 
     // Obtain plot config params given the file
-    let plot_config: plot2::Config = files::read_config(animate_cfg_path);
+    let plot_config: plot2::Config = files::read_toml(animate_cfg_path);
 
     let chart_params: plot2::ChartParams = plot_config.chart_params;
     let window_params: plot2::WindowParams = plot_config.window_params;

@@ -160,7 +160,7 @@ impl<const N: usize, const M: usize> base::System<f64, N, M> for Model<f64, N, M
 
     #[allow(unused)]
     fn read(&mut self, filename: &str) -> () {
-        let data: Model<f64, N, M> = files::read_config(filename);
+        let data: Model<f64, N, M> = files::read_toml(filename);
         self.link_lengths = data.link_lengths;
     }
 }
