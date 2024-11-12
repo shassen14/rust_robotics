@@ -30,4 +30,5 @@ valgrind --leak-check=full \
          --log-file=${LOG_VALGRIND_DIR}/${LOG_FILE} \
          ${PROJECT_DIR}/target/debug/${parameterFile}
 
+ # TODO: only print when successful
 echo "Finished valgrind ${PROJECT_DIR}/target/debug/${parameterFile}"

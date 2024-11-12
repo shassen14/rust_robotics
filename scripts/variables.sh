@@ -4,6 +4,8 @@ SCRIPT_DIR=$(realpath $(dirname $0))
 PROJECT_DIR=${SCRIPT_DIR}/..
 LOG_DIR=${PROJECT_DIR}/logs
 LOG_VALGRIND_DIR=${LOG_DIR}/valgrind
+CONFIG_DIR=${PROJECT_DIR}/configs
+EXAMPLE_DIR=${PROJECT_DIR}/examples
 
 # function to make the logs directory if it doesn't exist
 make_log_dir() {
