@@ -144,7 +144,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let sample_step: f64 = 1.0 / animation_params.sample_rate;
     let frame_step: f64 = 1.0 / animation_params.frame_rate;
 
-    let mut mouse_chart_position: (f64, f64) = (goal_pos.0, goal_pos.1);
+    let mut mouse_chart_start_pos: (f64, f64) = (goal_pos.0, goal_pos.1);
+    let mut mouse_chart_goal_pos: (f64, f64) = (goal_pos.0, goal_pos.1);
 
     let dijkstra_path = dijkstra::plan(&start_index, &goal_index, &mut |p| {
         p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
@@ -165,44 +166,118 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     while window.is_open() && !window.is_key_down(minifb::Key::Escape) {
         let epoch = SystemTime::now().duration_since(start_time)?.as_secs_f64();
 
-        let mouse_position = if window.get_mouse_down(minifb::MouseButton::Left) {
+        let mouse_start_pos = if window.get_mouse_down(minifb::MouseButton::Right) {
             window.get_mouse_pos(minifb::MouseMode::Clamp)
         } else {
             None
         };
 
-        if mouse_position.is_some() {
-            mouse_chart_position = plot2::mouse_chart_position(
-                (
-                    mouse_position.unwrap().0 as f64,
-                    mouse_position.unwrap().1 as f64,
-                ),
+        let mouse_goal_pos = if window.get_mouse_down(minifb::MouseButton::Left) {
+            window.get_mouse_pos(minifb::MouseMode::Clamp)
+        } else {
+            None
+        };
+
+        if let Some(coord) = mouse_start_pos {
+            mouse_chart_start_pos = plot2::mouse_chart_position(
+                (coord.0 as f64, coord.1 as f64),
                 &window_params,
                 &chart_params,
             );
 
-            let mouse_index = calculate_index(
-                &Position2D(mouse_chart_position.0, mouse_chart_position.1),
+            let mouse_start_index = calculate_index(
+                &Position2D(mouse_chart_start_pos.0, mouse_chart_start_pos.1),
                 &bottom_left_pos,
                 resolution,
             );
 
-            let path: Vec<(f64, f64)> = dijkstra::plan(&start_index, &mouse_index, &mut |p| {
-                p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
-            })
-            .expect("No path found")
-            .into_iter()
-            .map(|i| {
-                let pos = calculate_position(&i, &bottom_left_pos, resolution);
-                (pos.0, pos.1)
-            })
-            .collect();
+            let mouse_goal_index = calculate_index(
+                &Position2D(mouse_chart_goal_pos.0, mouse_chart_goal_pos.1),
+                &bottom_left_pos,
+                resolution,
+            );
 
-            println!("{:?}", mouse_chart_position);
+            let path: Vec<(f64, f64)> =
+                dijkstra::plan(&mouse_start_index, &mouse_goal_index, &mut |p| {
+                    p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
+                })
+                .expect("No path found")
+                .into_iter()
+                .map(|i| {
+                    let pos = calculate_position(&i, &bottom_left_pos, resolution);
+                    (pos.0, pos.1)
+                })
+                .collect();
+
+            data.push_back((epoch, path));
+            data.pop_front();
+        } else if let Some(coord) = mouse_goal_pos {
+            mouse_chart_goal_pos = plot2::mouse_chart_position(
+                (coord.0 as f64, coord.1 as f64),
+                &window_params,
+                &chart_params,
+            );
+
+            let mouse_start_index = calculate_index(
+                &Position2D(mouse_chart_start_pos.0, mouse_chart_start_pos.1),
+                &bottom_left_pos,
+                resolution,
+            );
+
+            let mouse_goal_index = calculate_index(
+                &Position2D(mouse_chart_goal_pos.0, mouse_chart_goal_pos.1),
+                &bottom_left_pos,
+                resolution,
+            );
+
+            let path: Vec<(f64, f64)> =
+                dijkstra::plan(&mouse_start_index, &mouse_goal_index, &mut |p| {
+                    p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
+                })
+                .expect("No path found")
+                .into_iter()
+                .map(|i| {
+                    let pos = calculate_position(&i, &bottom_left_pos, resolution);
+                    (pos.0, pos.1)
+                })
+                .collect();
 
             data.push_back((epoch, path));
             data.pop_front();
         }
+
+        // if mouse_goal_position.is_some() {
+        //     mouse_chart_goal_pos = plot2::mouse_chart_position(
+        //         (
+        //             mouse_goal_position.unwrap().0 as f64,
+        //             mouse_goal_position.unwrap().1 as f64,
+        //         ),
+        //         &window_params,
+        //         &chart_params,
+        //     );
+
+        //     let mouse_goal_index = calculate_index(
+        //         &Position2D(mouse_chart_goal_pos.0, mouse_chart_goal_pos.1),
+        //         &bottom_left_pos,
+        //         resolution,
+        //     );
+
+        //     let path: Vec<(f64, f64)> = dijkstra::plan(&start_index, &mouse_goal_index, &mut |p| {
+        //         p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
+        //     })
+        //     .expect("No path found")
+        //     .into_iter()
+        //     .map(|i| {
+        //         let pos = calculate_position(&i, &bottom_left_pos, resolution);
+        //         (pos.0, pos.1)
+        //     })
+        //     .collect();
+
+        //     println!("{:?}", mouse_chart_goal_pos);
+
+        //     data.push_back((epoch, path));
+        //     data.pop_front();
+        // }
 
         // if let Some((ts, _)) = data.back() {
         //     if epoch - ts < sample_step {
@@ -288,13 +363,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
 
                 chart.draw_series(std::iter::once(Cross::new(
-                    (start_pos.0, start_pos.1),
+                    mouse_chart_start_pos,
                     5,
                     &RGBColor(255, 0, 0),
                 )))?;
 
                 chart.draw_series(std::iter::once(Cross::new(
-                    mouse_chart_position,
+                    mouse_chart_goal_pos,
                     5,
                     &RGBColor(255, 0, 0),
                 )))?;
