@@ -1,8 +1,6 @@
 use rust_robotics::path_planning::dijkstra;
 use rust_robotics::utils;
 use rust_robotics::utils::files;
-use rust_robotics::utils::geometry;
-use rust_robotics::utils::geometry::CircleS;
 use rust_robotics::utils::geometry::Shape2D;
 use rust_robotics::utils::map_generator;
 use rust_robotics::utils::plot2;
@@ -80,7 +78,7 @@ impl Index2D {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    env::set_var("RUST_BACKTRACE", "1");
+    // env::set_var("RUST_BACKTRACE", "full");
     // Read command line arguments
     let args: Vec<String> = env::args().collect();
 
@@ -103,24 +101,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         map_generator::convert_circle_param_to_struct(&map_params.shape_list.circles);
     let polygon_obstacle: Vec<(Shape2D<f64>, u8)> = Vec::new();
     let obstacles: Vec<(Shape2D<f64>, u8)> = [circle_obstacles, polygon_obstacle].concat();
-
-    let chart_obstacles: Vec<Polygon<(f64, f64)>> = obstacles
-        .clone()
-        .iter()
-        .map(|obstacle| match &obstacle.0 {
-            Shape2D::Circle(circle) => {
-                return Some(plot2::circle_element(
-                    circle.center,
-                    circle.radius,
-                    36u8,
-                    &(0u8, 130u8, 130u8),
-                ))
-            }
-            Shape2D::Polygon(_polygon) => None,
-        })
-        .filter(|item| item.is_some())
-        .map(|item| item.unwrap())
-        .collect();
 
     // Window and Chart
     let mut buf =
@@ -158,36 +138,119 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         resolution,
     );
 
-    // println!(
-    //     "Start Position: {:?} \tStart Index: {:?}",
-    //     start_pos, start_index
-    // );
-
-    // println!(
-    //     "Goal Position: {:?} \tGoal Index: {:?}",
-    //     goal_pos, goal_index
-    // );
-
-    // let dijkstra_path = dijkstra::plan(&start_index, &goal_index, &mut |p| {
-    //     p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
-    // });
-
     let mut data: VecDeque<(f64, Vec<(f64, f64)>)> = VecDeque::new();
 
     let start_time = SystemTime::now();
-    let mut last_flushed = 0.;
     let sample_step: f64 = 1.0 / animation_params.sample_rate;
     let frame_step: f64 = 1.0 / animation_params.frame_rate;
 
     let mut mouse_chart_position: (f64, f64) = (goal_pos.0, goal_pos.1);
 
-    last_flushed = SystemTime::now().duration_since(start_time)?.as_secs_f64();
+    let dijkstra_path = dijkstra::plan(&start_index, &goal_index, &mut |p| {
+        p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
+    });
+
+    let pos_path: Vec<(f64, f64)> = dijkstra_path
+        .expect("No path found")
+        .into_iter()
+        .map(|i| {
+            let pos = calculate_position(&i, &bottom_left_pos, resolution);
+            (pos.0, pos.1)
+        })
+        .collect();
+
+    let mut last_flushed = SystemTime::now().duration_since(start_time)?.as_secs_f64();
+    data.push_back((last_flushed, pos_path));
 
     while window.is_open() && !window.is_key_down(minifb::Key::Escape) {
         let epoch = SystemTime::now().duration_since(start_time)?.as_secs_f64();
 
+        let mouse_position = if window.get_mouse_down(minifb::MouseButton::Left) {
+            window.get_mouse_pos(minifb::MouseMode::Clamp)
+        } else {
+            None
+        };
+
+        if mouse_position.is_some() {
+            mouse_chart_position = plot2::mouse_chart_position(
+                (
+                    mouse_position.unwrap().0 as f64,
+                    mouse_position.unwrap().1 as f64,
+                ),
+                &window_params,
+                &chart_params,
+            );
+
+            let mouse_index = calculate_index(
+                &Position2D(mouse_chart_position.0, mouse_chart_position.1),
+                &bottom_left_pos,
+                resolution,
+            );
+
+            let path: Vec<(f64, f64)> = dijkstra::plan(&start_index, &mouse_index, &mut |p| {
+                p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
+            })
+            .expect("No path found")
+            .into_iter()
+            .map(|i| {
+                let pos = calculate_position(&i, &bottom_left_pos, resolution);
+                (pos.0, pos.1)
+            })
+            .collect();
+
+            println!("{:?}", mouse_chart_position);
+
+            data.push_back((epoch, path));
+            data.pop_front();
+        }
+
+        // if let Some((ts, _)) = data.back() {
+        //     if epoch - ts < sample_step {
+        //         std::thread::sleep(std::time::Duration::from_secs_f64(epoch - ts));
+        //         continue;
+        //     }
+        //     let mut ts = *ts;
+        //     while ts < epoch {
+        //         // TODO: if let some()
+        //         let mouse_position = if window.get_mouse_down(minifb::MouseButton::Left) {
+        //             window.get_mouse_pos(minifb::MouseMode::Clamp)
+        //         } else {
+        //             None
+        //         };
+
+        //         if mouse_position.is_some() {
+        //             mouse_chart_position = plot2::mouse_chart_position(
+        //                 (
+        //                     mouse_position.unwrap().0 as f64,
+        //                     mouse_position.unwrap().1 as f64,
+        //                 ),
+        //                 &window_params,
+        //                 &chart_params,
+        //             );
+
+        //             println!("{:?}", mouse_chart_position);
+        //         }
+
+        //         let path: Vec<(f64, f64)> = dijkstra::plan(&start_index, &goal_index, &mut |p| {
+        //             p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
+        //         })
+        //         .expect("No path found")
+        //         .into_iter()
+        //         .map(|i| {
+        //             let pos = calculate_position(&i, &bottom_left_pos, resolution);
+        //             (pos.0, pos.1)
+        //         })
+        //         .collect();
+
+        //         ts += sample_step;
+
+        //         data.push_back((ts, path));
+        //         data.pop_front();
+        //     }
+        // }
+
         if epoch - last_flushed > frame_step {
-            while data.len() > 2 {
+            while data.len() > 1 {
                 data.pop_front();
             }
             {
@@ -206,26 +269,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .light_line_style(&TRANSPARENT)
                     .draw()?;
 
-                // if let Some((_, x)) = data.back() {
-                //     let mut previous_point = (0.0, 0.0);
-                //     let mut link_points: Vec<(f64, f64)> = vec![];
-
-                //     for i in 0..INPUTS {
-                //         link_points.push(previous_point);
-                //         chart.draw_series(std::iter::once(PathElement::new(
-                //             vec![previous_point, (x[4 * i], x[4 * i + 1])],
-                //             &RGBColor(255u8, 255u8, 255u8),
-                //         )))?;
-                //         chart.draw_series(std::iter::once(Circle::new(
-                //             previous_point,
-                //             5,
-                //             &RGBColor(0u8, 255u8, 255u8),
-                //         )))?;
-                //         previous_point = (x[4 * i], x[4 * i + 1]);
-                //     }
-                //     link_points.push(previous_point);
-                // }
-
                 for (shape, _) in &obstacles {
                     match shape {
                         Shape2D::Circle(circle) => {
@@ -240,10 +283,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 }
 
-                // for shape in chart_obstacles {
-                //     chart.draw_series(std::iter::once(shape));
-                // }
-                // chart.draw_series(chart_obstacles);
+                if let Some((_, path)) = data.back() {
+                    chart.draw_series(LineSeries::new(path.clone(), &GREEN))?;
+                }
+
+                chart.draw_series(std::iter::once(Cross::new(
+                    (start_pos.0, start_pos.1),
+                    5,
+                    &RGBColor(255, 0, 0),
+                )))?;
 
                 chart.draw_series(std::iter::once(Cross::new(
                     mouse_chart_position,
