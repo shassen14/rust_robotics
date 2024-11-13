@@ -1,9 +1,9 @@
+use num_traits::Zero;
+use serde::{Deserialize, Serialize};
 use std::mem::discriminant;
 
-use num_traits::Zero;
-
 /// Variant Type Implementation
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub enum Shape2D<T> {
     Circle(CircleS<T>),
     Polygon(PolygonS<T>),
@@ -26,7 +26,7 @@ impl<T> Eq for Shape2D<T> {}
 //     }
 // }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CircleS<T> {
     pub center: (T, T),
     pub radius: T,
@@ -47,7 +47,7 @@ impl<T: Zero> CircleS<T> {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PolygonS<T> {
     pub points: Vec<(T, T)>,
 }

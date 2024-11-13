@@ -2,6 +2,37 @@ use crate::utils::geometry;
 use crate::utils::geometry::CircleS;
 use num_traits::Float;
 use num_traits::Zero;
+use serde::{Deserialize, Serialize};
+
+// TODO: Move this??? and other structs, maybe even convert functions
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MapGeneratorParams<T, U> {
+    pub shape_list: ShapeList<T, U>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ShapeList<T, U> {
+    pub circles: Vec<(T, T, T, U)>,
+    pub polygons: Vec<(Vec<(T, T)>, U)>,
+}
+
+pub fn convert_circle_param_to_struct<T, U>(
+    circles: &Vec<(T, T, T, U)>,
+) -> Vec<(geometry::Shape2D<T>, U)>
+where
+    T: Zero + Copy,
+    U: Copy,
+{
+    circles
+        .iter()
+        .map(|param| {
+            (
+                geometry::Shape2D::Circle(CircleS::new((param.0, param.1), param.2)),
+                param.3,
+            )
+        })
+        .collect()
+}
 
 // TODO: make this a one dimensional vector which uce index arithmetics instead of
 // the traditional. This is only for performance sake
@@ -14,7 +45,7 @@ pub struct GridMap2D<T, U> {
 
 impl<T, U> GridMap2D<T, U>
 where
-    T: Zero + Copy + std::fmt::Debug,
+    T: Zero + Copy,
     U: Float + Copy,
 {
     pub fn new(

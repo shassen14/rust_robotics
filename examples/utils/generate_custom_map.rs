@@ -1,6 +1,4 @@
 use rust_robotics::utils::files;
-use rust_robotics::utils::geometry;
-use rust_robotics::utils::geometry::CircleS;
 use rust_robotics::utils::geometry::Shape2D;
 use rust_robotics::utils::map_generator;
 
@@ -33,15 +31,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Obtain config_path from command line
     // TODO: make a class for this to streamline this and send helpful error messages
     let animate_cfg_path = &args[1] as &str;
+    let map_param_cfg_path = &args[2] as &str;
 
     // Obtain plot config params given the file
     let plot_config: plot2::Config = files::read_toml(animate_cfg_path);
-
     let chart_params: plot2::ChartParams = plot_config.chart_params;
     let window_params: plot2::WindowParams = plot_config.window_params;
 
+    let map_params: map_generator::MapGeneratorParams<f64, u8> =
+        files::read_toml(map_param_cfg_path);
+
+    println!("map_params: {:?}", map_params);
+
     let root = BitMapBackend::<RGBPixel>::new(
-        "bob.png",
+        "custom_map.png",
         (window_params.width as u32, window_params.height as u32),
     )
     .into_drawing_area();
@@ -64,28 +67,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let resolution = 1.0;
     let bottom_left_pos = Position2D(chart_params.x_range[0], chart_params.y_range[0]);
 
-    let obstacles = vec![
-        (
-            geometry::Shape2D::Circle(CircleS::new((0.0, 0.0), 1.0)),
-            1u8,
-        ),
-        (
-            geometry::Shape2D::Circle(CircleS::new((5.0, 0.0), 2.0)),
-            1u8,
-        ),
-        (
-            geometry::Shape2D::Circle(CircleS::new((20.0, 20.0), 5.0)),
-            1u8,
-        ),
-        (
-            geometry::Shape2D::Circle(CircleS::new((0.0, 50.0), 10.0)),
-            1u8,
-        ),
-        (
-            geometry::Shape2D::Circle(CircleS::new((-30.0, -50.0), 10.0)),
-            1u8,
-        ),
-    ];
+    let circle_obstacles: Vec<(Shape2D<f64>, u8)> =
+        map_generator::convert_circle_param_to_struct(&map_params.shape_list.circles);
+    let polygon_obstacle: Vec<(Shape2D<f64>, u8)> = Vec::new();
+    let obstacles: Vec<(Shape2D<f64>, u8)> = [circle_obstacles, polygon_obstacle].concat();
+
+    println!("obstacles: {:?}", obstacles);
 
     let grid = map_generator::GridMap2D::new(
         &obstacles,
@@ -105,7 +92,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     &(0u8, 130u8, 130u8),
                 )))?;
             }
-            Shape2D::Polygon(polygon) => {}
+            Shape2D::Polygon(_polygon) => {
+                todo!()
+            }
         }
     }
 
@@ -127,7 +116,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     }
-    // chart.draw_series(LineSeries::new(pos_path, &YELLOW))?;
 
     Ok(())
 }
