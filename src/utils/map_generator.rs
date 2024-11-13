@@ -111,7 +111,7 @@ where
                         *cost,
                     ));
                 }
-                geometry::Shape2D::<U>::Polygon(polygon) => {
+                geometry::Shape2D::<U>::Polygon(_polygon) => {
                     todo!()
                 }
             }
@@ -150,7 +150,7 @@ where
                         }
                     }
                 }
-                geometry::Shape2D::<usize>::Polygon(polygon) => {
+                geometry::Shape2D::<usize>::Polygon(_polygon) => {
                     todo!()
                 }
             }
@@ -165,6 +165,7 @@ mod tests {
 
     #[test]
     fn test_gridmap() {
+        // TODO: have an actual test
         let obstacles = vec![(
             geometry::Shape2D::<f64>::Circle(CircleS::new((0.0, 0.0), 1.0)),
             1.0,
@@ -173,7 +174,7 @@ mod tests {
         let x_range: [f64; 2] = [-1.0, 1.0];
         let y_range: [f64; 2] = [-1.0, 1.0];
         let resolution: f64 = 0.1;
-        let map = GridMap2D::<f64, f64>::new(&obstacles, &x_range, &y_range, resolution);
+        let _map = GridMap2D::<f64, f64>::new(&obstacles, &x_range, &y_range, resolution);
 
         assert!(true);
     }
