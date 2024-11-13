@@ -1,4 +1,5 @@
 use rust_robotics::path_planning::dijkstra;
+use rust_robotics::utils;
 use rust_robotics::utils::files;
 use rust_robotics::utils::geometry;
 use rust_robotics::utils::geometry::CircleS;
@@ -8,9 +9,11 @@ use rust_robotics::utils::plot2;
 
 // Plotters
 use plotters::prelude::*;
-use plotters_bitmap::bitmap_pixel::RGBPixel;
-use plotters_bitmap::BitMapBackend;
+use plotters_bitmap::{bitmap_pixel::BGRXPixel, BitMapBackend};
+use std::borrow::{Borrow, BorrowMut};
+use std::collections::VecDeque;
 use std::env;
+use std::time::SystemTime;
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 struct Index2D(i32, i32);
@@ -84,34 +87,48 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Obtain config_path from command line
     // TODO: make a class for this to streamline this and send helpful error messages
     let animate_cfg_path = &args[1] as &str;
+    let map_param_cfg_path: &str = &args[2] as &str;
 
     // Obtain plot config params given the file
     let plot_config: plot2::Config = files::read_toml(animate_cfg_path);
-
     let chart_params: plot2::ChartParams = plot_config.chart_params;
     let window_params: plot2::WindowParams = plot_config.window_params;
+    let animation_params: plot2::AnimationParams = plot_config.animation_params;
 
-    let root = BitMapBackend::<RGBPixel>::new(
-        "bob.png",
-        (window_params.width as u32, window_params.height as u32),
-    )
-    .into_drawing_area();
-    root.fill(&BLACK)?;
+    // obstacles
+    let map_params: map_generator::MapGeneratorParams<f64, u8> =
+        files::read_toml(map_param_cfg_path);
 
-    let mut chart = ChartBuilder::on(&root)
-        .margin(chart_params.margin)
-        .set_all_label_area_size(chart_params.label_size)
-        .build_cartesian_2d(
-            chart_params.x_range[0]..chart_params.x_range[1],
-            chart_params.y_range[0]..chart_params.y_range[1],
-        )?;
+    let circle_obstacles: Vec<(Shape2D<f64>, u8)> =
+        map_generator::convert_circle_param_to_struct(&map_params.shape_list.circles);
+    let polygon_obstacle: Vec<(Shape2D<f64>, u8)> = Vec::new();
+    let obstacles: Vec<(Shape2D<f64>, u8)> = [circle_obstacles, polygon_obstacle].concat();
 
-    chart
-        .configure_mesh()
-        .label_style(("sans-serif", 15).into_font().color(&WHITE))
-        .axis_style(&WHITE)
-        .draw()?;
+    let chart_obstacles: Vec<Polygon<(f64, f64)>> = obstacles
+        .clone()
+        .iter()
+        .map(|obstacle| match &obstacle.0 {
+            Shape2D::Circle(circle) => {
+                return Some(plot2::circle_element(
+                    circle.center,
+                    circle.radius,
+                    36u8,
+                    &(0u8, 130u8, 130u8),
+                ))
+            }
+            Shape2D::Polygon(_polygon) => None,
+        })
+        .filter(|item| item.is_some())
+        .map(|item| item.unwrap())
+        .collect();
 
+    // Window and Chart
+    let mut buf =
+        utils::defs::BufferWrapper(vec![0u32; window_params.width * window_params.height]);
+    let mut window = plot2::create_window(&window_params)?;
+    let cs = plot2::create_2d_chartstate(buf.borrow_mut(), &window_params, &chart_params);
+
+    // mapping
     let resolution = 1.0;
     let bottom_left_pos = Position2D(chart_params.x_range[0], chart_params.y_range[0]);
     let top_right_pos = Position2D(chart_params.x_range[1], chart_params.y_range[1]);
@@ -134,33 +151,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Index2D(-1, -1),
     ];
 
-    let obstacles = vec![
-        (
-            geometry::Shape2D::Circle(CircleS::new((0.0, 0.0), 1.0)),
-            1u8,
-        ),
-        (
-            geometry::Shape2D::Circle(CircleS::new((5.0, 0.0), 2.0)),
-            1u8,
-        ),
-        (
-            geometry::Shape2D::Circle(CircleS::new((20.0, 20.0), 5.0)),
-            1u8,
-        ),
-        (
-            geometry::Shape2D::Circle(CircleS::new((0.0, 50.0), 10.0)),
-            1u8,
-        ),
-        (
-            geometry::Shape2D::Circle(CircleS::new((-30.0, -50.0), 10.0)),
-            1u8,
-        ),
-        (
-            geometry::Shape2D::Circle(CircleS::new((-20.0, 0.0), 15.0)),
-            1u8,
-        ),
-    ];
-
     let grid = map_generator::GridMap2D::new(
         &obstacles,
         &chart_params.x_range,
@@ -168,57 +158,142 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         resolution,
     );
 
-    println!(
-        "Start Position: {:?} \tStart Index: {:?}",
-        start_pos, start_index
-    );
+    // println!(
+    //     "Start Position: {:?} \tStart Index: {:?}",
+    //     start_pos, start_index
+    // );
 
-    println!(
-        "Goal Position: {:?} \tGoal Index: {:?}",
-        goal_pos, goal_index
-    );
+    // println!(
+    //     "Goal Position: {:?} \tGoal Index: {:?}",
+    //     goal_pos, goal_index
+    // );
 
-    let dijkstra_path = dijkstra::plan(&start_index, &goal_index, &mut |p| {
-        p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
-    });
+    // let dijkstra_path = dijkstra::plan(&start_index, &goal_index, &mut |p| {
+    //     p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
+    // });
 
-    chart.draw_series(std::iter::once(Cross::new(
-        (start_pos.0, start_pos.1),
-        5,
-        &RED,
-    )))?;
-    chart.draw_series(std::iter::once(Cross::new(
-        (goal_pos.0, goal_pos.1),
-        5,
-        &RED,
-    )))?;
+    let mut data: VecDeque<(f64, Vec<(f64, f64)>)> = VecDeque::new();
 
-    for (shape, _cost) in obstacles {
-        match shape {
-            Shape2D::Circle(circle) => {
-                chart.draw_series(std::iter::once(plot2::circle_element(
-                    circle.center,
-                    circle.radius,
-                    36u8,
-                    &(0u8, 130u8, 130u8),
+    let start_time = SystemTime::now();
+    let mut last_flushed = 0.;
+    let sample_step: f64 = 1.0 / animation_params.sample_rate;
+    let frame_step: f64 = 1.0 / animation_params.frame_rate;
+
+    let mut mouse_chart_position: (f64, f64) = (goal_pos.0, goal_pos.1);
+
+    last_flushed = SystemTime::now().duration_since(start_time)?.as_secs_f64();
+
+    while window.is_open() && !window.is_key_down(minifb::Key::Escape) {
+        let epoch = SystemTime::now().duration_since(start_time)?.as_secs_f64();
+
+        if epoch - last_flushed > frame_step {
+            while data.len() > 2 {
+                data.pop_front();
+            }
+            {
+                let root = BitMapBackend::<BGRXPixel>::with_buffer_and_format(
+                    buf.borrow_mut(),
+                    (window_params.width as u32, window_params.height as u32),
+                )?
+                .into_drawing_area();
+
+                let mut chart = cs.clone().restore(&root);
+                chart.plotting_area().fill(&BLACK)?;
+
+                chart
+                    .configure_mesh()
+                    .bold_line_style(&chart_params.create_label_color().mix(0.2))
+                    .light_line_style(&TRANSPARENT)
+                    .draw()?;
+
+                // if let Some((_, x)) = data.back() {
+                //     let mut previous_point = (0.0, 0.0);
+                //     let mut link_points: Vec<(f64, f64)> = vec![];
+
+                //     for i in 0..INPUTS {
+                //         link_points.push(previous_point);
+                //         chart.draw_series(std::iter::once(PathElement::new(
+                //             vec![previous_point, (x[4 * i], x[4 * i + 1])],
+                //             &RGBColor(255u8, 255u8, 255u8),
+                //         )))?;
+                //         chart.draw_series(std::iter::once(Circle::new(
+                //             previous_point,
+                //             5,
+                //             &RGBColor(0u8, 255u8, 255u8),
+                //         )))?;
+                //         previous_point = (x[4 * i], x[4 * i + 1]);
+                //     }
+                //     link_points.push(previous_point);
+                // }
+
+                for (shape, _) in &obstacles {
+                    match shape {
+                        Shape2D::Circle(circle) => {
+                            chart.draw_series(std::iter::once(plot2::circle_element(
+                                circle.center,
+                                circle.radius,
+                                36u8,
+                                &(0u8, 130u8, 130u8),
+                            )))?;
+                        }
+                        Shape2D::Polygon(polygon) => {}
+                    }
+                }
+
+                // for shape in chart_obstacles {
+                //     chart.draw_series(std::iter::once(shape));
+                // }
+                // chart.draw_series(chart_obstacles);
+
+                chart.draw_series(std::iter::once(Cross::new(
+                    mouse_chart_position,
+                    5,
+                    &RGBColor(255, 0, 0),
                 )))?;
             }
-            Shape2D::Polygon(polygon) => {}
+
+            window.update_with_buffer(buf.borrow(), window_params.width, window_params.height)?;
+            last_flushed = epoch;
         }
     }
 
-    let pos_path: Vec<(f64, f64)> = dijkstra_path
-        .expect("No path found")
-        .into_iter()
-        .map(|i| {
-            let pos = calculate_position(&i, &bottom_left_pos, resolution);
-            (pos.0, pos.1)
-        })
-        .collect();
+    // chart.draw_series(std::iter::once(Cross::new(
+    //     (start_pos.0, start_pos.1),
+    //     5,
+    //     &RED,
+    // )))?;
+    // chart.draw_series(std::iter::once(Cross::new(
+    //     (goal_pos.0, goal_pos.1),
+    //     5,
+    //     &RED,
+    // )))?;
 
-    println!("d path: {:?}", pos_path);
+    // for (shape, _cost) in obstacles {
+    //     match shape {
+    //         Shape2D::Circle(circle) => {
+    //             chart.draw_series(std::iter::once(plot2::circle_element(
+    //                 circle.center,
+    //                 circle.radius,
+    //                 36u8,
+    //                 &(0u8, 130u8, 130u8),
+    //             )))?;
+    //         }
+    //         Shape2D::Polygon(polygon) => {}
+    //     }
+    // }
 
-    chart.draw_series(LineSeries::new(pos_path, &YELLOW))?;
+    // let pos_path: Vec<(f64, f64)> = dijkstra_path
+    //     .expect("No path found")
+    //     .into_iter()
+    //     .map(|i| {
+    //         let pos = calculate_position(&i, &bottom_left_pos, resolution);
+    //         (pos.0, pos.1)
+    //     })
+    //     .collect();
+
+    // println!("d path: {:?}", pos_path);
+
+    // chart.draw_series(LineSeries::new(pos_path, &YELLOW))?;
 
     Ok(())
 }

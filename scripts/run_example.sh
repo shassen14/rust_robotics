@@ -26,7 +26,7 @@ parameterFile=$(echo "${parameterFile}" | tr '[:upper:]' '[:lower:]' )
 # be able to run those files according to some standard way of organizing files
 
 if [ ${parameterFile} == "dijkstra" ]; then
-  cargo run --release --example ${parameterFile} ${CONFIG_DIR}/path_planning/${parameterFile}_animation.toml
+  cargo run --release --example ${parameterFile} ${CONFIG_DIR}/path_planning/${parameterFile}_animation.toml ${CONFIG_DIR}/path_planning/obstacle_map_params.toml 
 elif [ ${parameterFile} == "generate_custom_map" ]; then
     cargo run --release --example ${parameterFile} ${CONFIG_DIR}/utils/${parameterFile}_animation.toml ${CONFIG_DIR}/utils/${parameterFile}_params.toml
 else
