@@ -5,9 +5,12 @@ circles = [
   [40.0, 20.0, 13.0, 5],
   [-40.0, -40.0, 15.0, 5],
   [-40.0, 40.0, 10.0, 5],
-  [60.0, -50.0, 12.5, 5]
+  [60.0, -50.0, 12.5, 5],
+  [30.0, -40.0, 15.0, 5],
+  [-50.0, 0.0, 10.0, 5],
+  [20.0, 60.0, 10.0, 5]
 ]
 # [polygon0[[point0.x, point0.y], [point1.x, point1.y], ... [pointN.x, pointN.y], cost],
 #  polygon1[[point0.x, point0.y], [point1.x, point1.y], ... [pointN.x, pointN.y], cost]], ...
 #  polygonN[[point0.x, point0.y], [point1.x, point1.y], ... [pointN.x, pointN.y], cost]]
-polygons = [[[[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]], 5]]
+polygons = []
