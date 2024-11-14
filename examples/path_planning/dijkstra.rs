@@ -109,7 +109,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cs = plot2::create_2d_chartstate(buf.borrow_mut(), &window_params, &chart_params);
 
     // mapping
-    let resolution = 1.0;
+    let resolution = 2.0;
     let bottom_left_pos = Position2D(chart_params.x_range[0], chart_params.y_range[0]);
     let top_right_pos = Position2D(chart_params.x_range[1], chart_params.y_range[1]);
     let start_pos = Position2D(-30.0, -65.0);
@@ -144,7 +144,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let sample_step: f64 = 1.0 / animation_params.sample_rate;
     let frame_step: f64 = 1.0 / animation_params.frame_rate;
 
-    let mut mouse_chart_start_pos: (f64, f64) = (goal_pos.0, goal_pos.1);
+    let mut mouse_chart_start_pos: (f64, f64) = (start_pos.0, start_pos.1);
     let mut mouse_chart_goal_pos: (f64, f64) = (goal_pos.0, goal_pos.1);
 
     let dijkstra_path = dijkstra::plan(&start_index, &goal_index, &mut |p| {
@@ -246,84 +246,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             data.pop_front();
         }
 
-        // if mouse_goal_position.is_some() {
-        //     mouse_chart_goal_pos = plot2::mouse_chart_position(
-        //         (
-        //             mouse_goal_position.unwrap().0 as f64,
-        //             mouse_goal_position.unwrap().1 as f64,
-        //         ),
-        //         &window_params,
-        //         &chart_params,
-        //     );
-
-        //     let mouse_goal_index = calculate_index(
-        //         &Position2D(mouse_chart_goal_pos.0, mouse_chart_goal_pos.1),
-        //         &bottom_left_pos,
-        //         resolution,
-        //     );
-
-        //     let path: Vec<(f64, f64)> = dijkstra::plan(&start_index, &mouse_goal_index, &mut |p| {
-        //         p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
-        //     })
-        //     .expect("No path found")
-        //     .into_iter()
-        //     .map(|i| {
-        //         let pos = calculate_position(&i, &bottom_left_pos, resolution);
-        //         (pos.0, pos.1)
-        //     })
-        //     .collect();
-
-        //     println!("{:?}", mouse_chart_goal_pos);
-
-        //     data.push_back((epoch, path));
-        //     data.pop_front();
-        // }
-
-        // if let Some((ts, _)) = data.back() {
-        //     if epoch - ts < sample_step {
-        //         std::thread::sleep(std::time::Duration::from_secs_f64(epoch - ts));
-        //         continue;
-        //     }
-        //     let mut ts = *ts;
-        //     while ts < epoch {
-        //         // TODO: if let some()
-        //         let mouse_position = if window.get_mouse_down(minifb::MouseButton::Left) {
-        //             window.get_mouse_pos(minifb::MouseMode::Clamp)
-        //         } else {
-        //             None
-        //         };
-
-        //         if mouse_position.is_some() {
-        //             mouse_chart_position = plot2::mouse_chart_position(
-        //                 (
-        //                     mouse_position.unwrap().0 as f64,
-        //                     mouse_position.unwrap().1 as f64,
-        //                 ),
-        //                 &window_params,
-        //                 &chart_params,
-        //             );
-
-        //             println!("{:?}", mouse_chart_position);
-        //         }
-
-        //         let path: Vec<(f64, f64)> = dijkstra::plan(&start_index, &goal_index, &mut |p| {
-        //             p.populate_children(&grid.map, &[bottom_left_index, top_right_index], &model)
-        //         })
-        //         .expect("No path found")
-        //         .into_iter()
-        //         .map(|i| {
-        //             let pos = calculate_position(&i, &bottom_left_pos, resolution);
-        //             (pos.0, pos.1)
-        //         })
-        //         .collect();
-
-        //         ts += sample_step;
-
-        //         data.push_back((ts, path));
-        //         data.pop_front();
-        //     }
-        // }
-
         if epoch - last_flushed > frame_step {
             while data.len() > 1 {
                 data.pop_front();
@@ -379,44 +301,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             last_flushed = epoch;
         }
     }
-
-    // chart.draw_series(std::iter::once(Cross::new(
-    //     (start_pos.0, start_pos.1),
-    //     5,
-    //     &RED,
-    // )))?;
-    // chart.draw_series(std::iter::once(Cross::new(
-    //     (goal_pos.0, goal_pos.1),
-    //     5,
-    //     &RED,
-    // )))?;
-
-    // for (shape, _cost) in obstacles {
-    //     match shape {
-    //         Shape2D::Circle(circle) => {
-    //             chart.draw_series(std::iter::once(plot2::circle_element(
-    //                 circle.center,
-    //                 circle.radius,
-    //                 36u8,
-    //                 &(0u8, 130u8, 130u8),
-    //             )))?;
-    //         }
-    //         Shape2D::Polygon(polygon) => {}
-    //     }
-    // }
-
-    // let pos_path: Vec<(f64, f64)> = dijkstra_path
-    //     .expect("No path found")
-    //     .into_iter()
-    //     .map(|i| {
-    //         let pos = calculate_position(&i, &bottom_left_pos, resolution);
-    //         (pos.0, pos.1)
-    //     })
-    //     .collect();
-
-    // println!("d path: {:?}", pos_path);
-
-    // chart.draw_series(LineSeries::new(pos_path, &YELLOW))?;
 
     Ok(())
 }
