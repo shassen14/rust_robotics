@@ -14,5 +14,5 @@ x_range = [-80.0, 80.0]
 y_range = [-80.0, 80.0]
 
 [animation_params]
-sample_rate = 100
-frame_rate = 30
+sample_rate = 10
+frame_rate = 10
