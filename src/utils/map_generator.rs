@@ -2,8 +2,62 @@ use crate::utils::geometry;
 use crate::utils::geometry::CircleS;
 use num_traits::Float;
 use num_traits::Zero;
+use serde::{Deserialize, Serialize};
 
-// TODO: make this a one dimensional vector which uce index arithmetics instead of
+use super::geometry::PolygonS;
+
+// TODO: Move this??? and other structs, maybe even convert functions
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MapGeneratorParams<T, U> {
+    pub shape_list: ShapeList<T, U>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ShapeList<T, U> {
+    // x, y, radius, cost
+    pub circles: Vec<(T, T, T, U)>,
+    // x, y, cost
+    pub polygons: Vec<(Vec<(T, T)>, U)>,
+}
+
+pub fn convert_circle_param_to_struct<T, U>(
+    circles: &Vec<(T, T, T, U)>,
+) -> Vec<(geometry::Shape2D<T>, U)>
+where
+    T: Zero + Copy,
+    U: Copy,
+{
+    circles
+        .iter()
+        .map(|param| {
+            (
+                geometry::Shape2D::Circle(CircleS::new((param.0, param.1), param.2)),
+                param.3,
+            )
+        })
+        .collect()
+}
+
+// TODO: figure out this cloning business. I DO NOT LIKE CLONING
+pub fn convert_polygon_param_to_struct<T, U>(
+    polygons: &Vec<(Vec<(T, T)>, U)>,
+) -> Vec<(geometry::Shape2D<T>, U)>
+where
+    T: Zero + Copy,
+    U: Copy,
+{
+    polygons
+        .iter()
+        .map(|param| {
+            (
+                geometry::Shape2D::Polygon(PolygonS::new(param.0.clone().into_iter())),
+                param.1,
+            )
+        })
+        .collect()
+}
+
+// TODO: make this a one dimensional vector which use index arithmetics instead of
 // the traditional. This is only for performance sake
 pub struct GridMap2D<T, U> {
     pub map: Vec<Vec<T>>,
@@ -14,7 +68,7 @@ pub struct GridMap2D<T, U> {
 
 impl<T, U> GridMap2D<T, U>
 where
-    T: Zero + Copy + std::fmt::Debug,
+    T: Zero + Copy,
     U: Float + Copy,
 {
     pub fn new(
@@ -80,7 +134,9 @@ where
                         *cost,
                     ));
                 }
-                geometry::Shape2D::<U>::Polygon(polygon) => {}
+                geometry::Shape2D::<U>::Polygon(_polygon) => {
+                    todo!()
+                }
             }
         }
 
@@ -117,7 +173,9 @@ where
                         }
                     }
                 }
-                geometry::Shape2D::<usize>::Polygon(polygon) => {}
+                geometry::Shape2D::<usize>::Polygon(_polygon) => {
+                    todo!()
+                }
             }
         }
     }
@@ -130,6 +188,7 @@ mod tests {
 
     #[test]
     fn test_gridmap() {
+        // TODO: have an actual test
         let obstacles = vec![(
             geometry::Shape2D::<f64>::Circle(CircleS::new((0.0, 0.0), 1.0)),
             1.0,
@@ -138,7 +197,7 @@ mod tests {
         let x_range: [f64; 2] = [-1.0, 1.0];
         let y_range: [f64; 2] = [-1.0, 1.0];
         let resolution: f64 = 0.1;
-        let map = GridMap2D::<f64, f64>::new(&obstacles, &x_range, &y_range, resolution);
+        let _map = GridMap2D::<f64, f64>::new(&obstacles, &x_range, &y_range, resolution);
 
         assert!(true);
     }

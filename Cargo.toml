@@ -5,6 +5,7 @@ authors = ["Samir Hassen"]
 edition = "2021"
 
 [dependencies]
+clap = { version = "4.5", features = ["derive"] }
 csv = "1.3"
 minifb = "0.27"
 nalgebra = "0.33"
@@ -31,3 +32,8 @@ codspeed-criterion-compat = "2.7.1"
 [[bench]]
 name = "num_methods"
 harness = false
+
+# utils
+[[example]]
+name = "generate_custom_map"
+path = "examples/utils/generate_custom_map.rs"
