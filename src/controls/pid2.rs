@@ -45,29 +45,39 @@ impl Controller {
     /// # Arguments
     ///
     ///
-    pub fn update_gains(&mut self, kp: &Vec<f64>, ki: &Vec<f64>, kd: &Vec<f64>) {
-        self.kp = kp.clone();
-        self.ki = ki.clone();
-        self.kd = kd.clone();
+    pub fn update_gains(&mut self, kp: &[f64], ki: &[f64], kd: &[f64]) {
+        self.kp.clear();
+        self.ki.clear();
+        self.kd.clear();
+
+        self.kp.extend_from_slice(kp);
+        self.ki.extend_from_slice(ki);
+        self.kd.extend_from_slice(kd);
     }
 
-    pub fn compute(&mut self, error: &Vec<f64>) -> Vec<f64> {
+    /// TODO: Lots of cloning. Can I avoud this please?
+    ///
+    /// # Arguments
+    ///
+    ///
+    pub fn compute(&mut self, error: &[f64]) -> Vec<f64> {
         assert_eq!(self.error_total.len(), error.len());
 
         let n = self.error_total.len();
 
-        self.error_previous = self.error_current.clone();
-        self.error_current = error.clone();
+        // Directly update error_previous and error_current without cloning.
+        self.error_previous.copy_from_slice(&self.error_current);
+        self.error_current.copy_from_slice(error);
 
+        // Update error_total directly (without cloning).
         for i in 0..n {
             self.error_total[i] += self.error_current[i];
+            self.error_total[i] = math::bound_value(
+                self.error_total[i],
+                self.error_total_lower_bound[i],
+                self.error_total_upper_bound[i],
+            );
         }
-
-        self.error_total = math::bound_value(
-            self.error_total.clone(),
-            self.error_total_lower_bound.clone(),
-            self.error_total_upper_bound.clone(),
-        );
 
         //
         let mut p = vec![0.; n];
