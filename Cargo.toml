@@ -33,6 +33,11 @@ codspeed-criterion-compat = "2.7.1"
 name = "num_methods"
 harness = false
 
+# controls
+[[example]]
+name = "n_joint_arm_2d"
+path = "examples/controls/n_joint_arm_2d.rs"
+
 # utils
 [[example]]
 name = "generate_custom_map"
