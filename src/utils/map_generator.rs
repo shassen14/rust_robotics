@@ -6,7 +6,6 @@ use serde::{Deserialize, Serialize};
 
 use super::geometry::PolygonS;
 
-// TODO: Move this??? and other structs, maybe even convert functions
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MapGeneratorParams<T, U> {
     pub shape_list: ShapeList<T, U>,
@@ -59,6 +58,10 @@ where
 
 // TODO: make this a one dimensional vector which use index arithmetics instead of
 // the traditional. This is only for performance sake
+/// 2D Grid Map
+///
+/// * Template T is the cost value type
+/// * Template U is the resolution type (most likely float)
 pub struct GridMap2D<T, U> {
     pub map: Vec<Vec<T>>,
     pub x_range: [U; 2],
@@ -66,11 +69,19 @@ pub struct GridMap2D<T, U> {
     pub resolution: U,
 }
 
+// Create a 2D Grid Map given a list of obstacles, map size and resolution
 impl<T, U> GridMap2D<T, U>
 where
     T: Zero + Copy,
     U: Float + Copy,
 {
+    /// Constructor
+    ///
+    /// * `obstacles` - Vector of 2D Shapes and their associated cost values
+    /// * `x_range` - Assuming NED Frame [West -, East +]
+    /// * `y_range` - Assuming NED Frame [South -, North +]
+    /// * `resolution` - How detailed the map is
+    /// * returns Self object (GridMap2D)
     pub fn new(
         obstacles: &Vec<(geometry::Shape2D<U>, T)>,
         x_range: &[U; 2],
@@ -90,10 +101,14 @@ where
             + 1usize;
 
         // TODO: check if x_length or y_length
+        // Declare a 2D grid x by y indices
         let mut obs_map: Vec<Vec<T>> = vec![vec![Zero::zero(); x_length]; y_length];
+
+        // converts obstacle list with their cost value to 2D Grid Map
         let new_obstacles = Self::shapes_unit_to_index(obstacles, x_range, y_range, resolution);
 
-        Self::process_shapes(&mut obs_map, &new_obstacles);
+        // Puts the obstacle cost values into the map
+        Self::process_shapes(&new_obstacles, &mut obs_map);
 
         GridMap2D::<T, U> {
             map: obs_map,
@@ -103,6 +118,15 @@ where
         }
     }
 
+    /// Converts the shapes units (meters, feet, miles, etc.) to index coordinates
+    ///
+    /// # Arguments
+    ///
+    /// * `obstacles` - Vector of 2D Shapes and their associated cost values
+    /// * `x_range` - Assuming NED Frame [West -, East +]
+    /// * `y_range` - Assuming NED Frame [South -, North +]
+    /// * `resolution` - How detailed the map is
+    /// * Returns a vector of shapes in the index frame with their associated costs
     fn shapes_unit_to_index(
         obstacles: &Vec<(geometry::Shape2D<U>, T)>,
         x_range: &[U; 2],
@@ -143,7 +167,13 @@ where
         obs_index
     }
 
-    fn process_shapes(map: &mut Vec<Vec<T>>, obstacles: &Vec<(geometry::Shape2D<usize>, T)>) -> () {
+    /// Put the actual cost values from the obstacles into the GridMap2D (map)
+    ///
+    /// # Arguments
+    ///
+    /// * `obstacles` [in] - Vector of 2D shapes with their associated cost value
+    /// * `map` [out]- 2D discretized map with space already reserved
+    fn process_shapes(obstacles: &Vec<(geometry::Shape2D<usize>, T)>, map: &mut Vec<Vec<T>>) -> () {
         // TODO: very slow, time complexity is MNO where M is number of obstacles,
         // N is rows, O is columns
         for (shape, cost) in obstacles {
@@ -181,6 +211,7 @@ where
     }
 }
 
+// TODO: This tests nothing. Actually unit test this
 #[cfg(test)]
 mod tests {
     use super::*;

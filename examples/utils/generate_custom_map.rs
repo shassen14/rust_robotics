@@ -17,7 +17,7 @@ use std::env;
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
-    /// Animation File that has all graph size, etc.
+    /// Animation File that has all plot/window size, etc.
     #[arg(short, long)]
     animate_config: String,
 
