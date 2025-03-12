@@ -18,131 +18,6 @@ use std::env;
 use std::error::Error;
 use std::time::SystemTime;
 
-// Types of 2D joint arm
-// Define an enum to wrap all possible models with different N and M values
-// enum ModelWrapper<T> {
-//     Model1x4(n_joint_arm2::Model<T, 1, 4>),
-//     Model2x8(n_joint_arm2::Model<T, 2, 8>),
-//     Model3x12(n_joint_arm2::Model<T, 3, 12>),
-//     Model4x16(n_joint_arm2::Model<T, 4, 16>),
-//     Model5x20(n_joint_arm2::Model<T, 5, 20>),
-//     Model6x24(n_joint_arm2::Model<T, 6, 24>),
-// }
-
-// // TODO: have a default constructor? that is all zeros?
-// // TODO: default value to be what?
-// // Should I return an optionsal, probably yes
-// fn number_to_model(i: usize) -> ModelWrapper<f64> {
-//     let model = match i {
-//         1 => ModelWrapper::<f64>::Model1x4(n_joint_arm2::Model {
-//             link_lengths: vec![0.],
-//         }),
-//         2 => ModelWrapper::<f64>::Model2x8(n_joint_arm2::Model {
-//             link_lengths: vec![0., 0.],
-//         }),
-//         3 => ModelWrapper::<f64>::Model3x12(n_joint_arm2::Model {
-//             link_lengths: vec![0., 0., 0.],
-//         }),
-//         4 => ModelWrapper::<f64>::Model4x16(n_joint_arm2::Model {
-//             link_lengths: vec![0., 0., 0., 0.],
-//         }),
-//         5 => ModelWrapper::<f64>::Model5x20(n_joint_arm2::Model {
-//             link_lengths: vec![0., 0., 0., 0., 0.],
-//         }),
-//         6 => ModelWrapper::<f64>::Model6x24(n_joint_arm2::Model {
-//             link_lengths: vec![0., 0., 0., 0., 0., 0.],
-//         }),
-//         _ => ModelWrapper::<f64>::Model1x4(n_joint_arm2::Model {
-//             link_lengths: vec![0.],
-//         }),
-//     };
-//     model
-// }
-
-// impl ModelWrapper<f64> {
-//     fn calculate_feasible_state_initial(model_wrapper: Self, angles: &[f64]) -> Vec<f64> {
-//         let foo: Vec<f64> = match model_wrapper {
-//             ModelWrapper::Model1x4(model) => <rust_robotics::models::humanoid::n_joint_arm2::Model<
-//                 f64,
-//                 1,
-//                 4,
-//             > as SystemH<f64, 1, 4, 2>>::calculate_feasible_state_initial(
-//                 &model, &angles
-//             )
-//             .as_slice()
-//             .to_vec(),
-//             ModelWrapper::Model2x8(model) => <rust_robotics::models::humanoid::n_joint_arm2::Model<
-//                 f64,
-//                 2,
-//                 8,
-//             > as SystemH<f64, 2, 8, 2>>::calculate_feasible_state_initial(
-//                 &model, &angles
-//             )
-//             .as_slice()
-//             .to_vec(),
-//             ModelWrapper::Model3x12(model) => {
-//                 <rust_robotics::models::humanoid::n_joint_arm2::Model<f64, 3, 12> as SystemH<
-//                     f64,
-//                     3,
-//                     12,
-//                     2,
-//                 >>::calculate_feasible_state_initial(&model, &angles)
-//                 .as_slice()
-//                 .to_vec()
-//             }
-//             ModelWrapper::Model4x16(model) => {
-//                 <rust_robotics::models::humanoid::n_joint_arm2::Model<f64, 4, 16> as SystemH<
-//                     f64,
-//                     4,
-//                     16,
-//                     2,
-//                 >>::calculate_feasible_state_initial(&model, &angles)
-//                 .as_slice()
-//                 .to_vec()
-//             }
-//             ModelWrapper::Model5x20(model) => {
-//                 <rust_robotics::models::humanoid::n_joint_arm2::Model<f64, 5, 20> as SystemH<
-//                     f64,
-//                     5,
-//                     20,
-//                     2,
-//                 >>::calculate_feasible_state_initial(&model, &angles)
-//                 .as_slice()
-//                 .to_vec()
-//             }
-//             ModelWrapper::Model6x24(model) => {
-//                 <rust_robotics::models::humanoid::n_joint_arm2::Model<f64, 6, 24> as SystemH<
-//                     f64,
-//                     6,
-//                     24,
-//                     2,
-//                 >>::calculate_feasible_state_initial(&model, &angles)
-//                 .as_slice()
-//                 .to_vec()
-//             }
-//         };
-//         foo
-//     }
-// }
-
-// // TODO: have a default constructor? that is all zeros?
-// // TODO: default value to be what?
-// // Should I return an optionsal, probably yes
-// fn model_variant_to_model(variant: ModelWrapper<f64>) -> Box<dyn Any> {
-//     let model = match variant {
-//         ModelWrapper::Model1x4(model) => Box::new(model),
-//         ModelWrapper::Model2x8(model) => Box::new(model),
-//         ModelWrapper::Model3x12(model) => Box::new(model),
-//         ModelWrapper::Model4x16(model) => Box::new(model),
-//         ModelWrapper::Model5x20(model) => Box::new(model),
-//         ModelWrapper::Model6x24(model) => Box::new(model),
-//         // _ => n_joint_arm2::Model::<f64, 1, 4> {
-//         //     link_lengths: vec![0.],
-//         // },
-//     };
-//     model
-// }
-
 fn main() -> Result<(), Box<dyn Error>> {
     // Read command line arguments
     let args: Vec<String> = env::args().collect();
@@ -155,6 +30,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Obtain plot config params given the file
     let plot_config: plot2::Config = files::read_toml(animate_cfg_path);
     let n_joint_config: n_joint_arm2_d::NJointArmConfig<f64> = files::read_toml(n_joint_cfg_path);
+    let pid_config: pid2::PIDConfig = files::read_toml(n_joint_cfg_path);
 
     // Acquire animation params
     let chart_params: plot2::ChartParams = plot_config.chart_params;
@@ -169,6 +45,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Acquire robot arm params
     let n_joint_params: n_joint_arm2_d::NJointArmParams<f64> = n_joint_config.n_joint_arm_params;
+    let pid_params: pid2::PIDParams = pid_config.pid_params;
 
     let num_inputs = n_joint_params.link_lengths.len();
     let model = n_joint_arm2_d::ModelD {
@@ -187,11 +64,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut data: VecDeque<(f64, na::DVector<f64>, na::DVector<f64>)> = VecDeque::new();
 
     let mut controller: pid2::Controller = pid2::Controller::new(
-        vec![2.5, 2.5, 2.5, 2.5, 1.5, 1.5, 1.5],
-        vec![0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        vec![0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4],
-        vec![-0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1],
-        vec![0.1, 0.1, 0.1, 0.1, 0.1, -0.1, 0.1],
+        pid_params.kp,
+        pid_params.ki,
+        pid_params.kd,
+        pid_params.error_total_lower_bound,
+        pid_params.error_total_upper_bound,
     );
 
     let start_time = SystemTime::now();

@@ -1,16 +1,33 @@
 // initial/experimental. not sure how I want to program it yet
 use crate::utils::math;
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+pub struct PIDConfig {
+    pub pid_params: PIDParams,
+}
+
+#[derive(Deserialize)]
+pub struct PIDParams {
+    pub kp: Vec<f64>,
+    pub ki: Vec<f64>,
+    pub kd: Vec<f64>,
+    pub error_total_lower_bound: Vec<f64>,
+    pub error_total_upper_bound: Vec<f64>,
+}
 
 // TODO: implement with generic type if it's simple enough
+// TODO: make the last 3 errors optional so they don't have to be included in the config
+#[derive(Deserialize)]
 pub struct Controller {
     kp: Vec<f64>,
     ki: Vec<f64>,
     kd: Vec<f64>,
+    error_total_lower_bound: Vec<f64>,
+    error_total_upper_bound: Vec<f64>,
     error_previous: Vec<f64>,
     error_current: Vec<f64>,
     error_total: Vec<f64>,
-    error_total_lower_bound: Vec<f64>,
-    error_total_upper_bound: Vec<f64>,
 }
 
 impl Controller {
@@ -31,11 +48,11 @@ impl Controller {
             kp: kp,
             ki: ki,
             kd: kd,
+            error_total_lower_bound: lower_bound,
+            error_total_upper_bound: upper_bound,
             error_previous: vec![0.0; n],
             error_current: vec![0.0; n],
             error_total: vec![0.0; n],
-            error_total_lower_bound: lower_bound,
-            error_total_upper_bound: upper_bound,
         }
     }
 
