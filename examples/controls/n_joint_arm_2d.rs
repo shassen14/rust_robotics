@@ -1,8 +1,7 @@
 // rust robotics
 use rust_robotics::controls::pid2;
-use rust_robotics::models::base::System;
-use rust_robotics::models::base::SystemH;
-use rust_robotics::models::humanoid::n_joint_arm2;
+use rust_robotics::models::base_d::{SystemD, SystemHD};
+use rust_robotics::models::humanoid::n_joint_arm2_d;
 use rust_robotics::num_methods::runge_kutta;
 use rust_robotics::utils::defs;
 use rust_robotics::utils::files;
@@ -19,9 +18,130 @@ use std::env;
 use std::error::Error;
 use std::time::SystemTime;
 
-// constants
-const STATES: usize = 24;
-const INPUTS: usize = 6;
+// Types of 2D joint arm
+// Define an enum to wrap all possible models with different N and M values
+// enum ModelWrapper<T> {
+//     Model1x4(n_joint_arm2::Model<T, 1, 4>),
+//     Model2x8(n_joint_arm2::Model<T, 2, 8>),
+//     Model3x12(n_joint_arm2::Model<T, 3, 12>),
+//     Model4x16(n_joint_arm2::Model<T, 4, 16>),
+//     Model5x20(n_joint_arm2::Model<T, 5, 20>),
+//     Model6x24(n_joint_arm2::Model<T, 6, 24>),
+// }
+
+// // TODO: have a default constructor? that is all zeros?
+// // TODO: default value to be what?
+// // Should I return an optionsal, probably yes
+// fn number_to_model(i: usize) -> ModelWrapper<f64> {
+//     let model = match i {
+//         1 => ModelWrapper::<f64>::Model1x4(n_joint_arm2::Model {
+//             link_lengths: vec![0.],
+//         }),
+//         2 => ModelWrapper::<f64>::Model2x8(n_joint_arm2::Model {
+//             link_lengths: vec![0., 0.],
+//         }),
+//         3 => ModelWrapper::<f64>::Model3x12(n_joint_arm2::Model {
+//             link_lengths: vec![0., 0., 0.],
+//         }),
+//         4 => ModelWrapper::<f64>::Model4x16(n_joint_arm2::Model {
+//             link_lengths: vec![0., 0., 0., 0.],
+//         }),
+//         5 => ModelWrapper::<f64>::Model5x20(n_joint_arm2::Model {
+//             link_lengths: vec![0., 0., 0., 0., 0.],
+//         }),
+//         6 => ModelWrapper::<f64>::Model6x24(n_joint_arm2::Model {
+//             link_lengths: vec![0., 0., 0., 0., 0., 0.],
+//         }),
+//         _ => ModelWrapper::<f64>::Model1x4(n_joint_arm2::Model {
+//             link_lengths: vec![0.],
+//         }),
+//     };
+//     model
+// }
+
+// impl ModelWrapper<f64> {
+//     fn calculate_feasible_state_initial(model_wrapper: Self, angles: &[f64]) -> Vec<f64> {
+//         let foo: Vec<f64> = match model_wrapper {
+//             ModelWrapper::Model1x4(model) => <rust_robotics::models::humanoid::n_joint_arm2::Model<
+//                 f64,
+//                 1,
+//                 4,
+//             > as SystemH<f64, 1, 4, 2>>::calculate_feasible_state_initial(
+//                 &model, &angles
+//             )
+//             .as_slice()
+//             .to_vec(),
+//             ModelWrapper::Model2x8(model) => <rust_robotics::models::humanoid::n_joint_arm2::Model<
+//                 f64,
+//                 2,
+//                 8,
+//             > as SystemH<f64, 2, 8, 2>>::calculate_feasible_state_initial(
+//                 &model, &angles
+//             )
+//             .as_slice()
+//             .to_vec(),
+//             ModelWrapper::Model3x12(model) => {
+//                 <rust_robotics::models::humanoid::n_joint_arm2::Model<f64, 3, 12> as SystemH<
+//                     f64,
+//                     3,
+//                     12,
+//                     2,
+//                 >>::calculate_feasible_state_initial(&model, &angles)
+//                 .as_slice()
+//                 .to_vec()
+//             }
+//             ModelWrapper::Model4x16(model) => {
+//                 <rust_robotics::models::humanoid::n_joint_arm2::Model<f64, 4, 16> as SystemH<
+//                     f64,
+//                     4,
+//                     16,
+//                     2,
+//                 >>::calculate_feasible_state_initial(&model, &angles)
+//                 .as_slice()
+//                 .to_vec()
+//             }
+//             ModelWrapper::Model5x20(model) => {
+//                 <rust_robotics::models::humanoid::n_joint_arm2::Model<f64, 5, 20> as SystemH<
+//                     f64,
+//                     5,
+//                     20,
+//                     2,
+//                 >>::calculate_feasible_state_initial(&model, &angles)
+//                 .as_slice()
+//                 .to_vec()
+//             }
+//             ModelWrapper::Model6x24(model) => {
+//                 <rust_robotics::models::humanoid::n_joint_arm2::Model<f64, 6, 24> as SystemH<
+//                     f64,
+//                     6,
+//                     24,
+//                     2,
+//                 >>::calculate_feasible_state_initial(&model, &angles)
+//                 .as_slice()
+//                 .to_vec()
+//             }
+//         };
+//         foo
+//     }
+// }
+
+// // TODO: have a default constructor? that is all zeros?
+// // TODO: default value to be what?
+// // Should I return an optionsal, probably yes
+// fn model_variant_to_model(variant: ModelWrapper<f64>) -> Box<dyn Any> {
+//     let model = match variant {
+//         ModelWrapper::Model1x4(model) => Box::new(model),
+//         ModelWrapper::Model2x8(model) => Box::new(model),
+//         ModelWrapper::Model3x12(model) => Box::new(model),
+//         ModelWrapper::Model4x16(model) => Box::new(model),
+//         ModelWrapper::Model5x20(model) => Box::new(model),
+//         ModelWrapper::Model6x24(model) => Box::new(model),
+//         // _ => n_joint_arm2::Model::<f64, 1, 4> {
+//         //     link_lengths: vec![0.],
+//         // },
+//     };
+//     model
+// }
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Read command line arguments
@@ -54,22 +174,22 @@ fn main() -> Result<(), Box<dyn Error>> {
         std::f64::consts::FRAC_PI_4 * 1.0,
     ];
 
-    let model: n_joint_arm2::Model<f64, STATES, INPUTS> = n_joint_arm2::Model {
+    let model = n_joint_arm2_d::ModelD {
         link_lengths: lengths.clone(),
     };
 
+    let num_inputs = lengths.len();
+    let num_states = num_inputs * model.num_states_to_num_dim_ratio() as usize;
+
     println!("{:?}", model);
-    let mut current_state: na::SVector<f64, STATES> =
-        <rust_robotics::models::humanoid::n_joint_arm2::Model<f64, STATES, INPUTS> as SystemH<
+    let mut current_state: na::DVector<f64> =
+        <rust_robotics::models::humanoid::n_joint_arm2_d::ModelD<f64> as SystemHD<
             f64,
-            STATES,
-            INPUTS,
             2,
         >>::calculate_feasible_state_initial(&model, &angles);
 
-    let mut current_input: na::SVector<f64, INPUTS> = na::SVector::<f64, INPUTS>::zeros();
-    let mut data: VecDeque<(f64, na::SVector<f64, STATES>, na::SVector<f64, INPUTS>)> =
-        VecDeque::new();
+    let mut current_input: na::DVector<f64> = na::DVector::<f64>::zeros(num_inputs);
+    let mut data: VecDeque<(f64, na::DVector<f64>, na::DVector<f64>)> = VecDeque::new();
 
     let mut controller: pid2::Controller = pid2::Controller::new(
         vec![2.5, 2.5, 2.5, 2.5, 1.5, 1.5],
@@ -86,7 +206,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut angle_desired: Vec<f64>;
     let mut mouse_chart_position: (f64, f64) =
-        (current_state[STATES - 4], current_state[STATES - 3]);
+        (current_state[num_states - 4], current_state[num_states - 3]);
 
     while window.is_open() && !window.is_key_down(minifb::Key::Escape) {
         let epoch = SystemTime::now().duration_since(start_time)?.as_secs_f64();
@@ -124,20 +244,19 @@ fn main() -> Result<(), Box<dyn Error>> {
                 // let x_dot_desired = model.calculate_x_dot_desired(&angle_desired, &current_state);
 
                 // current_input = model.calculate_input(&current_state, &x_dot_desired, ts);
-                current_input =
-                    na::SVector::<f64, INPUTS>::from_vec(controller.compute(&angle_desired));
+                current_input = na::DVector::<f64>::from_vec(controller.compute(&angle_desired));
 
                 current_state = model.propagate(
                     &current_state,
                     &current_input,
                     epoch,
                     sample_step,
-                    &runge_kutta::rk4,
+                    &runge_kutta::rk4d,
                 );
 
                 ts += sample_step;
 
-                data.push_back((ts, current_state, current_input));
+                data.push_back((ts, current_state.clone(), current_input.clone()));
                 data.pop_front();
             }
         }
@@ -150,9 +269,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             &current_input,
             epoch,
             sample_step,
-            &runge_kutta::rk4,
+            &runge_kutta::rk4d,
         );
-        data.push_back((epoch, current_state, current_input));
+        data.push_back((epoch, current_state.clone(), current_input.clone()));
 
         if epoch - last_flushed > frame_step {
             while data.len() > 2 {
@@ -179,7 +298,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     let mut previous_point = (0.0, 0.0);
                     let mut link_points: Vec<(f64, f64)> = vec![];
 
-                    for i in 0..INPUTS {
+                    for i in 0..num_inputs {
                         link_points.push(previous_point);
                         chart.draw_series(std::iter::once(PathElement::new(
                             vec![previous_point, (x[4 * i], x[4 * i + 1])],
