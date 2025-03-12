@@ -150,10 +150,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Obtain config_path from command line
     // TODO: make a class for this to streamline this and send helpful error messages
     let animate_cfg_path = &args[1] as &str;
+    let n_joint_cfg_path = &args[2] as &str;
 
     // Obtain plot config params given the file
     let plot_config: plot2::Config = files::read_toml(animate_cfg_path);
+    let n_joint_config: n_joint_arm2_d::NJointArmConfig<f64> = files::read_toml(n_joint_cfg_path);
 
+    // Acquire animation params
     let chart_params: plot2::ChartParams = plot_config.chart_params;
     let window_params: plot2::WindowParams = plot_config.window_params;
     let animation_params: plot2::AnimationParams = plot_config.animation_params;
@@ -164,21 +167,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let cs = plot2::create_2d_chartstate(buf.borrow_mut(), &window_params, &chart_params);
 
-    let lengths = vec![1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
-    let angles = vec![
-        std::f64::consts::FRAC_PI_4 * 1.,
-        std::f64::consts::FRAC_PI_4 * 1.,
-        std::f64::consts::FRAC_PI_4 * 1.,
-        std::f64::consts::FRAC_PI_4 * 1.,
-        std::f64::consts::FRAC_PI_4 * 1.0,
-        std::f64::consts::FRAC_PI_4 * 1.0,
-    ];
+    // Acquire robot arm params
+    let n_joint_params: n_joint_arm2_d::NJointArmParams<f64> = n_joint_config.n_joint_arm_params;
 
+    let num_inputs = n_joint_params.link_lengths.len();
     let model = n_joint_arm2_d::ModelD {
-        link_lengths: lengths.clone(),
+        link_lengths: n_joint_params.link_lengths,
     };
-
-    let num_inputs = lengths.len();
     let num_states = num_inputs * model.num_states_to_num_dim_ratio() as usize;
 
     println!("{:?}", model);
@@ -186,17 +181,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         <rust_robotics::models::humanoid::n_joint_arm2_d::ModelD<f64> as SystemHD<
             f64,
             2,
-        >>::calculate_feasible_state_initial(&model, &angles);
+        >>::calculate_feasible_state_initial(&model, &n_joint_params.link_angles);
 
     let mut current_input: na::DVector<f64> = na::DVector::<f64>::zeros(num_inputs);
     let mut data: VecDeque<(f64, na::DVector<f64>, na::DVector<f64>)> = VecDeque::new();
 
     let mut controller: pid2::Controller = pid2::Controller::new(
-        vec![2.5, 2.5, 2.5, 2.5, 1.5, 1.5],
-        vec![0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        vec![0.4, 0.4, 0.4, 0.4, 0.4, 0.4],
-        vec![-0.1, -0.1, -0.1, -0.1, -0.1, -0.1],
-        vec![0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+        vec![2.5, 2.5, 2.5, 2.5, 1.5, 1.5, 1.5],
+        vec![0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        vec![0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4],
+        vec![-0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1],
+        vec![0.1, 0.1, 0.1, 0.1, 0.1, -0.1, 0.1],
     );
 
     let start_time = SystemTime::now();

@@ -1,5 +1,3 @@
-use core::num;
-
 // rust robotics
 use crate::models::base_d::{self, SystemHD};
 use crate::utils::files;
@@ -8,6 +6,23 @@ use crate::utils::files;
 use nalgebra as na;
 use num_traits;
 use serde::{Deserialize, Serialize};
+
+/**
+ * TODO: need to possibly have link_angles in ModelD and have those angles updated over time?
+ * Easier to read the toml that way
+ *
+ */
+
+#[derive(Deserialize)]
+pub struct NJointArmConfig<T> {
+    pub n_joint_arm_params: NJointArmParams<T>,
+}
+
+#[derive(Deserialize)]
+pub struct NJointArmParams<T> {
+    pub link_lengths: Vec<T>,
+    pub link_angles: Vec<T>,
+}
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ModelD<T> {
@@ -42,6 +57,7 @@ impl base_d::SystemHD<f64, 2> for ModelD<f64> {
         4u8
     }
 
+    // angles desired are relative to the previous link
     fn calculate_feasible_state_initial(&self, angles_desired: &[f64]) -> na::DVector<f64> {
         assert_eq!(angles_desired.len(), self.link_lengths.len());
         let dof = self.link_lengths.len();

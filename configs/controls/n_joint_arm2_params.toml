@@ -1,0 +1,11 @@
+[n_joint_arm_params]
+link_lengths = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+link_angles = [
+  0.785,
+  0.785,
+  0.785,
+  0.785,
+  0.785,
+  0.785,
+  0.785
+] # radian for now. TODO: change to degrees
