@@ -9,25 +9,72 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
+
 jobs:
-  test:
-    name: Test ${{ matrix.target }}
-    
-    strategy:
-      fail-fast: false
-
-      matrix:
-        include:
-          - { target: x86_64-unknown-linux-gnu, os: ubuntu-latest }
-          - { target: x86_64-apple-darwin, os: macos-latest }
-
-    runs-on: ${{ matrix.os }}
-
-    # add more steps, code coverage, benchmarks, etcs
+  build-ubuntu:
+    runs-on: ubuntu-latest
     steps:
-      - name: Install dependencies for fontconfig
-        run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up Rust
+        uses: actions/setup-rust@v1
+        with:
+          rust-version: stable  # You can specify a version here if needed
 
-      - uses: actions/checkout@v4
-      - name: Build
-        run: cargo build --verbose
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev  # Example for fontconfig dependency
+
+      - name: Build the project
+        run: cargo build --release
+
+      # - name: Run tests
+      #   run: cargo test
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up Rust
+        uses: actions/setup-rust@v1
+        with:
+          rust-version: stable  # You can specify a version here if needed
+
+      - name: Install dependencies
+        run: brew install fontconfig  # Example for macOS using Homebrew to install fontconfig
+
+      - name: Build the project
+        run: cargo build --release
+
+      # - name: Run tests
+      #   run: cargo test
+
+
+# jobs:
+#   test:
+#     name: Test ${{ matrix.target }}
+    
+#     strategy:
+#       fail-fast: false
+
+#       matrix:
+#         include:
+#           - { target: x86_64-unknown-linux-gnu, os: ubuntu-latest }
+#           - { target: x86_64-apple-darwin, os: macos-latest }
+
+#     runs-on: ${{ matrix.os }}
+
+#     # add more steps, code coverage, benchmarks, etcs
+#     steps:
+#       - name: Install dependencies for fontconfig
+#         run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev
+
+#       - uses: actions/checkout@v4
+#       - name: Build
+#         run: cargo build --verbose
+
+
+
+
