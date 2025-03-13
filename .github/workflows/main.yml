@@ -25,6 +25,9 @@ jobs:
 
     # add more steps, code coverage, benchmarks, etcs
     steps:
+      - name: Install dependencies for fontconfig
+        run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev
+
       - uses: actions/checkout@v4
       - name: Build
         run: cargo build --verbose
