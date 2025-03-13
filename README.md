@@ -36,7 +36,8 @@ This is generally how data flows to get robots to achieve goals autonomously. We
 **Once this repo is more flushed out, these files will be moved to an examples directory**
 
 * [N Joint 2D Robotic Arm Example](/src/bin/test_n_joint_arm2.rs)
-    * `cargo run --release --bin test_n_joint_arm2 configs/examples/animation_n_joint_arm2.toml`
+    * `cargo run --release --example n_joint_arm_2d configs/controls/n_joint_arm2_params.toml`
+        * The toml file can be edited in such a way to change the controls, and the number of linkages for the robotic arm
 
 ![N Joint Robotic Arm Simulation](https://github.com/shassen14/rust_robotics_media/blob/main/models/n_joint_robotic_arm_2d.gif)
 

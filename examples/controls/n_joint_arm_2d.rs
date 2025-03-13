@@ -1,5 +1,5 @@
 // rust robotics
-use rust_robotics::controls::pid2;
+use rust_robotics::controls::pid;
 use rust_robotics::models::base_d::{SystemD, SystemHD};
 use rust_robotics::models::humanoid::n_joint_arm2_d;
 use rust_robotics::num_methods::runge_kutta;
@@ -29,7 +29,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Obtain plot config params given the file
     let plot_config: plot2::Config = files::read_toml(cfg_path);
     let n_joint_config: n_joint_arm2_d::NJointArmConfig<f64> = files::read_toml(cfg_path);
-    let pid_config: pid2::PIDConfig = files::read_toml(cfg_path);
+    let pid_config: pid::PIDConfig = files::read_toml(cfg_path);
 
     // Acquire animation params
     let chart_params: plot2::ChartParams = plot_config.chart_params;
@@ -44,7 +44,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Acquire robot arm params
     let n_joint_params: n_joint_arm2_d::NJointArmParams<f64> = n_joint_config.n_joint_arm_params;
-    let pid_params: pid2::PIDParams = pid_config.pid_params;
+    let pid_params: pid::PIDParams = pid_config.pid_params;
 
     let num_inputs = n_joint_params.link_lengths.len();
     let model = n_joint_arm2_d::ModelD {
@@ -62,7 +62,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut current_input: na::DVector<f64> = na::DVector::<f64>::zeros(num_inputs);
     let mut data: VecDeque<(f64, na::DVector<f64>, na::DVector<f64>)> = VecDeque::new();
 
-    let mut controller: pid2::Controller = pid2::Controller::new(
+    let mut controller: pid::Controller = pid::Controller::new(
         pid_params.kp,
         pid_params.ki,
         pid_params.kd,
