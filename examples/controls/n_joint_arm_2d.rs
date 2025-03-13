@@ -24,13 +24,12 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Obtain config_path from command line
     // TODO: make a class for this to streamline this and send helpful error messages
-    let animate_cfg_path = &args[1] as &str;
-    let n_joint_cfg_path = &args[2] as &str;
+    let cfg_path = &args[1] as &str;
 
     // Obtain plot config params given the file
-    let plot_config: plot2::Config = files::read_toml(animate_cfg_path);
-    let n_joint_config: n_joint_arm2_d::NJointArmConfig<f64> = files::read_toml(n_joint_cfg_path);
-    let pid_config: pid2::PIDConfig = files::read_toml(n_joint_cfg_path);
+    let plot_config: plot2::Config = files::read_toml(cfg_path);
+    let n_joint_config: n_joint_arm2_d::NJointArmConfig<f64> = files::read_toml(cfg_path);
+    let pid_config: pid2::PIDConfig = files::read_toml(cfg_path);
 
     // Acquire animation params
     let chart_params: plot2::ChartParams = plot_config.chart_params;
