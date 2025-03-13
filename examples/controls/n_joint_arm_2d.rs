@@ -1,8 +1,7 @@
 // rust robotics
-use rust_robotics::controls::pid;
-use rust_robotics::models::base::System;
-use rust_robotics::models::base::SystemH;
-use rust_robotics::models::humanoid::n_joint_arm2;
+use rust_robotics::controls::pid2;
+use rust_robotics::models::base_d::{SystemD, SystemHD};
+use rust_robotics::models::humanoid::n_joint_arm2_d;
 use rust_robotics::num_methods::runge_kutta;
 use rust_robotics::utils::defs;
 use rust_robotics::utils::files;
@@ -19,21 +18,20 @@ use std::env;
 use std::error::Error;
 use std::time::SystemTime;
 
-// constants
-const STATES: usize = 24;
-const INPUTS: usize = 6;
-
 fn main() -> Result<(), Box<dyn Error>> {
     // Read command line arguments
     let args: Vec<String> = env::args().collect();
 
     // Obtain config_path from command line
     // TODO: make a class for this to streamline this and send helpful error messages
-    let animate_cfg_path = &args[1] as &str;
+    let cfg_path = &args[1] as &str;
 
     // Obtain plot config params given the file
-    let plot_config: plot2::Config = files::read_toml(animate_cfg_path);
+    let plot_config: plot2::Config = files::read_toml(cfg_path);
+    let n_joint_config: n_joint_arm2_d::NJointArmConfig<f64> = files::read_toml(cfg_path);
+    let pid_config: pid2::PIDConfig = files::read_toml(cfg_path);
 
+    // Acquire animation params
     let chart_params: plot2::ChartParams = plot_config.chart_params;
     let window_params: plot2::WindowParams = plot_config.window_params;
     let animation_params: plot2::AnimationParams = plot_config.animation_params;
@@ -44,39 +42,32 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let cs = plot2::create_2d_chartstate(buf.borrow_mut(), &window_params, &chart_params);
 
-    let lengths = vec![1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
-    let angles = vec![
-        std::f64::consts::FRAC_PI_4 * 1.,
-        std::f64::consts::FRAC_PI_4 * 1.,
-        std::f64::consts::FRAC_PI_4 * 1.,
-        std::f64::consts::FRAC_PI_4 * 1.,
-        std::f64::consts::FRAC_PI_4 * 1.0,
-        std::f64::consts::FRAC_PI_4 * 1.0,
-    ];
+    // Acquire robot arm params
+    let n_joint_params: n_joint_arm2_d::NJointArmParams<f64> = n_joint_config.n_joint_arm_params;
+    let pid_params: pid2::PIDParams = pid_config.pid_params;
 
-    let model: n_joint_arm2::Model<f64, STATES, INPUTS> = n_joint_arm2::Model {
-        link_lengths: lengths.clone(),
+    let num_inputs = n_joint_params.link_lengths.len();
+    let model = n_joint_arm2_d::ModelD {
+        link_lengths: n_joint_params.link_lengths,
     };
+    let num_states = num_inputs * model.num_states_to_num_dim_ratio() as usize;
 
     println!("{:?}", model);
-    let mut current_state: na::SVector<f64, STATES> =
-        <rust_robotics::models::humanoid::n_joint_arm2::Model<f64, STATES, INPUTS> as SystemH<
+    let mut current_state: na::DVector<f64> =
+        <rust_robotics::models::humanoid::n_joint_arm2_d::ModelD<f64> as SystemHD<
             f64,
-            STATES,
-            INPUTS,
             2,
-        >>::calculate_feasible_state_initial(&model, &angles);
+        >>::calculate_feasible_state_initial(&model, &n_joint_params.link_angles);
 
-    let mut current_input: na::SVector<f64, INPUTS> = na::SVector::<f64, INPUTS>::zeros();
-    let mut data: VecDeque<(f64, na::SVector<f64, STATES>, na::SVector<f64, INPUTS>)> =
-        VecDeque::new();
+    let mut current_input: na::DVector<f64> = na::DVector::<f64>::zeros(num_inputs);
+    let mut data: VecDeque<(f64, na::DVector<f64>, na::DVector<f64>)> = VecDeque::new();
 
-    let mut controller: pid::Controller<INPUTS> = pid::Controller::<INPUTS>::new(
-        na::SVector::<f64, INPUTS>::new(2.5, 2.5, 2.5, 2.5, 1.5, 1.5),
-        na::SVector::<f64, INPUTS>::new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
-        na::SVector::<f64, INPUTS>::new(0.4, 0.4, 0.4, 0.4, 0.4, 0.4),
-        na::SVector::<f64, INPUTS>::new(-0.1, -0.1, -0.1, -0.1, -0.1, -0.1),
-        na::SVector::<f64, INPUTS>::new(0.1, 0.1, 0.1, 0.1, 0.1, 0.1),
+    let mut controller: pid2::Controller = pid2::Controller::new(
+        pid_params.kp,
+        pid_params.ki,
+        pid_params.kd,
+        pid_params.error_total_lower_bound,
+        pid_params.error_total_upper_bound,
     );
 
     let start_time = SystemTime::now();
@@ -86,7 +77,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut angle_desired: Vec<f64>;
     let mut mouse_chart_position: (f64, f64) =
-        (current_state[STATES - 4], current_state[STATES - 3]);
+        (current_state[num_states - 4], current_state[num_states - 3]);
 
     while window.is_open() && !window.is_key_down(minifb::Key::Escape) {
         let epoch = SystemTime::now().duration_since(start_time)?.as_secs_f64();
@@ -115,7 +106,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                         &chart_params,
                     );
 
-                    println!("{:?}", mouse_chart_position);
+                    // println!("{:?}", mouse_chart_position);
                 }
                 angle_desired = model.inverse_kinematics(
                     vec![mouse_chart_position.0, mouse_chart_position.1],
@@ -124,20 +115,19 @@ fn main() -> Result<(), Box<dyn Error>> {
                 // let x_dot_desired = model.calculate_x_dot_desired(&angle_desired, &current_state);
 
                 // current_input = model.calculate_input(&current_state, &x_dot_desired, ts);
-                current_input = controller
-                    .compute(&na::SVector::<f64, INPUTS>::from_vec(angle_desired.clone()));
+                current_input = na::DVector::<f64>::from_vec(controller.compute(&angle_desired));
 
                 current_state = model.propagate(
                     &current_state,
                     &current_input,
                     epoch,
                     sample_step,
-                    &runge_kutta::rk4,
+                    &runge_kutta::rk4d,
                 );
 
                 ts += sample_step;
 
-                data.push_back((ts, current_state, current_input));
+                data.push_back((ts, current_state.clone(), current_input.clone()));
                 data.pop_front();
             }
         }
@@ -150,9 +140,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             &current_input,
             epoch,
             sample_step,
-            &runge_kutta::rk4,
+            &runge_kutta::rk4d,
         );
-        data.push_back((epoch, current_state, current_input));
+        data.push_back((epoch, current_state.clone(), current_input.clone()));
 
         if epoch - last_flushed > frame_step {
             while data.len() > 2 {
@@ -179,7 +169,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     let mut previous_point = (0.0, 0.0);
                     let mut link_points: Vec<(f64, f64)> = vec![];
 
-                    for i in 0..INPUTS {
+                    for i in 0..num_inputs {
                         link_points.push(previous_point);
                         chart.draw_series(std::iter::once(PathElement::new(
                             vec![previous_point, (x[4 * i], x[4 * i + 1])],

@@ -2,9 +2,66 @@ use crate::utils::geometry;
 use crate::utils::geometry::CircleS;
 use num_traits::Float;
 use num_traits::Zero;
+use serde::{Deserialize, Serialize};
 
-// TODO: make this a one dimensional vector which uce index arithmetics instead of
+use super::geometry::PolygonS;
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MapGeneratorParams<T, U> {
+    pub shape_list: ShapeList<T, U>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ShapeList<T, U> {
+    // x, y, radius, cost
+    pub circles: Vec<(T, T, T, U)>,
+    // x, y, cost
+    pub polygons: Vec<(Vec<(T, T)>, U)>,
+}
+
+pub fn convert_circle_param_to_struct<T, U>(
+    circles: &Vec<(T, T, T, U)>,
+) -> Vec<(geometry::Shape2D<T>, U)>
+where
+    T: Zero + Copy,
+    U: Copy,
+{
+    circles
+        .iter()
+        .map(|param| {
+            (
+                geometry::Shape2D::Circle(CircleS::new((param.0, param.1), param.2)),
+                param.3,
+            )
+        })
+        .collect()
+}
+
+// TODO: figure out this cloning business. I DO NOT LIKE CLONING
+pub fn convert_polygon_param_to_struct<T, U>(
+    polygons: &Vec<(Vec<(T, T)>, U)>,
+) -> Vec<(geometry::Shape2D<T>, U)>
+where
+    T: Zero + Copy,
+    U: Copy,
+{
+    polygons
+        .iter()
+        .map(|param| {
+            (
+                geometry::Shape2D::Polygon(PolygonS::new(param.0.clone().into_iter())),
+                param.1,
+            )
+        })
+        .collect()
+}
+
+// TODO: make this a one dimensional vector which use index arithmetics instead of
 // the traditional. This is only for performance sake
+/// 2D Grid Map
+///
+/// * Template T is the cost value type
+/// * Template U is the resolution type (most likely float)
 pub struct GridMap2D<T, U> {
     pub map: Vec<Vec<T>>,
     pub x_range: [U; 2],
@@ -12,11 +69,19 @@ pub struct GridMap2D<T, U> {
     pub resolution: U,
 }
 
+// Create a 2D Grid Map given a list of obstacles, map size and resolution
 impl<T, U> GridMap2D<T, U>
 where
-    T: Zero + Copy + std::fmt::Debug,
+    T: Zero + Copy,
     U: Float + Copy,
 {
+    /// Constructor
+    ///
+    /// * `obstacles` - Vector of 2D Shapes and their associated cost values
+    /// * `x_range` - Assuming NED Frame [West -, East +]
+    /// * `y_range` - Assuming NED Frame [South -, North +]
+    /// * `resolution` - How detailed the map is
+    /// * returns Self object (GridMap2D)
     pub fn new(
         obstacles: &Vec<(geometry::Shape2D<U>, T)>,
         x_range: &[U; 2],
@@ -36,10 +101,14 @@ where
             + 1usize;
 
         // TODO: check if x_length or y_length
+        // Declare a 2D grid x by y indices
         let mut obs_map: Vec<Vec<T>> = vec![vec![Zero::zero(); x_length]; y_length];
+
+        // converts obstacle list with their cost value to 2D Grid Map
         let new_obstacles = Self::shapes_unit_to_index(obstacles, x_range, y_range, resolution);
 
-        Self::process_shapes(&mut obs_map, &new_obstacles);
+        // Puts the obstacle cost values into the map
+        Self::process_shapes(&new_obstacles, &mut obs_map);
 
         GridMap2D::<T, U> {
             map: obs_map,
@@ -49,6 +118,15 @@ where
         }
     }
 
+    /// Converts the shapes units (meters, feet, miles, etc.) to index coordinates
+    ///
+    /// # Arguments
+    ///
+    /// * `obstacles` - Vector of 2D Shapes and their associated cost values
+    /// * `x_range` - Assuming NED Frame [West -, East +]
+    /// * `y_range` - Assuming NED Frame [South -, North +]
+    /// * `resolution` - How detailed the map is
+    /// * Returns a vector of shapes in the index frame with their associated costs
     fn shapes_unit_to_index(
         obstacles: &Vec<(geometry::Shape2D<U>, T)>,
         x_range: &[U; 2],
@@ -80,14 +158,22 @@ where
                         *cost,
                     ));
                 }
-                geometry::Shape2D::<U>::Polygon(polygon) => {}
+                geometry::Shape2D::<U>::Polygon(_polygon) => {
+                    todo!()
+                }
             }
         }
 
         obs_index
     }
 
-    fn process_shapes(map: &mut Vec<Vec<T>>, obstacles: &Vec<(geometry::Shape2D<usize>, T)>) -> () {
+    /// Put the actual cost values from the obstacles into the GridMap2D (map)
+    ///
+    /// # Arguments
+    ///
+    /// * `obstacles` [in] - Vector of 2D shapes with their associated cost value
+    /// * `map` [out]- 2D discretized map with space already reserved
+    fn process_shapes(obstacles: &Vec<(geometry::Shape2D<usize>, T)>, map: &mut Vec<Vec<T>>) -> () {
         // TODO: very slow, time complexity is MNO where M is number of obstacles,
         // N is rows, O is columns
         for (shape, cost) in obstacles {
@@ -117,12 +203,15 @@ where
                         }
                     }
                 }
-                geometry::Shape2D::<usize>::Polygon(polygon) => {}
+                geometry::Shape2D::<usize>::Polygon(_polygon) => {
+                    todo!()
+                }
             }
         }
     }
 }
 
+// TODO: This tests nothing. Actually unit test this
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -130,6 +219,7 @@ mod tests {
 
     #[test]
     fn test_gridmap() {
+        // TODO: have an actual test
         let obstacles = vec![(
             geometry::Shape2D::<f64>::Circle(CircleS::new((0.0, 0.0), 1.0)),
             1.0,
@@ -138,7 +228,7 @@ mod tests {
         let x_range: [f64; 2] = [-1.0, 1.0];
         let y_range: [f64; 2] = [-1.0, 1.0];
         let resolution: f64 = 0.1;
-        let map = GridMap2D::<f64, f64>::new(&obstacles, &x_range, &y_range, resolution);
+        let _map = GridMap2D::<f64, f64>::new(&obstacles, &x_range, &y_range, resolution);
 
         assert!(true);
     }

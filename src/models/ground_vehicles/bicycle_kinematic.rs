@@ -223,7 +223,7 @@ impl base::System<f64, 3, 2> for Model {
     }
 
     fn read(&mut self, filename: &str) -> () {
-        let data: Model = files::read_config(filename);
+        let data: Model = files::read_toml(filename);
 
         self.length_front = data.length_front;
         self.length_rear = data.length_rear;

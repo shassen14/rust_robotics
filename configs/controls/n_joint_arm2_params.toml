@@ -1,0 +1,40 @@
+[n_joint_arm_params]
+link_lengths = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+link_angles = [
+  0.785,
+  0.785,
+  0.785,
+  0.785,
+  0.785,
+  0.785,
+  0.785,
+  0.785,
+  0.785
+] # radian for now. TODO: change to degrees
+
+[pid_params]
+kp = [2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 1.5, 1.5]
+ki = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+kd = [0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4]
+error_total_lower_bound = [-0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1]
+error_total_upper_bound = [0.1, 0.1, 0.1, 0.1, 0.1, -0.1, 0.1, 0.1, 0.1]
+
+# Animations
+[window_params]
+title = "N Joint Arm 2D Simulation"
+width = 720 # pixels
+height = 720 # pixels
+
+[chart_params]
+background_color = [0, 0, 0] # rgb
+label_color = [0, 250, 0] # rgb
+margin = 10
+label_size = 30
+label_font = "sans-serif"
+label_font_size = 15
+x_range = [-5.0, 10.0]
+y_range = [-5.0, 5.0]
+
+[animation_params]
+sample_rate = 100
+frame_rate = 30

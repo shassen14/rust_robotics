@@ -1,5 +1,5 @@
 // rust robotics
-use crate::models::base::{self, SystemH};
+use crate::models::base_d::{self, SystemHD};
 use crate::utils::files;
 
 // 3rd party or std
@@ -7,22 +7,44 @@ use nalgebra as na;
 use num_traits;
 use serde::{Deserialize, Serialize};
 
+/**
+ * TODO: need to possibly have link_angles in ModelD and have those angles updated over time?
+ * Easier to read the toml that way
+ *
+ */
+
+#[derive(Deserialize)]
+pub struct NJointArmConfig<T> {
+    pub n_joint_arm_params: NJointArmParams<T>,
+}
+
+#[derive(Deserialize)]
+pub struct NJointArmParams<T> {
+    pub link_lengths: Vec<T>,
+    pub link_angles: Vec<T>,
+}
+
 #[derive(Debug, Deserialize, Serialize)]
-pub struct Model<T, const N: usize, const M: usize> {
+pub struct ModelD<T> {
     pub link_lengths: Vec<T>,
 }
 
-impl<T, const N: usize, const M: usize> Model<T, N, M> {
+impl<T> ModelD<T> {
     fn distance_squared_to_goal(
         &self,
-        position_current: &na::SVector<T, 2>,
-        position_goal: &na::SVector<T, 2>,
-    ) -> (na::SVector<T, 2>, T)
+        position_current: &na::DVector<T>,
+        position_goal: &na::DVector<T>,
+    ) -> (na::DVector<T>, T)
     where
         T: num_traits::Float,
-        na::SVector<T, 2>: std::ops::Sub<Output = na::SVector<T, 2>>,
+        na::DVector<T>: std::ops::Sub<Output = na::DVector<T>>,
     {
-        let error = *position_goal - *position_current;
+        // Ensure the positions are 2D (x, y)
+        assert!(position_current.len() == 2);
+        assert!(position_goal.len() == 2);
+
+        // TODO: somehow remove the clone? Not super necessary since they're 2x1 vectors
+        let error = position_goal.clone() - position_current.clone();
 
         let distance_squared = error[0] * error[0] + error[1] * error[1];
 
@@ -30,20 +52,19 @@ impl<T, const N: usize, const M: usize> Model<T, N, M> {
     }
 }
 
-impl<const N: usize, const M: usize> base::SystemH<f64, N, M, 2> for Model<f64, N, M> {
+impl base_d::SystemHD<f64, 2> for ModelD<f64> {
     fn num_states_to_num_dim_ratio(&self) -> u8 {
         4u8
     }
 
-    fn calculate_feasible_state_initial(&self, angles_desired: &[f64]) -> na::SVector<f64, N> {
-        let ratio =
-            <Model<f64, N, M> as SystemH<f64, N, M, 2>>::num_states_to_num_dim_ratio(self) as usize;
-        let dof = N / ratio;
-
+    // angles desired are relative to the previous link
+    fn calculate_feasible_state_initial(&self, angles_desired: &[f64]) -> na::DVector<f64> {
         assert_eq!(angles_desired.len(), self.link_lengths.len());
-        assert_eq!(dof, self.link_lengths.len());
+        let dof = self.link_lengths.len();
 
-        let mut x = na::SVector::<f64, N>::zeros();
+        let ratio = <ModelD<f64> as SystemHD<f64, 2>>::num_states_to_num_dim_ratio(self) as usize;
+
+        let mut x = na::DVector::<f64>::zeros(dof * ratio);
 
         let mut angle_sum = 0.;
 
@@ -63,14 +84,14 @@ impl<const N: usize, const M: usize> base::SystemH<f64, N, M, 2> for Model<f64, 
         x
     }
 
-    fn inverse_kinematics(&self, position_desired: Vec<f64>, x: &na::SVector<f64, N>) -> Vec<f64> {
-        let ratio = self.num_states_to_num_dim_ratio() as usize;
-        let dof = N / ratio;
+    fn inverse_kinematics(&self, position_desired: Vec<f64>, x: &na::DVector<f64>) -> Vec<f64> {
         assert_eq!(position_desired.len(), 2);
-        assert_eq!(dof, M);
+        let ratio = self.num_states_to_num_dim_ratio() as usize;
+        let dof = self.link_lengths.len();
+        let num_states = dof * ratio;
 
-        let mut pos_jac_vec: Vec<f64> = vec![0.0; N / (ratio / 2)];
-        let mut angles_vec: Vec<f64> = vec![0.0; N / ratio];
+        let mut pos_jac_vec: Vec<f64> = vec![0.0; num_states / (ratio / 2)];
+        let mut angles_vec: Vec<f64> = vec![0.0; num_states / ratio];
 
         for i in 0..dof {
             for j in i..dof {
@@ -81,14 +102,15 @@ impl<const N: usize, const M: usize> base::SystemH<f64, N, M, 2> for Model<f64, 
             angles_vec[i] = x[ratio * i + 2];
         }
 
-        let position_jacobian: na::DMatrix<f64> = na::DMatrix::from_vec(2, N / ratio, pos_jac_vec);
+        let position_jacobian: na::DMatrix<f64> =
+            na::DMatrix::from_vec(2, num_states / ratio, pos_jac_vec);
 
         // TODO: no unwrap
         let jacobian_inverse = position_jacobian.pseudo_inverse(1e-12).unwrap();
 
         let (error, _) = self.distance_squared_to_goal(
-            &na::SVector::<f64, 2>::new(x[ratio * dof - 4], x[ratio * dof - 3]),
-            &na::SVector::<f64, 2>::new(position_desired[0], position_desired[1]),
+            &na::DVector::<f64>::from_vec(vec![x[ratio * dof - 4], x[ratio * dof - 3]]),
+            &na::DVector::<f64>::from_vec(vec![position_desired[0], position_desired[1]]),
         );
 
         let joint_angle_difference = jacobian_inverse.clone() * error;
@@ -104,25 +126,25 @@ impl<const N: usize, const M: usize> base::SystemH<f64, N, M, 2> for Model<f64, 
 /// x_dot = [joint1_x_dot, joint1_y_dot, joint1_theta_dot, joint1_theta_ddot, ..., jointN_x_dot, jointN_y_dot, jointN_theta_dot, jointN_theta_ddot]
 /// x = [joint1_x, joint1_y, joint1_theta, joint1_theta_dot, ..., jointN_x, jointN_y, jointN_theta, jointN_theta_dot]
 /// u = [torque1, ... torqueN], torque is just angular acceleration in this instance because this is kinematic model
-impl<const N: usize, const M: usize> base::System<f64, N, M> for Model<f64, N, M> {
+impl base_d::SystemD<f64> for ModelD<f64> {
     fn get_derivatives(
         &self,
-        x: &nalgebra::SVector<f64, N>,
-        u: &nalgebra::SVector<f64, M>,
+        x: &nalgebra::DVector<f64>, // N x 1
+        u: &nalgebra::DVector<f64>, // M x 1
         _t: f64,
-    ) -> na::SVector<f64, N> {
-        let ratio =
-            <Model<f64, N, M> as SystemH<f64, N, M, 2>>::num_states_to_num_dim_ratio(self) as usize;
-        let remainder = N % ratio;
-        let dof = N / ratio;
+    ) -> na::DVector<f64> {
+        let ratio = <ModelD<f64> as SystemHD<f64, 2>>::num_states_to_num_dim_ratio(self) as usize;
+        let num_states = x.len();
+        let remainder = num_states % ratio;
+        let dof = num_states / ratio;
 
-        // number of states should be divisible by the ratio
+        // Number of states should be divisible by the ratio
         // Degrees of freedom should match the number links as well as number of inputs
         assert_eq!(remainder, 0usize);
         assert_eq!(dof, self.link_lengths.len());
-        assert_eq!(dof, M);
+        assert_eq!(dof, u.len());
 
-        let mut x_dot = na::SVector::<f64, N>::zeros();
+        let mut x_dot = na::DVector::<f64>::zeros(num_states);
 
         for i in 0..dof {
             for j in 0..=i {
@@ -141,26 +163,26 @@ impl<const N: usize, const M: usize> base::System<f64, N, M> for Model<f64, N, M
     #[allow(unused)]
     fn calculate_jacobian(
         &self,
-        x: &na::SVector<f64, N>,
-        u: &na::SVector<f64, M>,
+        x: &na::DVector<f64>,
+        u: &na::DVector<f64>,
         _t: f64,
-    ) -> (na::SMatrix<f64, N, N>, na::SMatrix<f64, N, M>) {
+    ) -> (na::DMatrix<f64>, na::DMatrix<f64>) {
         todo!();
     }
 
     #[allow(unused)]
     fn calculate_input(
         &self,
-        _x: &nalgebra::SVector<f64, N>,
-        _x_dot: &nalgebra::SVector<f64, N>,
+        _x: &nalgebra::DVector<f64>,
+        _x_dot: &nalgebra::DVector<f64>,
         _t: f64,
-    ) -> nalgebra::SVector<f64, M> {
+    ) -> nalgebra::DVector<f64> {
         todo!()
     }
 
     #[allow(unused)]
     fn read(&mut self, filename: &str) -> () {
-        let data: Model<f64, N, M> = files::read_toml(filename);
+        let data: ModelD<f64> = files::read_toml(filename);
         self.link_lengths = data.link_lengths;
     }
 }
