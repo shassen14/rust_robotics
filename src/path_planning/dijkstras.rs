@@ -71,7 +71,7 @@ struct DijkstraItem<N, C> {
 ///
 ///
 ///
-pub fn plan<N, C, FN, IT>(start: N, goal: N, neighbor_fn: &mut FN) -> Option<Vec<N>>
+pub fn plan<N, C, FN, IT>(start: &N, goal: &N, neighbor_fn: &mut FN) -> Option<Vec<N>>
 where
     N: Hash + Eq + Copy,
     C: Zero + Ord + Copy,
@@ -80,15 +80,17 @@ where
 {
     let mut path: Option<Vec<N>> = Option::default();
     let mut is_path_found: bool = false;
+    let s = *start;
+    let g = *goal;
 
     let start_item: DijkstraItem<N, C> = DijkstraItem::<N, C> {
-        node: start,
+        node: s,
         parent: None,
         cost: Zero::zero(),
     };
 
     let mut goal_item: DijkstraItem<N, C> = DijkstraItem::<N, C> {
-        node: goal,
+        node: g,
         parent: None,
         cost: Zero::zero(),
     };
@@ -96,7 +98,7 @@ where
     let mut open_set: HashMap<N, DijkstraItem<N, C>> = HashMap::new();
     let mut closed_set: HashMap<N, DijkstraItem<N, C>> = HashMap::new();
 
-    open_set.insert(start, start_item);
+    open_set.insert(s, start_item);
 
     while !open_set.is_empty() {
         // TODO: figure out how to not do unwrap or at least throw out errors when no
@@ -109,11 +111,11 @@ where
 
         let cur_item = *open_set.get(&cur_node).unwrap();
 
-        if cur_item.node == goal {
+        if cur_item.node == g {
             is_path_found = true;
             goal_item.parent = cur_item.parent;
             goal_item.cost = cur_item.cost;
-            closed_set.insert(cur_node, goal_item);
+            closed_set.insert(goal_item.node, goal_item);
             break;
         }
 
