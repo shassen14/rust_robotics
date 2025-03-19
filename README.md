@@ -35,6 +35,12 @@ This is generally how data flows to get robots to achieve goals autonomously. We
 
 **Once this repo is more flushed out, these files will be moved to an examples directory**
 
+### Path Planning
+* [Dijkstras](examples/path_planning/dijkstras.rs)
+    * `cargo run --release --example dijkstras -- --dijkstras-config configs/path_planning/dijkstras_params.toml`
+        * The toml file can be edited in such a way to change how many obstacles and their sizes as well as how big the map is
+
+### Controls
 * [N Joint 2D Robotic Arm Example](/src/bin/test_n_joint_arm2.rs)
     * `cargo run --release --example n_joint_arm_2d configs/controls/n_joint_arm2_params.toml`
         * The toml file can be edited in such a way to change the controls, and the number of linkages for the robotic arm
@@ -51,7 +57,8 @@ This is generally how data flows to get robots to achieve goals autonomously. We
         * `cargo run --release --bin read_bike_path configs/examples/animation_bicycle.toml configs/examples/bicycle_kinematic.toml`
 
 ![Pure Pursuit on a Predetermined Path using Kinematic Bicycle Model](https://github.com/shassen14/rust_robotics_media/blob/main/models/bicycle_kinematic_pure_pursuit.gif)
-    
+
+
 # To-Do's
 
 ## Robotics Related
@@ -76,6 +83,8 @@ This is generally how data flows to get robots to achieve goals autonomously. We
 1. Move binaries to examples
     * Examples need a generic program flow
 1. Github workflow
+1. Multiple Robotic arms simulation
+    * Assumption of starting point to be 0 needs to be removed
 
 
 
