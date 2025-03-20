@@ -43,45 +43,23 @@ struct DijkstraItem<N, C> {
     cost: C,
 }
 
-// // Implement PartialEq for Item (if you want equality checks)
-// impl<N, C: PartialEq> PartialEq for DijkstraItem<N, C> {
-//     fn eq(&self, other: &Self) -> bool {
-//         self.cost == other.cost
-//     }
-// }
-
-// // Implement Eq for Item
-// impl<N, C: Eq> Eq for DijkstraItem<N, C> {}
-
-// // Implement PartialOrd and Ord for Item
-// impl<N, C: Ord> PartialOrd for DijkstraItem<N, C> {
-//     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-//         Some(self.cost.cmp(&other.cost)) // Compare by the cost
-//     }
-// }
-
-// impl<N, C: Ord> Ord for DijkstraItem<N, C> {
-//     fn cmp(&self, other: &Self) -> Ordering {
-//         other.cost.cmp(&self.cost) // Reverse the order to make it a min-heap
-//     }
-// }
-
 /// Plans a path from start to goal using the children to expand the nodes
 ///
 ///
 ///
 ///
-pub fn plan<N, C, FN, IT>(start: &N, goal: &N, neighbor_fn: &mut FN) -> Option<Vec<N>>
+pub fn plan<N, C, FF, FN, IT>(start: &N, finish_fn: &mut FF, neighbor_fn: &mut FN) -> Option<Vec<N>>
 where
     N: Hash + Eq + Copy,
     C: Zero + Ord + Copy,
+    FF: FnMut(&N) -> bool,
     FN: FnMut(&N) -> IT,
     IT: IntoIterator<Item = (N, C)>,
 {
     let mut path: Option<Vec<N>> = Option::default();
     let mut is_path_found: bool = false;
     let s = *start;
-    let g = *goal;
+    // let g = *goal;
 
     let start_item: DijkstraItem<N, C> = DijkstraItem::<N, C> {
         node: s,
@@ -90,7 +68,7 @@ where
     };
 
     let mut goal_item: DijkstraItem<N, C> = DijkstraItem::<N, C> {
-        node: g,
+        node: s,
         parent: None,
         cost: Zero::zero(),
     };
@@ -111,11 +89,12 @@ where
 
         let cur_item = *open_set.get(&cur_node).unwrap();
 
-        if cur_item.node == g {
+        if finish_fn(&cur_node) {
             is_path_found = true;
+            goal_item.node = cur_node;
             goal_item.parent = cur_item.parent;
             goal_item.cost = cur_item.cost;
-            closed_set.insert(goal_item.node, goal_item);
+            closed_set.insert(cur_node, cur_item);
             break;
         }
 

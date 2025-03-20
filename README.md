@@ -85,6 +85,10 @@ This is generally how data flows to get robots to achieve goals autonomously. We
 1. Github workflow
 1. Multiple Robotic arms simulation
     * Assumption of starting point to be 0 needs to be removed
+1. Path Planning (Dijkstras)
+    * What if start or goal position are in obstacles
+    * what if obstacles are intersecting
+    * Be okay with a goal position not being obtainable in a convex obstacle shape like a donut
 
 
 

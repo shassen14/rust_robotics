@@ -69,8 +69,6 @@ impl Index2D {
 
         neighbors
     }
-
-    // |node| node.populate_neighbors()
 }
 
 #[derive(Clone, Debug)]
@@ -95,6 +93,50 @@ fn calculate_cost(index: &Index2D) -> usize {
     let index_f = (index.0 as f32, index.1 as f32);
 
     f32::sqrt((index_f.0 * index_f.0 + index_f.1 * index_f.1) * 100.0).round() as usize
+}
+
+// |node| {reach_goal(node....) -> bool}
+fn reach_goal(goal_index: &Index2D, current_node_index: &Index2D) -> bool {
+    // converting this index to a position
+    // if the goal_pos is in an obstacle, then find the difference between the center and the goal_pos
+    // Then use the obstacle radius with this difference to inflate the goal position
+
+    let mut is_finish = false;
+
+    if current_node_index == goal_index {
+        is_finish = true;
+    }
+
+    is_finish
+}
+
+fn move_invalid_index(
+    start_index: &mut Index2D,
+    goal_index: &mut Index2D,
+    grid_map: &Vec<Vec<u8>>,
+) {
+    // Calculate slope from the start the goal
+    let dif_x = start_index.0 - goal_index.0;
+    let dif_y = start_index.1 - goal_index.1;
+    let magnitude = f32::sqrt((dif_x * dif_x + dif_y * dif_y) as f32);
+
+    let slope_angle = f32::atan2(dif_y as f32, dif_x as f32);
+
+    while grid_map[start_index.1 as usize][start_index.0 as usize] != 0 {
+        let new_x = start_index.0 + (slope_angle * dif_x as f32 / magnitude).ceil() as i32;
+        let new_y = start_index.1 + (slope_angle * dif_y as f32 / magnitude).ceil() as i32;
+
+        start_index.0 = new_x;
+        start_index.1 = new_y
+    }
+
+    while grid_map[goal_index.1 as usize][goal_index.0 as usize] != 0 {
+        let new_x = goal_index.0 - (slope_angle * dif_x as f32 / magnitude).ceil() as i32;
+        let new_y = goal_index.1 - (slope_angle * dif_y as f32 / magnitude).ceil() as i32;
+
+        goal_index.0 = new_x;
+        goal_index.1 = new_y
+    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -124,7 +166,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // mapping
     // TODO: put these in configs?
-    let resolution = 0.5;
+    let resolution = 1.0;
     let start_pos = Position2D(-60., -60.);
     let goal_pos = Position2D(20.0, 40.0);
     let bottom_left_pos = Position2D(chart_params.x_range[0], chart_params.y_range[0]);
@@ -168,9 +210,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     ];
 
     // Vector of the index values x, y array indices
-    let index_path = dijkstras::plan(&start_index, &goal_index, &mut |node| {
-        node.populate_neighbors(&grid.map, &[bottom_left_index, top_right_index], &model)
-    });
+    let index_path = dijkstras::plan(
+        &start_index,
+        &mut |node| reach_goal(&goal_index, node),
+        &mut |node| {
+            node.populate_neighbors(&grid.map, &[bottom_left_index, top_right_index], &model)
+        },
+    );
 
     let pos_path: Vec<(f64, f64)> = index_path
         .expect("No Path Found")
@@ -209,33 +255,38 @@ fn main() -> Result<(), Box<dyn Error>> {
                 &chart_params,
             );
 
-            let mouse_start_index = calculate_index(
+            let mut mouse_start_index = calculate_index(
                 &Position2D(mouse_chart_start_pos.0, mouse_chart_start_pos.1),
                 &bottom_left_pos,
                 resolution,
             );
 
-            let mouse_goal_index = calculate_index(
+            let mut mouse_goal_index = calculate_index(
                 &Position2D(mouse_chart_goal_pos.0, mouse_chart_goal_pos.1),
                 &bottom_left_pos,
                 resolution,
             );
 
-            let path: Vec<(f64, f64)> =
-                dijkstras::plan(&mouse_start_index, &mouse_goal_index, &mut |node| {
+            move_invalid_index(&mut mouse_start_index, &mut mouse_goal_index, &grid.map);
+
+            let path: Vec<(f64, f64)> = dijkstras::plan(
+                &mouse_start_index,
+                &mut |node| reach_goal(&mouse_goal_index, node),
+                &mut |node| {
                     node.populate_neighbors(
                         &grid.map,
                         &[bottom_left_index, top_right_index],
                         &model,
                     )
-                })
-                .expect("No Path Found")
-                .into_iter()
-                .map(|i| {
-                    let pos = calculate_position(&i, &bottom_left_pos, resolution);
-                    (pos.0, pos.1)
-                })
-                .collect();
+                },
+            )
+            .expect("No Path Found")
+            .into_iter()
+            .map(|i| {
+                let pos = calculate_position(&i, &bottom_left_pos, resolution);
+                (pos.0, pos.1)
+            })
+            .collect();
 
             data.push_back((epoch, path));
             data.pop_front();
@@ -246,33 +297,38 @@ fn main() -> Result<(), Box<dyn Error>> {
                 &chart_params,
             );
 
-            let mouse_start_index = calculate_index(
+            let mut mouse_start_index = calculate_index(
                 &Position2D(mouse_chart_start_pos.0, mouse_chart_start_pos.1),
                 &bottom_left_pos,
                 resolution,
             );
 
-            let mouse_goal_index = calculate_index(
+            let mut mouse_goal_index = calculate_index(
                 &Position2D(mouse_chart_goal_pos.0, mouse_chart_goal_pos.1),
                 &bottom_left_pos,
                 resolution,
             );
 
-            let path: Vec<(f64, f64)> =
-                dijkstras::plan(&mouse_start_index, &mouse_goal_index, &mut |node| {
+            move_invalid_index(&mut mouse_start_index, &mut mouse_goal_index, &grid.map);
+
+            let path: Vec<(f64, f64)> = dijkstras::plan(
+                &mouse_start_index,
+                &mut |node| reach_goal(&mouse_goal_index, node),
+                &mut |node| {
                     node.populate_neighbors(
                         &grid.map,
                         &[bottom_left_index, top_right_index],
                         &model,
                     )
-                })
-                .expect("No Path Found")
-                .into_iter()
-                .map(|i| {
-                    let pos = calculate_position(&i, &bottom_left_pos, resolution);
-                    (pos.0, pos.1)
-                })
-                .collect();
+                },
+            )
+            .expect("No Path Found")
+            .into_iter()
+            .map(|i| {
+                let pos = calculate_position(&i, &bottom_left_pos, resolution);
+                (pos.0, pos.1)
+            })
+            .collect();
 
             data.push_back((epoch, path));
             data.pop_front();
