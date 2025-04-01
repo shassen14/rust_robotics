@@ -43,10 +43,23 @@ struct DijkstraItem<N, C> {
     cost: C,
 }
 
+// TODO: None of this will work with floating types from the rip
 /// Plans a path from start to goal using the children to expand the nodes
 ///
+/// # Generic Arguments
 ///
+/// * `N` - Node Type (i.e. [i32, i32])
+/// * `C` - Cost Type (i.e. u32)
+/// * `FF` - Function to signal when we reached the goal or "finished"
+/// * `FN` - Function to generate neighbor nodes
+/// * `IT` - Iterator Item for FN to generate as a pair (N, C)
 ///
+/// # Arguments
+///
+/// * `start` - Starting node for the path
+/// * `finish_fn` - Function to signal we are finished and can generate a path
+/// * `neighbor_fn` - Function to generate neighbors given the current node
+/// * Returns a path if one is reachable
 ///
 pub fn plan<N, C, FF, FN, IT>(start: &N, finish_fn: &mut FF, neighbor_fn: &mut FN) -> Option<Vec<N>>
 where
@@ -59,7 +72,6 @@ where
     let mut path: Option<Vec<N>> = Option::default();
     let mut is_path_found: bool = false;
     let s = *start;
-    // let g = *goal;
 
     let start_item: DijkstraItem<N, C> = DijkstraItem::<N, C> {
         node: s,
@@ -151,99 +163,10 @@ where
     path
 }
 
-// use std::cmp::Ordering;
-// use std::collections::{BinaryHeap, HashMap};
-
-// // Define the possible directions of movement in the grid (up, down, left, right)
-// const DIRECTIONS: [(i32, i32); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
-
-// // A structure to represent a cell in the grid with coordinates and its tentative distance
-// #[derive(Clone, PartialEq, Eq)]
-// struct Cell {
-//     row: i32,
-//     col: i32,
-//     distance: f64,
-// }
-
-// // Implementing Ord and PartialOrd to allow the cell to be used in a BinaryHeap (min-heap by distance)
-// impl Ord for Cell {
-//     fn cmp(&self, other: &Self) -> Ordering {
-//         self.distance.partial_cmp(&other.distance).unwrap()
-//     }
-// }
-
-// impl PartialOrd for Cell {
-//     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-//         Some(self.cmp(other))
-//     }
-// }
-
-// type Grid = Vec<Vec<i32>>; // Grid representation (1 for walkable, 0 for blocked)
-
-// fn dijkstra(grid: &Grid, start: (i32, i32), goal: (i32, i32)) -> Option<Vec<(i32, i32)>> {
-//     let rows = grid.len() as i32;
-//     let cols = grid[0].len() as i32;
-
-//     let mut distances: HashMap<(i32, i32), f64> = HashMap::new();
-//     let mut previous: HashMap<(i32, i32), Option<(i32, i32)>> = HashMap::new();
-//     let mut pq = BinaryHeap::new();
-
-//     // Initialize distances and previous cells
-//     for row in 0..rows {
-//         for col in 0..cols {
-//             let cell = (row, col);
-//             distances.insert(cell, f64::INFINITY);
-//             previous.insert(cell, None);
-//         }
-//     }
-
-//     // Set the start cell distance to 0 and push it onto the priority queue
-//     distances.insert(start, 0.0);
-//     pq.push(Cell {
-//         row: start.0,
-//         col: start.1,
-//         distance: 0.0,
-//     });
-
-//     while let Some(Cell { row, col, distance }) = pq.pop() {
-//         let current = (row, col);
-
-//         // If we reached the goal, reconstruct the path
-//         if current == goal {
-//             let mut path = Vec::new();
-//             let mut current = Some(goal);
-
-//             // Reconstruct the path from goal to start
-//             while let Some(cell) = current {
-//                 path.push(cell);
-//                 current = previous.get(&cell).cloned().unwrap();
-//             }
-//             path.reverse();
-//             return Some(path); // Return the path from start to goal
-//         }
-
-//         // Explore neighbors (up, down, left, right)
-//         for &(dr, dc) in &DIRECTIONS {
-//             let (new_row, new_col) = (row + dr, col + dc);
-//             // Check bounds and if the cell is walkable
-//             if new_row >= 0 && new_row < rows && new_col >= 0 && new_col < cols {
-//                 if grid[new_row as usize][new_col as usize] == 1 {
-//                     // Only walkable cells
-//                     let new_distance = distance + 1.0; // Assuming uniform cost for each move
-
-//                     if new_distance < *distances.get(&(new_row, new_col)).unwrap() {
-//                         distances.insert((new_row, new_col), new_distance);
-//                         previous.insert((new_row, new_col), Some((row, col)));
-//                         pq.push(Cell {
-//                             row: new_row,
-//                             col: new_col,
-//                             distance: new_distance,
-//                         });
-//                     }
-//                 }
-//             }
-//         }
-//     }
-
-//     None // No path found
-// }
+///////////////////////////////////////////////////////////////////////////////
+// Tests
+///////////////////////////////////////////////////////////////////////////////
+#[cfg(test)]
+mod tests {
+    use super::*;
+}

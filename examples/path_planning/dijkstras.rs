@@ -1,5 +1,6 @@
 // rust robotics
 use rust_robotics::path_planning::dijkstras;
+use rust_robotics::path_planning::grid_item::{self, Index2D, Position2D};
 use rust_robotics::utils::defs;
 use rust_robotics::utils::files;
 use rust_robotics::utils::geometry::Shape2D;
@@ -24,119 +25,6 @@ struct Args {
     /// File that has all the obstacles and animation params within
     #[arg(short, long)]
     dijkstras_config: String,
-}
-
-#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-struct Index2D(i32, i32);
-
-impl Index2D {
-    fn verify_node(&self, map: &Vec<Vec<u8>>, index_bounds: [Index2D; 2]) -> bool {
-        // TODO: assuming valid input
-        // assert
-        // index_bounds -> [(x_min, y_min), (x_max, y_max)]
-        if self.0 < index_bounds[0].0 || self.0 >= index_bounds[1].0 {
-            return false;
-        }
-
-        if self.1 < index_bounds[0].1 || self.1 >= index_bounds[1].1 {
-            return false;
-        }
-
-        // if an obstacle, only free space is 0
-        // TODO: better check
-        if map[self.1 as usize][self.0 as usize] > 0 {
-            return false;
-        }
-
-        return true;
-    }
-
-    fn populate_neighbors(
-        &self,
-        map: &Vec<Vec<u8>>,
-        index_bounds: &[Index2D; 2],
-        motion_model: &Vec<Index2D>,
-    ) -> Vec<(Index2D, usize)> {
-        let mut neighbors: Vec<(Index2D, usize)> = Vec::new();
-
-        for motion in motion_model {
-            let node = Index2D(self.0 + motion.0, self.1 + motion.1);
-
-            if node.verify_node(map, *index_bounds) {
-                neighbors.push((node, calculate_cost(motion)));
-            }
-        }
-
-        neighbors
-    }
-}
-
-#[derive(Clone, Debug)]
-struct Position2D(f64, f64);
-
-fn calculate_position(index: &Index2D, min_position: &Position2D, resolution: f64) -> Position2D {
-    Position2D(
-        resolution * index.0 as f64 + min_position.0,
-        resolution * index.1 as f64 + min_position.1,
-    )
-}
-
-fn calculate_index(position: &Position2D, min_position: &Position2D, resolution: f64) -> Index2D {
-    Index2D(
-        ((position.0 - min_position.0) / resolution).round() as i32,
-        ((position.1 - min_position.1) / resolution).round() as i32,
-    )
-}
-
-// TODO ugly... better cost?
-fn calculate_cost(index: &Index2D) -> usize {
-    let index_f = (index.0 as f32, index.1 as f32);
-
-    f32::sqrt((index_f.0 * index_f.0 + index_f.1 * index_f.1) * 100.0).round() as usize
-}
-
-// |node| {reach_goal(node....) -> bool}
-fn reach_goal(goal_index: &Index2D, current_node_index: &Index2D) -> bool {
-    // converting this index to a position
-    // if the goal_pos is in an obstacle, then find the difference between the center and the goal_pos
-    // Then use the obstacle radius with this difference to inflate the goal position
-
-    let mut is_finish = false;
-
-    if current_node_index == goal_index {
-        is_finish = true;
-    }
-
-    is_finish
-}
-
-fn move_invalid_index(
-    start_index: &mut Index2D,
-    goal_index: &mut Index2D,
-    grid_map: &Vec<Vec<u8>>,
-) {
-    // Calculate slope from the start the goal
-    let dif_x = start_index.0 - goal_index.0;
-    let dif_y = start_index.1 - goal_index.1;
-    let magnitude = f32::sqrt((dif_x * dif_x + dif_y * dif_y) as f32);
-
-    let slope_angle = f32::atan2(dif_y as f32, dif_x as f32);
-
-    while grid_map[start_index.1 as usize][start_index.0 as usize] != 0 {
-        let new_x = start_index.0 + (slope_angle * dif_x as f32 / magnitude).ceil() as i32;
-        let new_y = start_index.1 + (slope_angle * dif_y as f32 / magnitude).ceil() as i32;
-
-        start_index.0 = new_x;
-        start_index.1 = new_y
-    }
-
-    while grid_map[goal_index.1 as usize][goal_index.0 as usize] != 0 {
-        let new_x = goal_index.0 - (slope_angle * dif_x as f32 / magnitude).ceil() as i32;
-        let new_y = goal_index.1 - (slope_angle * dif_y as f32 / magnitude).ceil() as i32;
-
-        goal_index.0 = new_x;
-        goal_index.1 = new_y
-    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -173,10 +61,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let top_right_pos = Position2D(chart_params.x_range[1], chart_params.y_range[1]);
 
     // calculate indices
-    let start_index = calculate_index(&start_pos, &bottom_left_pos, resolution);
-    let goal_index = calculate_index(&goal_pos, &bottom_left_pos, resolution);
-    let bottom_left_index = calculate_index(&bottom_left_pos, &bottom_left_pos, resolution);
-    let top_right_index = calculate_index(&top_right_pos, &bottom_left_pos, resolution);
+    let start_index = grid_item::calculate_index(&start_pos, &bottom_left_pos, resolution);
+    let goal_index = grid_item::calculate_index(&goal_pos, &bottom_left_pos, resolution);
+    let bottom_left_index =
+        grid_item::calculate_index(&bottom_left_pos, &bottom_left_pos, resolution);
+    let top_right_index = grid_item::calculate_index(&top_right_pos, &bottom_left_pos, resolution);
 
     let mut mouse_chart_start_pos: (f64, f64) = (start_pos.0, start_pos.1);
     let mut mouse_chart_goal_pos: (f64, f64) = (goal_pos.0, goal_pos.1);
@@ -212,7 +101,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Vector of the index values x, y array indices
     let index_path = dijkstras::plan(
         &start_index,
-        &mut |node| reach_goal(&goal_index, node),
+        &mut |node| grid_item::reach_goal(&goal_index, node),
         &mut |node| {
             node.populate_neighbors(&grid.map, &[bottom_left_index, top_right_index], &model)
         },
@@ -222,7 +111,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .expect("No Path Found")
         .into_iter()
         .map(|i| {
-            let pos = calculate_position(&i, &bottom_left_pos, resolution);
+            let pos = grid_item::calculate_position(&i, &bottom_left_pos, resolution);
             (pos.0, pos.1)
         })
         .collect();
@@ -255,23 +144,23 @@ fn main() -> Result<(), Box<dyn Error>> {
                 &chart_params,
             );
 
-            let mut mouse_start_index = calculate_index(
+            let mut mouse_start_index = grid_item::calculate_index(
                 &Position2D(mouse_chart_start_pos.0, mouse_chart_start_pos.1),
                 &bottom_left_pos,
                 resolution,
             );
 
-            let mut mouse_goal_index = calculate_index(
+            let mut mouse_goal_index = grid_item::calculate_index(
                 &Position2D(mouse_chart_goal_pos.0, mouse_chart_goal_pos.1),
                 &bottom_left_pos,
                 resolution,
             );
 
-            move_invalid_index(&mut mouse_start_index, &mut mouse_goal_index, &grid.map);
+            grid_item::move_invalid_index(&mut mouse_start_index, &mut mouse_goal_index, &grid.map);
 
             let path: Vec<(f64, f64)> = dijkstras::plan(
                 &mouse_start_index,
-                &mut |node| reach_goal(&mouse_goal_index, node),
+                &mut |node| grid_item::reach_goal(&mouse_goal_index, node),
                 &mut |node| {
                     node.populate_neighbors(
                         &grid.map,
@@ -283,7 +172,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             .expect("No Path Found")
             .into_iter()
             .map(|i| {
-                let pos = calculate_position(&i, &bottom_left_pos, resolution);
+                let pos = grid_item::calculate_position(&i, &bottom_left_pos, resolution);
                 (pos.0, pos.1)
             })
             .collect();
@@ -297,23 +186,23 @@ fn main() -> Result<(), Box<dyn Error>> {
                 &chart_params,
             );
 
-            let mut mouse_start_index = calculate_index(
+            let mut mouse_start_index = grid_item::calculate_index(
                 &Position2D(mouse_chart_start_pos.0, mouse_chart_start_pos.1),
                 &bottom_left_pos,
                 resolution,
             );
 
-            let mut mouse_goal_index = calculate_index(
+            let mut mouse_goal_index = grid_item::calculate_index(
                 &Position2D(mouse_chart_goal_pos.0, mouse_chart_goal_pos.1),
                 &bottom_left_pos,
                 resolution,
             );
 
-            move_invalid_index(&mut mouse_start_index, &mut mouse_goal_index, &grid.map);
+            grid_item::move_invalid_index(&mut mouse_start_index, &mut mouse_goal_index, &grid.map);
 
             let path: Vec<(f64, f64)> = dijkstras::plan(
                 &mouse_start_index,
-                &mut |node| reach_goal(&mouse_goal_index, node),
+                &mut |node| grid_item::reach_goal(&mouse_goal_index, node),
                 &mut |node| {
                     node.populate_neighbors(
                         &grid.map,
@@ -325,7 +214,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             .expect("No Path Found")
             .into_iter()
             .map(|i| {
-                let pos = calculate_position(&i, &bottom_left_pos, resolution);
+                let pos = grid_item::calculate_position(&i, &bottom_left_pos, resolution);
                 (pos.0, pos.1)
             })
             .collect();
