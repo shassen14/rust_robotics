@@ -36,6 +36,18 @@ use std::collections::HashMap;
 use std::hash::Hash;
 
 // Define a structure for the priority queue element
+/// Item to hold the current node, its parent, and cost to get to that node from starting node
+///
+/// # Generic Arguments
+///
+/// * `N` - Node Type (i.e. [i32, i32])
+/// * `C` - Cost Type (i.e. u32)
+///
+/// # Variables
+///
+/// * `node` - current node
+/// * `parent` - parent node, may not exist if starting node
+/// * `cost` - cost to move to this node from start
 #[derive(Debug, Copy, Clone)]
 struct DijkstraItem<N, C> {
     node: N,
@@ -43,7 +55,6 @@ struct DijkstraItem<N, C> {
     cost: C,
 }
 
-// TODO: None of this will work with floating types from the rip
 /// Plans a path from start to goal using the children to expand the nodes
 ///
 /// # Generic Arguments
@@ -141,6 +152,20 @@ where
     path
 }
 
+/// Given the goal node and closed_set, find the path that goes from start to finish
+/// Assumption: goal_item is in the closed set and both parameters are valid
+///
+/// # Generic Arguments
+///
+/// * `N` - Node Type (i.e. [i32, i32])
+/// * `C` - Cost Type (i.e. u32)
+///
+/// # Arguments
+///
+/// * `goal_item` - Final node that met the finishing requirements
+/// * `closed_set` - All the visited nodes
+/// * Returns the shortest path
+///
 fn calculate_final_path<N, C>(
     goal_item: &DijkstraItem<N, C>,
     closed_set: &HashMap<N, DijkstraItem<N, C>>,
@@ -169,4 +194,65 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::path_planning::grid_item::{self, Index2D};
+
+    // set 2d map
+    fn get_map() -> Vec<Vec<u8>> {
+        let mut map = vec![vec![0u8; 5]; 5];
+
+        // make map[4][4] unreachable
+        map[3][4] = 1;
+        map[4][3] = 1;
+        map
+    }
+
+    // get possible directions to expand neighbors
+    fn get_directions() -> Vec<Index2D<i32>> {
+        let dirs = vec![Index2D(1, 0), Index2D(0, 1), Index2D(-1, 0), Index2D(0, -1)];
+
+        dirs
+    }
+
+    #[test]
+    fn test_dijkstras_unreachable() {
+        let map = get_map();
+        let dirs = get_directions();
+        let start = Index2D(0, 0);
+        let end = Index2D(4, 4);
+        let bounds = [Index2D(0, 0), Index2D(4, 4)];
+
+        let path = plan(
+            &start,
+            &mut |node| grid_item::reach_goal(&end, node),
+            &mut |node| node.populate_neighbors(&map, &bounds, &dirs),
+        );
+
+        assert_eq!(path, None);
+    }
+
+    #[test]
+    fn test_dijkstras_reachable() {
+        let map = get_map();
+        let dirs = get_directions();
+        let start = Index2D(0, 0);
+        let end = Index2D(0, 4);
+        let bounds = [Index2D(0, 0), Index2D(4, 4)];
+
+        let path = plan(
+            &start,
+            &mut |node| grid_item::reach_goal(&end, node),
+            &mut |node| node.populate_neighbors(&map, &bounds, &dirs),
+        );
+
+        assert_eq!(
+            path,
+            Some(vec![
+                Index2D(0, 0),
+                Index2D(0, 1),
+                Index2D(0, 2),
+                Index2D(0, 3),
+                Index2D(0, 4),
+            ])
+        );
+    }
 }

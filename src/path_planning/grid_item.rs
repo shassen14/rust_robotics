@@ -7,27 +7,6 @@ impl<T> Index2D<T>
 where
     T: PrimInt + AsPrimitive<usize>,
 {
-    pub fn verify_node(&self, map: &Vec<Vec<u8>>, index_bounds: [Index2D<T>; 2]) -> bool {
-        // TODO: assuming valid input
-        // assert
-        // index_bounds -> [(x_min, y_min), (x_max, y_max)]
-        if self.0 < index_bounds[0].0 || self.0 >= index_bounds[1].0 {
-            return false;
-        }
-
-        if self.1 < index_bounds[0].1 || self.1 >= index_bounds[1].1 {
-            return false;
-        }
-
-        // if an obstacle, only free space is 0
-        // TODO: better check
-        if map[self.1.as_()][self.0.as_()] > 0 {
-            return false;
-        }
-
-        return true;
-    }
-
     pub fn populate_neighbors(
         &self,
         map: &Vec<Vec<u8>>,
@@ -48,6 +27,27 @@ where
         }
 
         neighbors
+    }
+
+    fn verify_node(&self, map: &Vec<Vec<u8>>, index_bounds: [Index2D<T>; 2]) -> bool {
+        // TODO: assuming valid input
+        // assert
+        // index_bounds -> [(x_min, y_min), (x_max, y_max)]
+        if self.0 < index_bounds[0].0 || self.0 > index_bounds[1].0 {
+            return false;
+        }
+
+        if self.1 < index_bounds[0].1 || self.1 > index_bounds[1].1 {
+            return false;
+        }
+
+        // if an obstacle, only free space is 0
+        // TODO: better check
+        if map[self.1.as_()][self.0.as_()] > 0 {
+            return false;
+        }
+
+        return true;
     }
 }
 
