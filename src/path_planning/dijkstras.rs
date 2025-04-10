@@ -1,36 +1,3 @@
-/**
- * dijkstra(start: N, goal: N, children: FnMut(&Node) -> Vec some iterable data struct) -> Optional<list>
- *
- * N -> (f32, f32), (f32, i32), (f64, f64, f64, f64)
- *
- * ////////////////////
- * N = (i32, i32)
- * FN(N) -> Vec<(N, C)>
- *
- * grid: Vec<Vec<int>> costmap;
- *
- * fn children_fn(node: N) {
- *    answer: Vec<(N, C)>
- *    dirs = {{1, 0}, {0, 1}}
- *
- *  
- *
- *    for dir in dirs {
- *    neighbor = (node.first + dir.first, node.second + dir.second)
- *
- *    if (costmap[neighbor.first][neighbor.second] == 0) {
- *       answer.push_back(neighbor, 0);
- *      }
- *    }
- *
- *    answer
- *
- * }
- *
- * How to check if we have seen N node before?
- * Set?
- *
- */
 use num_traits::Zero;
 use std::collections::HashMap;
 use std::hash::Hash;
@@ -209,7 +176,6 @@ mod tests {
     // get possible directions to expand neighbors
     fn get_directions() -> Vec<Index2D<i32>> {
         let dirs = vec![Index2D(1, 0), Index2D(0, 1), Index2D(-1, 0), Index2D(0, -1)];
-
         dirs
     }
 
