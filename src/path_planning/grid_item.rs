@@ -1,5 +1,15 @@
 use num_traits::{AsPrimitive, Float, PrimInt};
 
+// TODO: documentation
+
+/**
+ * I have the  (0, 0) index to be the most bottom left position
+ * because going right aka adding cols is +x for both index
+ * and position. Similarly with adding rows would be going +y for
+ * boths index and position
+ * Index2D(+x,+y) -> (+cols, +rows)
+ */
+
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Index2D<T>(pub T, pub T);
 
@@ -163,4 +173,88 @@ pub fn move_invalid_index<T>(
 
     goal_index.0 = goal_col.as_();
     goal_index.1 = goal_row.as_();
+}
+
+// TODO: test for no negative indices for calculating position and also calc index as well
+// should have asserts here to mitigate those bad inputs
+
+///////////////////////////////////////////////////////////////////////////////
+// Tests
+///////////////////////////////////////////////////////////////////////////////
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use approx::assert_relative_eq;
+
+    const RES: f32 = 1.0;
+    const MIN_POS: Position2D<f32> = Position2D(-4., -4.);
+
+    #[test]
+    fn test_calc_pos1() {
+        // starting index should be bottom_right position / min position
+        let index = Index2D(0, 0);
+        let calc = calculate_position(&index, &MIN_POS, RES);
+        let answer: Position2D<f32> = Position2D(-4., -4.);
+
+        assert_relative_eq!(calc.0, answer.0, epsilon = 1e-12);
+        assert_relative_eq!(calc.1, answer.1, epsilon = 1e-12);
+    }
+    #[test]
+    fn test_calc_pos2() {
+        // moving 4 indices * resolution to the right +x, and up +y, will result in (0, 0) position
+        let index = Index2D(4, 4);
+        let calc = calculate_position(&index, &MIN_POS, RES);
+        let answer: Position2D<f32> = Position2D(0., 0.);
+
+        assert_relative_eq!(calc.0, answer.0, epsilon = 1e-12);
+        assert_relative_eq!(calc.1, answer.1, epsilon = 1e-12);
+    }
+
+    #[test]
+    fn test_calc_pos3() {
+        // moving 2 indices * resolution to the right +x (cols), and 7 units up +y (rows), will result in (-2, 3) position
+        let index = Index2D(2, 7);
+        let calc = calculate_position(&index, &MIN_POS, RES);
+        // +7 cols
+        let answer: Position2D<f32> = Position2D(-2., 3.);
+
+        assert_relative_eq!(calc.0, answer.0, epsilon = 1e-12);
+        assert_relative_eq!(calc.1, answer.1, epsilon = 1e-12);
+    }
+
+    #[test]
+    fn test_calc_index1() {
+        // moving 2 indices * resolution to the right +x (cols), and 7 units up +y (rows), will result in (-2, 3) position
+        let pos: Position2D<f32> = Position2D(-4., -4.);
+        let calc: Index2D<i32> = calculate_index(&pos, &MIN_POS, RES);
+        // +7 cols
+        let answer: Index2D<i32> = Index2D(0, 0);
+
+        assert_eq!(calc.0, answer.0);
+        assert_eq!(calc.1, answer.1);
+    }
+
+    #[test]
+    fn test_calc_index2() {
+        // moving 2 indices * resolution to the right +x (cols), and 7 units up +y (rows), will result in (-2, 3) position
+        let pos: Position2D<f32> = Position2D(0., 0.);
+        let calc: Index2D<i32> = calculate_index(&pos, &MIN_POS, RES);
+        // +7 cols
+        let answer: Index2D<i32> = Index2D(4, 4);
+
+        assert_eq!(calc.0, answer.0);
+        assert_eq!(calc.1, answer.1);
+    }
+
+    #[test]
+    fn test_calc_index3() {
+        // moving 2 indices * resolution to the right +x (cols), and 7 units up +y (rows), will result in (-2, 3) position
+        let pos: Position2D<f32> = Position2D(-2., 3.);
+        let calc: Index2D<i32> = calculate_index(&pos, &MIN_POS, RES);
+        // +7 cols
+        let answer: Index2D<i32> = Index2D(2, 7);
+
+        assert_eq!(calc.0, answer.0);
+        assert_eq!(calc.1, answer.1);
+    }
 }
