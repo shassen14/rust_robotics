@@ -38,6 +38,11 @@ harness = false
 name = "n_joint_arm_2d"
 path = "examples/controls/n_joint_arm_2d.rs"
 
+# path_planning
+[[example]]
+name = "dijkstras"
+path = "examples/path_planning/dijkstras.rs"
+
 # utils
 [[example]]
 name = "generate_custom_map"
