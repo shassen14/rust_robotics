@@ -1,0 +1,6 @@
+.gitignore
+.github/
+.git/
+.vscode/
+target/
+media/

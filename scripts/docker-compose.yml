@@ -1,0 +1,10 @@
+services:
+  rust-dev:
+    image: rust:1.85
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    stdin_open: true     # equivalent to -i
+    tty: true            # equivalent to -t
+    restart: "no"        # don't restart, aligns with --rm
