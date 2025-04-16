@@ -30,6 +30,14 @@ This is generally how data flows to get robots to achieve goals autonomously. We
 3. `cargo build --release`
     * Release build optimizes for storage size and cpu usage
 
+## Using Docker to Run Examples
+If you do not want to install rust in your local computer, there has been a docker solution created for this reason. This has only been tested limited on Ubuntu 22.04, so I'm not sure how this will go in other OS.
+
+Run the following commands on the terminal
+1. Build image via `bash scripts/build_docker_image.sh`
+2. Run container via `bash scripts/run_docker.sh`
+    * This will get you into an interactive terminal where you can run any of the examples via `cargo run`
+
 ## Run Example Binaries
 **Assumption is you are in the repo directory in the command line interface**
 
