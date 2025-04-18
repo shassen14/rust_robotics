@@ -52,19 +52,6 @@ where
     );
 }
 
-pub fn calculate_desired_yaw<T>(
-    position_current: &na::Point2<T>,
-    position_target: &na::Point2<T>,
-) -> T
-where
-    T: na::RealField + Clone + Copy,
-{
-    T::atan2(
-        position_target.y - position_current.y,
-        position_target.x - position_current.x,
-    )
-}
-
 pub fn pure_pursuit<T>(
     position_current: &na::Point2<T>,
     position_target: &na::Point2<T>,
@@ -81,6 +68,16 @@ where
     let curvature = (T::sin(yaw_relative) + T::sin(yaw_relative)) / target_distance;
     let rwa = T::atan2(wheelbase * curvature, wheelbase / wheelbase);
     rwa
+}
+
+fn calculate_desired_yaw<T>(position_current: &na::Point2<T>, position_target: &na::Point2<T>) -> T
+where
+    T: na::RealField + Clone + Copy,
+{
+    T::atan2(
+        position_target.y - position_current.y,
+        position_target.x - position_current.x,
+    )
 }
 
 ///////////////////////////////////////////////////////////////////////////////

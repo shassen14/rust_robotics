@@ -2,6 +2,7 @@
 use rust_robotics::controls::path_tracking;
 use rust_robotics::models::base::System;
 use rust_robotics::models::ground_vehicles::bicycle_kinematic;
+use rust_robotics::models::ground_vehicles::longitudinal_dynamics;
 use rust_robotics::num_methods::runge_kutta;
 use rust_robotics::utils::convert;
 use rust_robotics::utils::defs;
@@ -21,13 +22,14 @@ use std::error::Error;
 use std::time::SystemTime;
 
 // initial states
-const VEL_INIT: f64 = 5.0;
+const VEL_INIT: f64 = 0.0;
 const RWA_INIT: f64 = 0.0;
-const VEL_STEP: f64 = 0.1;
-const VEL_UPPER_BOUND: f64 = 20.0; // m/s
-const VEL_LOWER_BOUND: f64 = -10.0; // m/s
+// const VEL_STEP: f64 = 0.1;
+// const VEL_UPPER_BOUND: f64 = 20.0; // m/s
+// const VEL_LOWER_BOUND: f64 = -10.0; // m/s
 const RWA_UPPER_BOUND: f64 = 40.0; // deg
 const RWA_LOWER_BOUND: f64 = -40.0; // deg
+const FORCE_STEP: f64 = 10.; // N?
 
 fn get_window_title(velocity: f64, rwa: f64) -> String {
     format!(
@@ -73,14 +75,22 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut target_distance: f64;
     let mut target_point = na::Point3::new(0., 0., 0.);
 
+    // Longitudinal Model (kg, m^2)
+    // TODO: magic numbers, use config
+    let long_model: longitudinal_dynamics::Model = longitudinal_dynamics::Model::new(1200., 2.2);
+    let mut long_current_state: na::SVector<f64, 1> = na::SVector::<f64, 1>::new(VEL_INIT);
+    let mut long_current_input: na::SVector<f64, 1> = na::SVector::<f64, 1>::new(0.);
+    let mut long_data: VecDeque<(f64, na::SVector<f64, 1>, na::SVector<f64, 1>)> = VecDeque::new();
+
+    // Lateral Model
     // Could do it this way where a model is initialized and then read using the model
     // let mut model = bicycle_kinematic::Model::new(1.0, 1.0);
     // model.read(bike_cfg_path);
-    let model: bicycle_kinematic::Model = files::read_toml(bike_cfg_path);
-    let mut current_state: na::SVector<f64, 3> =
+    let lat_model: bicycle_kinematic::Model = files::read_toml(bike_cfg_path);
+    let mut lat_current_state: na::SVector<f64, 3> =
         na::SVector::<f64, 3>::new(0.0, 10.0, convert::deg_to_rad(-45.0));
-    let mut current_input: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(VEL_INIT, RWA_INIT);
-    let mut data: VecDeque<(f64, na::SVector<f64, 3>, na::SVector<f64, 2>)> = VecDeque::new();
+    let mut lat_current_input: na::SVector<f64, 2> = na::SVector::<f64, 2>::new(VEL_INIT, RWA_INIT);
+    let mut lat_data: VecDeque<(f64, na::SVector<f64, 3>, na::SVector<f64, 2>)> = VecDeque::new();
 
     let start_time = SystemTime::now();
     let mut last_flushed = 0.;
@@ -90,7 +100,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     while window.is_open() && !window.is_key_down(minifb::Key::Escape) {
         let epoch = SystemTime::now().duration_since(start_time)?.as_secs_f64();
 
-        if let Some((ts, _, _)) = data.back() {
+        if let Some((ts, _, _)) = lat_data.back() {
             if epoch - ts < 1.0 / animation_params.sample_rate {
                 std::thread::sleep(std::time::Duration::from_secs_f64(epoch - ts));
                 continue;
@@ -102,23 +112,36 @@ fn main() -> Result<(), Box<dyn Error>> {
                 for key in keys {
                     match key {
                         Key::Up => {
-                            current_input[0] += VEL_STEP;
+                            long_current_input[0] += FORCE_STEP;
+                            // lat_current_input[0] += VEL_STEP;
                         }
                         Key::Down => {
-                            current_input[0] -= VEL_STEP;
+                            long_current_input[0] -= FORCE_STEP;
+                            // lat_current_input[0] -= VEL_STEP;
                         }
                         _ => {
                             continue;
                         }
                     }
                 }
-                current_input[0] =
-                    math::bound_value(current_input[0], VEL_LOWER_BOUND, VEL_UPPER_BOUND);
+
+                long_current_state = long_model.propagate(
+                    &long_current_state,
+                    &long_current_input,
+                    epoch,
+                    sample_step,
+                    &runge_kutta::rk4,
+                );
+
+                // TODO: cheat to make current long state / velocity bounded
+
+                // lat_current_input[0] =
+                //     math::bound_value(long_current_state[0], VEL_LOWER_BOUND, VEL_UPPER_BOUND);
 
                 (start_index, target_distance, target_point) =
                     path_tracking::calculate_lookahead_point(
                         &pth,
-                        &na::Point3::new(current_state[0], current_state[1], 0.),
+                        &na::Point3::new(lat_current_state[0], lat_current_state[1], 0.),
                         start_index,
                         lookahead_distance,
                     );
@@ -127,49 +150,64 @@ fn main() -> Result<(), Box<dyn Error>> {
                     start_index = 0;
                 }
 
-                current_input[1] = path_tracking::pure_pursuit(
-                    &na::Point2::new(current_state[0], current_state[1]),
+                lat_current_input[0] = long_current_state[0];
+
+                lat_current_input[1] = path_tracking::pure_pursuit(
+                    &na::Point2::new(lat_current_state[0], lat_current_state[1]),
                     &target_point.xy(),
-                    current_state[2],
+                    lat_current_state[2],
                     target_distance,
-                    model.get_wheelbase(),
+                    lat_model.get_wheelbase(),
                 );
 
-                current_input[1] = math::bound_value(
-                    current_input[1],
+                lat_current_input[1] = math::bound_value(
+                    lat_current_input[1],
                     convert::deg_to_rad(RWA_LOWER_BOUND),
                     convert::deg_to_rad(RWA_UPPER_BOUND),
                 );
-                current_state = model.propagate(
-                    &current_state,
-                    &current_input,
+                lat_current_state = lat_model.propagate(
+                    &lat_current_state,
+                    &lat_current_input,
                     epoch,
                     sample_step,
                     &runge_kutta::rk4,
                 );
                 ts += sample_step;
 
-                data.push_back((ts, current_state, current_input));
-                data.pop_front();
+                lat_data.push_back((ts, lat_current_state, lat_current_input));
+                lat_data.pop_front();
             }
         }
 
         // add data
         // TODO: disingenuous cuz how will sample_step be the time step if using system time?
         // might go away from system time
-        current_state = model.propagate(
-            &current_state,
-            &current_input,
+
+        long_current_state = long_model.propagate(
+            &long_current_state,
+            &long_current_input,
             epoch,
             sample_step,
             &runge_kutta::rk4,
         );
 
-        data.push_back((epoch, current_state, current_input));
+        lat_current_state = lat_model.propagate(
+            &lat_current_state,
+            &lat_current_input,
+            epoch,
+            sample_step,
+            &runge_kutta::rk4,
+        );
+
+        // println!("Long velocity: {:.2} m/s", long_current_state[0]);
+
+        long_data.push_back((epoch, long_current_state, long_current_input));
+        lat_data.push_back((epoch, lat_current_state, lat_current_input));
 
         if epoch - last_flushed > frame_step {
-            while data.len() > 2 {
-                data.pop_front();
+            while lat_data.len() > 2 {
+                long_data.pop_front();
+                lat_data.pop_front();
             }
 
             {
@@ -188,7 +226,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     .light_line_style(&TRANSPARENT)
                     .draw()?;
 
-                chart.draw_series(data.iter().zip(data.iter().skip(1)).map(
+                chart.draw_series(lat_data.iter().zip(lat_data.iter().skip(1)).map(
                     |(&(_t0, x0, _u0), &(_t1, x1, _u1))| {
                         PathElement::new(
                             vec![(x0[0], x0[1]), (x1[0], x1[1])],
@@ -215,12 +253,12 @@ fn main() -> Result<(), Box<dyn Error>> {
                     // data.back().iter().map(|&(_t0, x0, u0)| {
                     // TODO: magic numbers
                     let vehicle_points = math::calculate_rectangle_points(
-                        &(data.back().unwrap().1[0], data.back().unwrap().1[1]),
-                        model.get_length_front(),
-                        model.get_length_rear(),
+                        &(lat_data.back().unwrap().1[0], lat_data.back().unwrap().1[1]),
+                        lat_model.get_length_front(),
+                        lat_model.get_length_rear(),
                         0.9,
                         0.9,
-                        data.back().unwrap().1[2],
+                        lat_data.back().unwrap().1[2],
                         defs::AngleUnits::Radian,
                     );
                     chart.draw_series(std::iter::once(plot2::polygon_element(
@@ -233,9 +271,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                         // TODO:cleaner way to have front wheels change wheel direction?
                         // not nice with the needing of index
                         let total_heading = if i < 2 {
-                            data.back().unwrap().1[2] + data.back().unwrap().2[1]
+                            lat_data.back().unwrap().1[2] + lat_data.back().unwrap().2[1]
                         } else {
-                            data.back().unwrap().1[2]
+                            lat_data.back().unwrap().1[2]
                         };
 
                         let tire_points = math::calculate_rectangle_points(
@@ -255,7 +293,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 }
 
                 // easy way to plot one element
-                chart.draw_series(data.back().iter().map(|&(_t0, x0, _u0)| {
+                chart.draw_series(lat_data.back().iter().map(|&(_t0, x0, _u0)| {
                     let end_points = math::calculate_line_endpoints(
                         &(x0[0], x0[1]),
                         3.,
@@ -266,7 +304,10 @@ fn main() -> Result<(), Box<dyn Error>> {
                 }))?;
             }
 
-            window.set_title(&get_window_title(current_input[0], current_input[1]));
+            window.set_title(&get_window_title(
+                lat_current_input[0],
+                lat_current_input[1],
+            ));
 
             window.update_with_buffer(buf.borrow(), window_params.width, window_params.height)?;
             last_flushed = epoch;

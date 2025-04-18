@@ -42,7 +42,7 @@ impl Model {
     }
 }
 
-/// Bicycle Kinematic Model with 3 states and 2 inputs
+/// Longitudinal dynamics model of a car
 ///
 /// x_dot = [vel_x_dot], vehicle frame
 /// x = [vel_x]
@@ -63,7 +63,15 @@ impl base::System<f64, 1, 1> for Model {
         let f_aero: f64 = self.calc_f_aero(x[0]);
         let f_roll: f64 = self.calc_f_roll(0.);
         let f_grade: f64 = self.calc_f_grade(0.);
-        let vel_x_dot: f64 = (u[0] - f_aero - f_roll - f_grade) / self.mass;
+        // println!(
+        //     "f_aero: {:.2}, f_roll: {:.2}, f_grade: {:.2}, input: {:.2}",
+        //     f_aero, f_roll, f_grade, u[0]
+        // );
+
+        let mut vel_x_dot = (u[0] - f_aero - f_roll - f_grade) / self.mass;
+        if x[0] <= 0. && u[0] < f_roll {
+            vel_x_dot = 0.;
+        }
 
         na::SVector::<f64, 1>::new(vel_x_dot)
     }
