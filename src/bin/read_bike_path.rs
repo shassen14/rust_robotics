@@ -13,7 +13,6 @@ use rust_robotics::utils::math;
 use rust_robotics::utils::plot2;
 
 // 3rd party or std
-use minifb::{Key, KeyRepeat};
 use nalgebra as na;
 use plotters::prelude::*;
 use plotters_bitmap::{bitmap_pixel::BGRXPixel, BitMapBackend};
@@ -26,17 +25,13 @@ use std::time::SystemTime;
 // initial states
 const VEL_INIT: f64 = 0.0;
 const RWA_INIT: f64 = 0.0;
-// const VEL_STEP: f64 = 0.1;
 const VEL_UPPER_BOUND: f64 = 20.0; // m/s
 const VEL_LOWER_BOUND: f64 = 2.0; // m/s
 const RWA_UPPER_BOUND: f64 = 40.0; // deg
 const RWA_LOWER_BOUND: f64 = -40.0; // deg
 
-const FORCE_STEP: f64 = 10.; // N?
-const VEL_DESIRED: f64 = 10.0;
 const MU: f64 = 0.3;
 const EPS: f64 = 1e-6;
-// const ACCEL_LAT_MAX: f64 = 0.5;
 
 fn get_window_title(velocity: f64, rwa: f64) -> String {
     format!(
