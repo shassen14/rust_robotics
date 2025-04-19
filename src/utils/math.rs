@@ -158,7 +158,11 @@ where
     T: Float,
 {
     if values.len() != base.len() {
-        panic!("Input vectors must have the same length");
+        panic!(
+            "Input vectors must have the same length, values: {}, base: {}",
+            values.len(),
+            base.len()
+        );
     }
 
     let n = values.len();
