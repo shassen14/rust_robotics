@@ -1,6 +1,7 @@
 use crate::utils::defs::AngleUnits;
 use crate::utils::transforms::FrameTransform3;
 use nalgebra as na;
+use num_traits::Float;
 
 // not really sure what to call this or where to put these
 // functions. Just needing them
@@ -139,6 +140,101 @@ pub fn calculate_line_endpoints(
     [(start_point.0, start_point.1), (end_point.x, end_point.y)]
 }
 
+/// Simple numerical gradient
+///
+/// * Arguments
+///
+/// * `values` - A vector of values for which the gradient is calculated.
+/// * `base` - A vector of values that are used as the base of the gradient calculation.
+///
+/// * Returns a vector of the same length as `values` and `base` containing the gradient
+///   calculated at each point.
+///
+/// The gradient is calculated using a forward difference at the start, central differences
+/// for the middle points, and a backward difference at the end. If the base values are equal
+/// to each other for a particular point, the gradient is set to 0.
+pub fn gradient_1d<T>(values: &Vec<T>, base: &Vec<T>) -> Vec<T>
+where
+    T: Float,
+{
+    if values.len() != base.len() {
+        panic!("Input vectors must have the same length");
+    }
+
+    let n = values.len();
+    let m = base.len();
+    let mut grad = vec![T::zero(); n];
+
+    if n == 0 || m == 0 || n == 1 || m == 1 {
+        return grad;
+    }
+
+    // Forward difference at start
+    if base[1] != base[0] {
+        grad[0] = (values[1] - values[0]) / (base[1] - base[0]);
+    }
+
+    // Central differences for middle points
+    for i in 1..n - 1 {
+        if base[i + 1] != base[i - 1] {
+            let ds = base[i + 1] - base[i - 1];
+            grad[i] = (values[i + 1] - values[i - 1]) / ds;
+        }
+    }
+
+    // Backward difference at end
+    if base[n - 1] != base[n - 2] {
+        grad[n - 1] = (values[n - 1] - values[n - 2]) / (base[n - 1] - base[n - 2]);
+    }
+
+    grad
+}
+
+/// Computes the arc length along a path defined by x and y coordinates.
+///
+/// * Arguments
+///
+/// * `x_vals` - A vector of x-coordinates.
+/// * `y_vals` - A vector of y-coordinates.
+///
+/// * Returns a vector of arc lengths from the first point to each point.
+pub fn compute_arc_length<T>(x_vals: &Vec<T>, y_vals: &Vec<T>) -> Vec<T>
+where
+    T: Float,
+{
+    let nx = x_vals.len();
+    let ny = y_vals.len();
+    let mut arc_lengths = match (nx, ny) {
+        (0, 0) | (1, 1) => vec![T::zero(); nx],
+        (n, m) if n == m => vec![T::zero(); nx],
+        _ => panic!("x and y vectors must be the same length"),
+    };
+
+    if nx > 1 {
+        // Forward difference for the first segment
+        arc_lengths[1] = arc_lengths[0]
+            + ((x_vals[1] - x_vals[0]) * (x_vals[1] - x_vals[0])
+                + (y_vals[1] - y_vals[0]) * (y_vals[1] - y_vals[0]))
+                .sqrt();
+
+        // Central differences for the middle segments
+        for i in 1..nx - 1 {
+            let dx = x_vals[i + 1] - x_vals[i - 1];
+            let dy = y_vals[i + 1] - y_vals[i - 1];
+            let ds = (dx * dx + dy * dy).sqrt();
+            arc_lengths[i + 1] = arc_lengths[i - 1] + ds;
+        }
+
+        // Backward difference for the last segment
+        arc_lengths[nx - 1] = arc_lengths[nx - 2]
+            + ((x_vals[nx - 1] - x_vals[nx - 2]) * (x_vals[nx - 1] - x_vals[nx - 2])
+                + (y_vals[nx - 1] - y_vals[nx - 2]) * (y_vals[nx - 1] - y_vals[nx - 2]))
+                .sqrt();
+    }
+
+    arc_lengths
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -252,6 +348,172 @@ mod tests {
         for i in 0..2 {
             assert_relative_eq!(calc_points[i].0, answer[i].0, epsilon = 1e-12);
             assert_relative_eq!(calc_points[i].1, answer[i].1, epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_gradient_1d() {
+        let values = vec![1., 2., 3., 4., 6.];
+        let base = vec![0., 1., 2., 3., 4.];
+
+        let answer = vec![1., 1., 1., 1.5, 2.];
+        assert_eq!(gradient_1d(&values, &base), answer);
+    }
+
+    #[test]
+    fn test_gradient_1d_linear_function() {
+        let values = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+        let base = vec![0.0, 1.0, 2.0, 3.0, 4.0];
+        let expected_grad = vec![1.0, 1.0, 1.0, 1.0, 1.0];
+        let grad = gradient_1d(&values, &base);
+        assert_eq!(grad.len(), expected_grad.len());
+        for i in 0..grad.len() {
+            assert_relative_eq!(grad[i], expected_grad[i], epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_gradient_1d_non_linear_function() {
+        let values = vec![1.0, 4.0, 9.0, 16.0, 25.0];
+        let base = vec![0.0, 1.0, 2.0, 3.0, 4.0];
+        let expected_grad = vec![3.0, 4.0, 6.0, 8.0, 9.0];
+        let grad = gradient_1d(&values, &base);
+        assert_eq!(grad.len(), expected_grad.len());
+        for i in 0..grad.len() {
+            assert_relative_eq!(grad[i], expected_grad[i], epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_gradient_1d_discontinuity() {
+        let values = vec![1.0, 2.0, 3.0, 10.0, 5.0];
+        let base = vec![0.0, 1.0, 2.0, 3.0, 4.0];
+        let expected_grad = vec![1.0, 1.0, 4.0, 1.0, -5.0];
+        let grad = gradient_1d(&values, &base);
+        assert_eq!(grad.len(), expected_grad.len());
+        for i in 0..grad.len() {
+            assert_relative_eq!(grad[i], expected_grad[i], epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_gradient_1d_repeated_value() {
+        let values = vec![1.0, 2.0, 2.0, 3.0, 4.0];
+        let base = vec![0.0, 1.0, 2.0, 3.0, 4.0];
+        let expected_grad = vec![1.0, 0.5, 0.5, 1.0, 1.0];
+        let grad = gradient_1d(&values, &base);
+        assert_eq!(grad.len(), expected_grad.len());
+        for i in 0..grad.len() {
+            assert_relative_eq!(grad[i], expected_grad[i], epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_gradient_1d_empty_input() {
+        let values: Vec<f64> = vec![];
+        let base: Vec<f64> = vec![];
+        let expected_grad: Vec<f64> = vec![];
+        let grad = gradient_1d(&values, &base);
+        assert_eq!(grad, expected_grad);
+    }
+
+    #[test]
+    fn test_gradient_1d_single_point() {
+        let values = vec![1.0];
+        let base = vec![0.0];
+        let expected_grad = vec![0.0];
+        let grad = gradient_1d(&values, &base);
+        assert_eq!(grad.len(), expected_grad.len());
+        for i in 0..grad.len() {
+            assert_relative_eq!(grad[i], expected_grad[i], epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_gradient_1d_two_points() {
+        let values = vec![1.0, 2.0];
+        let base = vec![0.0, 1.0];
+        let expected_grad = vec![1.0, 1.0];
+        let grad = gradient_1d(&values, &base);
+        assert_eq!(grad.len(), expected_grad.len());
+        for i in 0..grad.len() {
+            assert_relative_eq!(grad[i], expected_grad[i], epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_compute_arc_length_empty_input() {
+        let x_vals: Vec<f64> = vec![];
+        let y_vals: Vec<f64> = vec![];
+        let result = compute_arc_length(&x_vals, &y_vals);
+        assert_eq!(result, vec![]);
+    }
+
+    #[test]
+    fn test_compute_arc_length_single_point() {
+        let x_vals = vec![1.0];
+        let y_vals = vec![2.0];
+        let result = compute_arc_length(&x_vals, &y_vals);
+        assert_eq!(result, vec![0.0]);
+    }
+
+    #[test]
+    fn test_compute_arc_length_two_points() {
+        let x_vals = vec![1.0, 2.0];
+        let y_vals = vec![2.0, 3.0];
+        let result = compute_arc_length(&x_vals, &y_vals);
+        let expected = vec![0.0, 1.4142135623730951];
+        for i in 0..2 {
+            assert_relative_eq!(result[i], expected[i], epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_compute_arc_length_multiple_points() {
+        let x_vals = vec![1.0, 2.0, 3.0, 4.0];
+        let y_vals = vec![2.0, 3.0, 4.0, 5.0];
+        let result = compute_arc_length(&x_vals, &y_vals);
+        let expected = vec![
+            0.0,
+            1.4142135623730951,
+            2.8284271247461903,
+            4.242640687119284,
+        ];
+        for i in 0..4 {
+            assert_relative_eq!(result[i], expected[i], epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_compute_arc_length_same_x_coordinates() {
+        let x_vals = vec![1.0, 1.0, 1.0];
+        let y_vals = vec![2.0, 3.0, 4.0];
+        let result = compute_arc_length(&x_vals, &y_vals);
+        let expected = vec![0.0, 1.0, 2.0];
+        for i in 0..3 {
+            assert_relative_eq!(result[i], expected[i], epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_compute_arc_length_same_y_coordinates() {
+        let x_vals = vec![1.0, 2.0, 3.0];
+        let y_vals = vec![2.0, 2.0, 2.0];
+        let result = compute_arc_length(&x_vals, &y_vals);
+        let expected = vec![0.0, 1.0, 2.0];
+        for i in 0..3 {
+            assert_relative_eq!(result[i], expected[i], epsilon = 1e-12);
+        }
+    }
+
+    #[test]
+    fn test_compute_arc_length_large_values() {
+        let x_vals = vec![1000.0, 2000.0, 3000.0];
+        let y_vals = vec![2000.0, 3000.0, 4000.0];
+        let result = compute_arc_length(&x_vals, &y_vals);
+        let expected = vec![0.0, 1414.2135623730951, 2828.4271247461903];
+        for i in 0..3 {
+            assert_relative_eq!(result[i], expected[i], epsilon = 1e-12);
         }
     }
 }
