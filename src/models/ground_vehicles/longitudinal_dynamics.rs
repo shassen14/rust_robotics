@@ -14,13 +14,29 @@ pub struct Model {
 }
 
 impl Model {
+    /// Create a new Longitudinal Dynamics Model given two parameters
+    ///
+    /// * Arguments
+    ///
+    /// * `mass` - mass of the vehicle
+    /// * `area_frontal` - frontal area of the vehicle
+    /// * Returns Model object
     pub fn new(mass: f64, area_frontal: f64) -> Self {
+        assert!(mass > 0.0, "mass must be positive");
+        assert!(area_frontal > 0.0, "area_frontal must be positive");
+
         Model {
             mass: mass,
             area_frontal: area_frontal,
         }
     }
 
+    /// Calculates force due to aerodynamic drag [N]
+    ///
+    /// * Arguments
+    ///
+    /// * `velocity` - the velocity of the vehicle [m/s]
+    /// * Returns the force due to aerodynamic drag [N]
     fn calc_f_aero(&self, velocity: f64) -> f64 {
         0.5 * constant::air_density::<f64>()
             * self.area_frontal
@@ -29,7 +45,12 @@ impl Model {
             * velocity
     }
 
-    // TODO: assume radians
+    /// Calculates the force due to rolling resistance [N]
+    ///
+    /// * Arguments
+    ///
+    /// * `grade_angle` - Grade angle of the surface [radians]
+    /// * Returns the force due to rolling resistance [N]
     fn calc_f_roll(&self, grade_angle: f64) -> f64 {
         self.mass
             * constant::gravity::<f64>()
@@ -37,6 +58,12 @@ impl Model {
             * f64::cos(grade_angle)
     }
 
+    /// Calculates force due to grade resistance [N]
+    ///
+    /// * Arguments
+    ///
+    /// * `grade_angle` - Grade angle of the surface [radians]
+    /// * Returns the force due to grade resistance [N]
     fn calc_f_grade(&self, grade_angle: f64) -> f64 {
         self.mass * constant::gravity::<f64>() * f64::sin(grade_angle)
     }
@@ -48,6 +75,7 @@ impl Model {
 /// x = [vel_x]
 /// u = [F], F_engine/tractive > 0 | F_brake < 0
 /// TODO: technically we could go reverse if f_brake is greater than everything else
+/// TODO: have a reverse state/model to go backwards
 impl base::System<f64, 1, 1> for Model {
     fn get_derivatives(
         &self,
@@ -63,10 +91,6 @@ impl base::System<f64, 1, 1> for Model {
         let f_aero: f64 = self.calc_f_aero(x[0]);
         let f_roll: f64 = self.calc_f_roll(0.);
         let f_grade: f64 = self.calc_f_grade(0.);
-        // println!(
-        //     "f_aero: {:.2}, f_roll: {:.2}, f_grade: {:.2}, input: {:.2}",
-        //     f_aero, f_roll, f_grade, u[0]
-        // );
 
         let mut vel_x_dot = (u[0] - f_aero - f_roll - f_grade) / self.mass;
         if x[0] <= 0. && u[0] < f_roll {
@@ -100,11 +124,10 @@ impl base::System<f64, 1, 1> for Model {
         x_dot_desired: &nalgebra::SVector<f64, 1>,
         _t: f64,
     ) -> nalgebra::SVector<f64, 1> {
-        let f_aero: f64 = self.calc_f_aero(x[0]);
-        let f_roll: f64 = self.calc_f_roll(0.);
-        let f_grade: f64 = self.calc_f_grade(0.);
-
-        let u_ff: f64 = self.mass * x_dot_desired[0] + f_aero + f_roll + f_grade;
+        let u_ff = self.mass * x_dot_desired[0]
+            + self.calc_f_aero(x[0])
+            + self.calc_f_roll(0.)
+            + self.calc_f_grade(0.);
 
         na::SMatrix::<f64, 1, 1>::new(u_ff)
     }
@@ -114,5 +137,187 @@ impl base::System<f64, 1, 1> for Model {
 
         self.mass = data.mass;
         self.area_frontal = data.area_frontal;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use approx::assert_relative_eq;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// Test new
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn test_new_valid_model() {
+        let model = Model::new(1000.0, 2.5);
+        assert_eq!(model.mass, 1000.0);
+        assert_eq!(model.area_frontal, 2.5);
+    }
+
+    #[test]
+    #[should_panic(expected = "mass must be positive")]
+    fn test_new_negative_mass() {
+        Model::new(-1000.0, 2.5);
+    }
+
+    #[test]
+    #[should_panic(expected = "area_frontal must be positive")]
+    fn test_new_negative_area_frontal() {
+        Model::new(1000.0, -2.5);
+    }
+
+    #[test]
+    #[should_panic(expected = "mass must be positive")]
+    fn test_new_zero_mass() {
+        Model::new(0.0, 2.5);
+    }
+
+    #[test]
+    #[should_panic(expected = "area_frontal must be positive")]
+    fn test_new_zero_area_frontal() {
+        Model::new(1000.0, 0.0);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// Test calc_f_aero
+    ///////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn test_calc_f_aero_zero_velocity() {
+        let model = Model::new(1000.0, 2.0);
+        let velocity = 0.0;
+        let expected = 0.0;
+        assert_relative_eq!(model.calc_f_aero(velocity), expected, epsilon = 1e-6);
+    }
+
+    #[test]
+    fn test_calc_f_aero_positive_velocity() {
+        let model = Model::new(1000.0, 2.0);
+        let velocity = 10.0;
+        let expected = 0.5
+            * constant::air_density::<f64>()
+            * model.area_frontal
+            * constant::drag_coeffecient::<f64>()
+            * velocity
+            * velocity;
+        assert_relative_eq!(model.calc_f_aero(velocity), expected, epsilon = 1e-6);
+    }
+
+    #[test]
+    fn test_calc_f_aero_negative_velocity() {
+        let model = Model::new(1000.0, 2.0);
+        let velocity = -10.0;
+        let expected = 0.5
+            * constant::air_density::<f64>()
+            * model.area_frontal
+            * constant::drag_coeffecient::<f64>()
+            * velocity
+            * velocity;
+        assert_relative_eq!(model.calc_f_aero(velocity), expected, epsilon = 1e-6);
+    }
+
+    #[test]
+    fn test_calc_f_aero_large_velocity() {
+        let model = Model::new(1000.0, 2.0);
+        let velocity = 100.0;
+        let expected = 0.5
+            * constant::air_density::<f64>()
+            * model.area_frontal
+            * constant::drag_coeffecient::<f64>()
+            * velocity
+            * velocity;
+        assert_relative_eq!(model.calc_f_aero(velocity), expected, epsilon = 1e-6);
+    }
+
+    #[test]
+    fn test_calc_f_aero_small_velocity() {
+        let model = Model::new(1000.0, 2.0);
+        let velocity = 0.1;
+        let expected = 0.5
+            * constant::air_density::<f64>()
+            * model.area_frontal
+            * constant::drag_coeffecient::<f64>()
+            * velocity
+            * velocity;
+        assert_relative_eq!(model.calc_f_aero(velocity), expected, epsilon = 1e-6);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// Test calc_f_roll
+    ///////////////////////////////////////////////////////////////////////////
+    #[test]
+    fn test_calc_f_roll_zero_grade_angle() {
+        let model = Model::new(1000.0, 2.0);
+        let grade_angle = 0.0;
+        let expected_force =
+            model.mass * constant::gravity::<f64>() * constant::rolling_resistance::<f64>();
+        let actual_force = model.calc_f_roll(grade_angle);
+        assert_relative_eq!(expected_force, actual_force, epsilon = 1e-6);
+    }
+    #[test]
+    fn test_calc_f_roll_non_zero_grade_angle() {
+        let model = Model::new(1000.0, 2.0);
+        let grade_angle = std::f64::consts::PI / 4.0;
+        let expected_force = model.mass
+            * constant::gravity::<f64>()
+            * constant::rolling_resistance::<f64>()
+            * f64::cos(grade_angle);
+        let actual_force = model.calc_f_roll(grade_angle);
+        assert_relative_eq!(expected_force, actual_force, epsilon = 1e-6);
+    }
+    #[test]
+    fn test_calc_f_roll_90_degree_grade_angle() {
+        let model = Model::new(1000.0, 2.0);
+        let grade_angle = std::f64::consts::PI / 2.0;
+        let expected_force = 0.0;
+        let actual_force = model.calc_f_roll(grade_angle);
+        assert_relative_eq!(expected_force, actual_force, epsilon = 1e-6);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    /// test calc_f_gravity
+    /////////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn test_calc_f_grade_positive_grade_angle() {
+        let model = Model::new(1000.0, 2.0);
+        let grade_angle = std::f64::consts::PI / 4.0;
+        let expected_force = model.mass * constant::gravity::<f64>() * f64::sin(grade_angle);
+        let actual_force = model.calc_f_grade(grade_angle);
+        assert_relative_eq!(expected_force, actual_force, epsilon = 1e-6);
+    }
+    #[test]
+    fn test_calc_f_grade_negative_grade_angle() {
+        let model = Model::new(1000.0, 2.0);
+        let grade_angle = -std::f64::consts::PI / 4.0;
+        let expected_force = model.mass * constant::gravity::<f64>() * f64::sin(grade_angle);
+        let actual_force = model.calc_f_grade(grade_angle);
+        assert_relative_eq!(expected_force, actual_force, epsilon = 1e-6);
+    }
+    #[test]
+    fn test_calc_f_grade_zero_grade_angle() {
+        let model = Model::new(1000.0, 2.0);
+        let grade_angle = 0.0;
+        let expected_force = 0.0;
+        let actual_force = model.calc_f_grade(grade_angle);
+        assert_relative_eq!(expected_force, actual_force, epsilon = 1e-6);
+    }
+    #[test]
+    fn test_calc_f_grade_large_grade_angle() {
+        let model = Model::new(1000.0, 2.0);
+        let grade_angle = std::f64::consts::PI / 2.0 - 1e-6;
+        let expected_force = model.mass * constant::gravity::<f64>() * f64::sin(grade_angle);
+        let actual_force = model.calc_f_grade(grade_angle);
+        assert_relative_eq!(expected_force, actual_force, epsilon = 1e-6);
+    }
+    #[test]
+    fn test_calc_f_grade_small_grade_angle() {
+        let model = Model::new(1000.0, 2.0);
+        let grade_angle = 1e-6;
+        let expected_force = model.mass * constant::gravity::<f64>() * f64::sin(grade_angle);
+        let actual_force = model.calc_f_grade(grade_angle);
+        assert_relative_eq!(expected_force, actual_force, epsilon = 1e-6);
     }
 }
