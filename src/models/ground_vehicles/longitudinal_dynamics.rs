@@ -69,13 +69,15 @@ impl Model {
     }
 }
 
+/// TODO: technically we could go reverse if f_brake is greater than everything else
+/// TODO: have a reverse state/model to go backwards
+/// TODO: include grade road angle
+
 /// Longitudinal dynamics model of a car
 ///
 /// x_dot = [vel_x_dot], vehicle frame
 /// x = [vel_x]
 /// u = [F], F_engine/tractive > 0 | F_brake < 0
-/// TODO: technically we could go reverse if f_brake is greater than everything else
-/// TODO: have a reverse state/model to go backwards
 impl base::System<f64, 1, 1> for Model {
     fn get_derivatives(
         &self,
@@ -87,7 +89,6 @@ impl base::System<f64, 1, 1> for Model {
         // F_roll = mass * gravity * rolling resistance * cos(grade angle)
         // F_grade = mass * gravity * sin(grade angle)
         // vel_x_dot = (u[0] - F_aero) / m
-        // TODO: include grade road angle
         let f_aero: f64 = self.calc_f_aero(x[0]);
         let f_roll: f64 = self.calc_f_roll(0.);
         let f_grade: f64 = self.calc_f_grade(0.);
@@ -118,6 +119,7 @@ impl base::System<f64, 1, 1> for Model {
         (a, b)
     }
 
+    // TODO: consider negative accelerations whenever the velocity is 0 or approaching 0
     fn calculate_input(
         &self,
         x: &nalgebra::SVector<f64, 1>,
@@ -143,6 +145,7 @@ impl base::System<f64, 1, 1> for Model {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::models::base::System;
     use approx::assert_relative_eq;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -320,4 +323,207 @@ mod tests {
         let actual_force = model.calc_f_grade(grade_angle);
         assert_relative_eq!(expected_force, actual_force, epsilon = 1e-6);
     }
+
+    /////////////////////////////////////////////////////////////////////////////
+    /// Test get_derivatives
+    ////////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn test_get_derivatives_positive_velocity_positive_input() {
+        let model = Model::new(1000.0, 2.0);
+        let x = na::SVector::<f64, 1>::new(10.0);
+        let u = na::SVector::<f64, 1>::new(100.0);
+        let f_aero = model.calc_f_aero(10.0);
+        let f_roll = model.calc_f_roll(0.0);
+        let f_grade = model.calc_f_grade(0.0);
+        let expected = na::SVector::<f64, 1>::new((100.0 - f_aero - f_roll - f_grade) / 1000.0);
+        assert_relative_eq!(
+            model.get_derivatives(&x, &u, 0.0)[0],
+            expected[0],
+            epsilon = 1e-6
+        );
+    }
+
+    #[test]
+    fn test_get_derivatives_positive_velocity_negative_input() {
+        let model = Model::new(1000.0, 2.0);
+        let x = na::SVector::<f64, 1>::new(10.0);
+        let u = na::SVector::<f64, 1>::new(-100.0);
+        let f_aero = model.calc_f_aero(10.0);
+        let f_roll = model.calc_f_roll(0.0);
+        let f_grade = model.calc_f_grade(0.0);
+        let expected = na::SVector::<f64, 1>::new((-100.0 - f_aero - f_roll - f_grade) / 1000.0);
+        assert_relative_eq!(
+            model.get_derivatives(&x, &u, 0.0)[0],
+            expected[0],
+            epsilon = 1e-6
+        );
+    }
+
+    #[test]
+    fn test_get_derivatives_zero_velocity_positive_input_less_than_rolling_resistance() {
+        let model = Model::new(1000.0, 2.0);
+        let x = na::SVector::<f64, 1>::new(0.0);
+        let u = na::SVector::<f64, 1>::new(100.0);
+        let expected = na::SVector::<f64, 1>::new(0.0);
+        assert_relative_eq!(
+            model.get_derivatives(&x, &u, 0.0)[0],
+            expected[0],
+            epsilon = 1e-6
+        );
+    }
+
+    #[test]
+    fn test_get_derivatives_zero_velocity_negative_input() {
+        let model = Model::new(1000.0, 2.0);
+        let x = na::SVector::<f64, 1>::new(0.0);
+        let u = na::SVector::<f64, 1>::new(-100.0);
+        let expected = na::SVector::<f64, 1>::new(0.0);
+        assert_relative_eq!(
+            model.get_derivatives(&x, &u, 0.0)[0],
+            expected[0],
+            epsilon = 1e-6
+        );
+    }
+
+    #[test]
+    fn test_get_derivatives_velocity_less_than_or_equal_to_zero_input_less_than_rolling_resistance()
+    {
+        let model = Model::new(1000.0, 2.0);
+        let x = na::SVector::<f64, 1>::new(0.0);
+        let u = na::SVector::<f64, 1>::new(-50.0);
+        let expected = na::SVector::<f64, 1>::new(0.0);
+        assert_relative_eq!(
+            model.get_derivatives(&x, &u, 0.0)[0],
+            expected[0],
+            epsilon = 1e-6
+        );
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    /// Test calculate_jacobian
+    ////////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn test_calculate_jacobian_zero_velocity() {
+        let model = Model::new(1000.0, 2.5);
+        let x = na::SVector::<f64, 1>::new(0.0);
+        let (a, b) = model.calculate_jacobian(&x, &na::SVector::<f64, 1>::new(0.0), 0.0);
+        assert_relative_eq!(a[(0, 0)], 0.0, epsilon = 1e-6);
+        assert_relative_eq!(b[(0, 0)], -1.0 / 1000.0, epsilon = 1e-6);
+    }
+
+    #[test]
+    fn test_calculate_jacobian_non_zero_velocity() {
+        let model = Model::new(1000.0, 2.5);
+        let x = na::SVector::<f64, 1>::new(10.0);
+        let (a, b) = model.calculate_jacobian(&x, &na::SVector::<f64, 1>::new(0.0), 0.0);
+        assert_relative_eq!(
+            a[(0, 0)],
+            -constant::air_density::<f64>() * 2.5 * constant::drag_coeffecient::<f64>() * 10.0
+                / 1000.0,
+            epsilon = 1e-6
+        );
+        assert_relative_eq!(b[(0, 0)], -1.0 / 1000.0, epsilon = 1e-6);
+    }
+
+    #[test]
+    fn test_calculate_jacobian_different_mass() {
+        let model = Model::new(500.0, 2.5);
+        let x = na::SVector::<f64, 1>::new(10.0);
+        let (a, b) = model.calculate_jacobian(&x, &na::SVector::<f64, 1>::new(0.0), 0.0);
+        assert_relative_eq!(
+            a[(0, 0)],
+            -constant::air_density::<f64>() * 2.5 * constant::drag_coeffecient::<f64>() * 10.0
+                / 500.0,
+            epsilon = 1e-6
+        );
+        assert_relative_eq!(b[(0, 0)], -1.0 / 500.0, epsilon = 1e-6);
+    }
+
+    #[test]
+    fn test_calculate_jacobian_different_frontal_area() {
+        let model = Model::new(1000.0, 5.0);
+        let x = na::SVector::<f64, 1>::new(10.0);
+        let (a, b) = model.calculate_jacobian(&x, &na::SVector::<f64, 1>::new(0.0), 0.0);
+        assert_relative_eq!(
+            a[(0, 0)],
+            -constant::air_density::<f64>() * 5.0 * constant::drag_coeffecient::<f64>() * 10.0
+                / 1000.0,
+            epsilon = 1e-6
+        );
+        assert_relative_eq!(b[(0, 0)], -1.0 / 1000.0, epsilon = 1e-6);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    /// Test calculate_input
+    ////////////////////////////////////////////////////////////////////////////
+
+    #[test]
+    fn test_calculate_input_positive_x_dot_desired_non_zero_x() {
+        let model = Model::new(1000.0, 2.0);
+        let x = na::SVector::<f64, 1>::new(10.0);
+        let x_dot_desired = na::SVector::<f64, 1>::new(5.0);
+        let expected = na::SVector::<f64, 1>::new(
+            5000.0 + model.calc_f_aero(10.0) + model.calc_f_roll(0.0) + model.calc_f_grade(0.0),
+        );
+        let result = model.calculate_input(&x, &x_dot_desired, 0.0);
+        assert_relative_eq!(result[0], expected[0], epsilon = 1e-6);
+    }
+
+    #[test]
+    fn test_calculate_input_zero_x_dot_desired_non_zero_x() {
+        let model = Model::new(1000.0, 2.0);
+        let x = na::SVector::<f64, 1>::new(10.0);
+        let x_dot_desired = na::SVector::<f64, 1>::new(0.0);
+        let expected = na::SVector::<f64, 1>::new(
+            model.calc_f_aero(10.0) + model.calc_f_roll(0.0) + model.calc_f_grade(0.0),
+        );
+        let result = model.calculate_input(&x, &x_dot_desired, 0.0);
+        assert_relative_eq!(result[0], expected[0], epsilon = 1e-6);
+    }
+
+    #[test]
+    fn test_calculate_input_negative_x_dot_desired_non_zero_x() {
+        let model = Model::new(1000.0, 2.0);
+        let x = na::SVector::<f64, 1>::new(10.0);
+        let x_dot_desired = na::SVector::<f64, 1>::new(-5.0);
+        let expected = na::SVector::<f64, 1>::new(
+            -5000.0 + model.calc_f_aero(10.0) + model.calc_f_roll(0.0) + model.calc_f_grade(0.0),
+        );
+        let result = model.calculate_input(&x, &x_dot_desired, 0.0);
+        assert_relative_eq!(result[0], expected[0], epsilon = 1e-6);
+    }
+
+    #[test]
+    fn test_calculate_input_positive_x_dot_desired_zero_x() {
+        let model = Model::new(1000.0, 2.0);
+        let x = na::SVector::<f64, 1>::new(0.0);
+        let x_dot_desired = na::SVector::<f64, 1>::new(5.0);
+        let expected =
+            na::SVector::<f64, 1>::new(5000.0 + model.calc_f_roll(0.0) + model.calc_f_grade(0.0));
+        let result = model.calculate_input(&x, &x_dot_desired, 0.0);
+        assert_relative_eq!(result[0], expected[0], epsilon = 1e-6);
+    }
+
+    #[test]
+    fn test_calculate_input_zero_x_dot_desired_zero_x() {
+        let model = Model::new(1000.0, 2.0);
+        let x = na::SVector::<f64, 1>::new(0.0);
+        let x_dot_desired = na::SVector::<f64, 1>::new(0.0);
+        let expected = na::SVector::<f64, 1>::new(model.calc_f_roll(0.0) + model.calc_f_grade(0.0));
+        let result = model.calculate_input(&x, &x_dot_desired, 0.0);
+        assert_relative_eq!(result[0], expected[0], epsilon = 1e-6);
+    }
+
+    // #[test]
+    // fn test_calculate_input_negative_x_dot_desired_zero_x() {
+    //     let model = Model::new(1000.0, 2.0);
+    //     let x = na::SVector::<f64, 1>::new(0.0);
+    //     let x_dot_desired = na::SVector::<f64, 1>::new(-5.0);
+    //     let expected =
+    //         na::SVector::<f64, 1>::new(-5000.0 + model.calc_f_roll(0.0) + model.calc_f_grade(0.0));
+    //     let result = model.calculate_input(&x, &x_dot_desired, 0.0);
+    //     assert_relative_eq!(result[0], expected[0], epsilon = 1e-6);
+    // }
 }
