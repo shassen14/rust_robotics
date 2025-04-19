@@ -1,9 +1,11 @@
 // rust robotics
 use rust_robotics::controls::path_tracking;
+use rust_robotics::controls::pid;
 use rust_robotics::models::base::System;
 use rust_robotics::models::ground_vehicles::bicycle_kinematic;
 use rust_robotics::models::ground_vehicles::longitudinal_dynamics;
 use rust_robotics::num_methods::runge_kutta;
+use rust_robotics::utils::constant;
 use rust_robotics::utils::convert;
 use rust_robotics::utils::defs;
 use rust_robotics::utils::files;
@@ -25,11 +27,16 @@ use std::time::SystemTime;
 const VEL_INIT: f64 = 0.0;
 const RWA_INIT: f64 = 0.0;
 // const VEL_STEP: f64 = 0.1;
-// const VEL_UPPER_BOUND: f64 = 20.0; // m/s
-// const VEL_LOWER_BOUND: f64 = -10.0; // m/s
+const VEL_UPPER_BOUND: f64 = 20.0; // m/s
+const VEL_LOWER_BOUND: f64 = 2.0; // m/s
 const RWA_UPPER_BOUND: f64 = 40.0; // deg
 const RWA_LOWER_BOUND: f64 = -40.0; // deg
+
 const FORCE_STEP: f64 = 10.; // N?
+const VEL_DESIRED: f64 = 10.0;
+const MU: f64 = 0.3;
+const EPS: f64 = 1e-6;
+// const ACCEL_LAT_MAX: f64 = 0.5;
 
 fn get_window_title(velocity: f64, rwa: f64) -> String {
     format!(
@@ -63,17 +70,79 @@ fn main() -> Result<(), Box<dyn Error>> {
     let cs = plot2::create_2d_chartstate(buf.borrow_mut(), &window_params, &chart_params);
 
     // csv readers and writers
+    // Obtain path and also calculate speed profile
     let mut csv_rdr = csv::Reader::from_path("logs/examples/example_path.csv")?;
     let mut pth: Vec<na::Point3<f64>> = vec![];
-
     for result in csv_rdr.deserialize() {
         let record: path_tracking::RecordPoint<f64> = result?;
         pth.push(na::Point3::new(record.x, record.y, record.z));
     }
+
+    // 1. Calculate path length
+    let n = pth.len();
+    let vec_x = pth.iter().map(|p| p.x).collect::<Vec<f64>>();
+    let vec_y = pth.iter().map(|p| p.y).collect::<Vec<f64>>();
+    let s = math::compute_arc_length(&vec_x, &vec_y);
+
+    // println!("vec_x: {:.2}, s: {:.2}, ", vec_x.len(), s.len());
+
+    // 2. Compute derivatives
+    let dx = math::gradient_1d(&vec_x, &s);
+    let dy = math::gradient_1d(&vec_y, &s);
+
+    // println!("dx: {:.2}, dy: {:.2}", dx.len(), dy.len());
+
+    let ddx = math::gradient_1d(&dx, &s);
+    let ddy = math::gradient_1d(&dy, &s);
+
+    // println!("ddx: {:.2}, ddy: {:.2}", ddx.len(), ddy.len());
+
+    // 3. Compute curvature
+    let mut curvature = Vec::with_capacity(n);
+    for i in 0..n {
+        let num = dx[i] * ddy[i] - dy[i] * ddx[i];
+        let denom = (dx[i].powi(2) + dy[i].powi(2)).powf(1.5);
+        curvature.push(num / denom);
+    }
+
+    // 4. Compute speed profile
+    let mut v_profile = Vec::with_capacity(n);
+    for i in 0..n {
+        let v = (MU * constant::gravity::<f64>() / (curvature[i].abs() + EPS)).sqrt();
+        v_profile.push(v.min(VEL_UPPER_BOUND).max(VEL_LOWER_BOUND));
+    }
+
+    // println!("v_profile: {:.2}", v_profile.len());
+
+    // 5. Compute acceleration profile from speed profile
+    let dv_ds = math::gradient_1d(&v_profile, &s);
+
+    // println!("dv_ds: {:.2}", dv_ds.len());
+
+    let mut a_profile = Vec::with_capacity(n);
+    for i in 0..n - 1 {
+        let a = dv_ds[i] * v_profile[i];
+        a_profile.push(a);
+    }
+
+    // println!("dv_ds: {dv_ds:.2?}");
+    // println!("s: {s:.2?}");
+    // println!("a_profile: {a_profile:.2?}");
+    // println!("v_profile: {v_profile:.2?}");
+
     let lookahead_distance = 5.0;
     let mut start_index = 0usize;
     let mut target_distance: f64;
     let mut target_point = na::Point3::new(0., 0., 0.);
+
+    // Simple PID controller for velocity
+    let mut long_controller_fb = pid::Controller::new(
+        vec![2000.0],
+        vec![1.0],
+        vec![0.0],
+        vec![-200.0; 1],
+        vec![200.0; 1],
+    );
 
     // Longitudinal Model (kg, m^2)
     // TODO: magic numbers, use config
@@ -107,23 +176,29 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
             let mut ts = *ts;
             while ts < epoch {
-                let keys = window.get_keys_pressed(KeyRepeat::Yes);
+                (start_index, target_distance, target_point) =
+                    path_tracking::calculate_lookahead_point(
+                        &pth,
+                        &na::Point3::new(lat_current_state[0], lat_current_state[1], 0.),
+                        start_index,
+                        lookahead_distance,
+                    );
 
-                for key in keys {
-                    match key {
-                        Key::Up => {
-                            long_current_input[0] += FORCE_STEP;
-                            // lat_current_input[0] += VEL_STEP;
-                        }
-                        Key::Down => {
-                            long_current_input[0] -= FORCE_STEP;
-                            // lat_current_input[0] -= VEL_STEP;
-                        }
-                        _ => {
-                            continue;
-                        }
-                    }
+                if start_index == pth.len() - 1 {
+                    start_index = 0;
                 }
+
+                let target_vel = v_profile[start_index];
+                // let target_vel = VEL_DESIRED;
+                let current_vel = long_current_state[0];
+
+                long_current_input = na::SVector::<f64, 1>::from_vec(
+                    long_controller_fb.compute(&vec![target_vel - current_vel]),
+                );
+
+                // println!(
+                //     "long_current_input: {long_current_input:.2?}, target_vel: {target_vel:.2?}, current_vel: {current_vel:.2?}"
+                // );
 
                 long_current_state = long_model.propagate(
                     &long_current_state,
@@ -137,18 +212,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
                 // lat_current_input[0] =
                 //     math::bound_value(long_current_state[0], VEL_LOWER_BOUND, VEL_UPPER_BOUND);
-
-                (start_index, target_distance, target_point) =
-                    path_tracking::calculate_lookahead_point(
-                        &pth,
-                        &na::Point3::new(lat_current_state[0], lat_current_state[1], 0.),
-                        start_index,
-                        lookahead_distance,
-                    );
-
-                if start_index == pth.len() - 1 {
-                    start_index = 0;
-                }
 
                 lat_current_input[0] = long_current_state[0];
 
