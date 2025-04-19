@@ -113,7 +113,7 @@ pub trait System<T, const N: usize, const M: usize> {
         t: T,
     ) -> (na::SMatrix<T, N, N>, na::SMatrix<T, N, M>);
 
-    /// Calculate system's control inputs given the system's current states
+    /// Calculate system's feedforward control inputs given the system's current states
     /// to produce a desired rate of change.
     ///
     /// # Arguments
@@ -122,7 +122,7 @@ pub trait System<T, const N: usize, const M: usize> {
     /// * `x` - System's current state
     /// * `x_dot_desired` - System's desired rate of change
     /// * `t` - Current timestamp
-    /// * Returns control inputs required to obtain the desired rate of change
+    /// * Returns feedforward control inputs required to obtain the desired rate of change
     fn calculate_input(
         &self,
         x: &na::SVector<T, N>,
