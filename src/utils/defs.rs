@@ -7,7 +7,6 @@ pub enum AngleUnits {
 }
 
 // Random buffer stuff found here: https://github.com/plotters-rs/plotters-minifb-demo
-#[allow(unused)]
 #[derive(Debug, Clone)]
 pub struct BufferWrapper(pub Vec<u32>);
 impl Borrow<[u8]> for BufferWrapper {
