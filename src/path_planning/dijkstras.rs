@@ -22,6 +22,35 @@ struct DijkstraItem<N, C> {
     cost: C,
 }
 
+impl<N, C> Eq for DijkstraItem<N, C> where C: Eq {}
+
+impl<N, C> PartialEq for DijkstraItem<N, C>
+where
+    C: PartialEq,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.cost == other.cost
+    }
+}
+
+impl<N, C> Ord for DijkstraItem<N, C>
+where
+    C: Ord,
+{
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.cost.cmp(&other.cost)
+    }
+}
+
+impl<N, C> PartialOrd for DijkstraItem<N, C>
+where
+    C: PartialOrd,
+{
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        other.cost.partial_cmp(&self.cost)
+    }
+}
+
 /// Plans a path from start to goal using the children to expand the nodes
 ///
 /// # Generic Arguments
@@ -37,8 +66,10 @@ struct DijkstraItem<N, C> {
 /// * `start` - Starting node for the path
 /// * `finish_fn` - Function to signal we are finished and can generate a path
 /// * `neighbor_fn` - Function to generate neighbors given the current node
-/// * Returns a path if one is reachable
 ///
+/// # Returns
+///
+/// A path if one is reachable
 pub fn plan<N, C, FF, FN, IT>(start: &N, finish_fn: &mut FF, neighbor_fn: &mut FN) -> Option<Vec<N>>
 where
     N: Hash + Eq + Copy,
@@ -47,8 +78,6 @@ where
     FN: FnMut(&N) -> IT,
     IT: IntoIterator<Item = (N, C)>,
 {
-    let mut path: Option<Vec<N>> = Option::default();
-    let mut is_path_found: bool = false;
     let s = *start;
 
     let start_item: DijkstraItem<N, C> = DijkstraItem::<N, C> {
@@ -68,7 +97,9 @@ where
 
     open_set.insert(s, start_item);
 
+    let mut is_path_found: bool = false;
     while !open_set.is_empty() {
+        // Get the node with the lowest cost
         // TODO: figure out how to not do unwrap or at least throw out errors when no
         // Figure out if dereferncing is copying/cloning
         let cur_node = *open_set
@@ -113,26 +144,23 @@ where
     }
 
     if is_path_found {
-        path = Some(calculate_final_path(&goal_item, &closed_set));
+        return Some(calculate_final_path(&goal_item, &closed_set));
     }
 
-    path
+    None
 }
 
-/// Given the goal node and closed_set, find the path that goes from start to finish
-/// Assumption: goal_item is in the closed set and both parameters are valid
-///
-/// # Generic Arguments
-///
-/// * `N` - Node Type (i.e. [i32, i32])
-/// * `C` - Cost Type (i.e. u32)
+/// Calculates the final path from the start node to the goal node
+/// using the `closed_set` and the `goal_item`.
 ///
 /// # Arguments
 ///
-/// * `goal_item` - Final node that met the finishing requirements
-/// * `closed_set` - All the visited nodes
-/// * Returns the shortest path
+/// * `goal_item`: The Dijkstra item of the goal node
+/// * `closed_set`: The set of all nodes that have been visited
 ///
+/// # Returns
+///
+/// The final path from the start node to the goal node
 fn calculate_final_path<N, C>(
     goal_item: &DijkstraItem<N, C>,
     closed_set: &HashMap<N, DijkstraItem<N, C>>,
@@ -141,16 +169,21 @@ where
     N: Hash + Eq + Copy,
     C: Zero + Ord + Copy,
 {
-    let mut path: Vec<N> = vec![goal_item.node];
+    let mut path = Vec::with_capacity(closed_set.len());
+    let mut current_item = goal_item;
 
-    let mut parent = goal_item.parent;
+    // Backtrack to the start node
+    while let Some(parent) = current_item.parent {
+        path.push(current_item.node);
 
-    while parent.is_some() {
-        let neighbor_item = closed_set.get(&parent.unwrap()).unwrap();
-        path.push(neighbor_item.node);
-        parent = neighbor_item.parent;
+        // Get the next item in the path
+        current_item = closed_set.get(&parent).unwrap();
     }
 
+    // Add the start node to the path
+    path.push(current_item.node);
+
+    // Reverse the path to get the order from start to goal
     path.reverse();
     path
 }
